@@ -21,6 +21,9 @@ public:
     START = 's',
     END = 'e',
     WALL = 'w',
+    WATER = 'W',
+    SAND = 'S',
+    STONE = 'T',
     ENEMY = 'n',
     WAYPOINT = '+'
   };

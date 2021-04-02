@@ -7,6 +7,8 @@ protected:
 	bool validMove(const sf::Vector2f&);
 
 public:
+	void setSpeed(float);
+	float getSpeed();
 	void update(double) override;
 	void move(const sf::Vector2f&);
 	void move(float x, float y);

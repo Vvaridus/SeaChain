@@ -8,21 +8,22 @@ using namespace std;
 using namespace sf;
 
 void MenuScene::Load() {
-  cout << "Menu Load \n";
-  {
-    auto txt = makeEntity();
-    auto t = txt->addComponent<TextComponent>(
-        "Platformer\nPress Space to Start");
-  }
-  setLoaded(true);
+    cout << "Menu Load \n";
+    {
+        auto txt = makeEntity();
+        auto t = txt->addComponent<TextComponent>(
+            "Sea Chain\nPress Space to Start");
+    }
+
+    setLoaded(true);
 }
 
 void MenuScene::Update(const double& dt) {
-  // cout << "Menu Update "<<dt<<"\n";
+    cout << "Menu Update "<<dt<<"\n";
 
-  if (sf::Keyboard::isKeyPressed(Keyboard::Space)) {
-    Engine::ChangeScene(&level1);
-  }
+    if (sf::Keyboard::isKeyPressed(Keyboard::Space)) {
+        Engine::ChangeScene(&tutorialMain);
+    }
 
-  Scene::Update(dt);
+    Scene::Update(dt);
 }

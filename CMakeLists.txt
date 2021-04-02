@@ -19,7 +19,7 @@ link_directories("${CMAKE_BINARY_DIR}/libaries/sfml/lib")
 add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND}
   -E copy_directory
     "${PROJECT_SOURCE_DIR}/resources"
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/res
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/resources
 )
 
 add_subdirectory("libaries/b2d/Box2D")
@@ -49,6 +49,12 @@ file(GLOB_RECURSE SOURCE_FILES lib_ecm/*.cpp lib_ecm/*.h)
 add_library(lib_ecm STATIC ${SOURCE_FILES})
 target_include_directories(lib_ecm INTERFACE "${CMAKE_SOURCE_DIR}/lib_ecm" )
 target_link_libraries(lib_ecm PRIVATE lib_maths)
+
+##JSON Tag Lib
+file(GLOB_RECURSE SOURCE_FILES lib_tag/*.cpp lib_tag/*.h)
+add_library(lib_tag STATIC ${SOURCE_FILES})
+target_include_directories(lib_tag INTERFACE "${CMAKE_SOURCE_DIR}/lib_tag" )
+target_link_libraries(lib_tag)
 
 file(GLOB_RECURSE SOURCES Sea_Chain/*.cpp Sea_Chain/*.h)
 file(GLOB_RECURSE CMPNTS Sea_Chain/components/*.cpp Sea_Chain/components/*.h)

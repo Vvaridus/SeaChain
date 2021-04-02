@@ -41,3 +41,11 @@ void BasicMovementComponent::move(const sf::Vector2f& p) {
 void BasicMovementComponent::move(float x, float y) {
 	move(sf::Vector2f(x, y));
 }
+
+void BasicMovementComponent::setSpeed(float speed) {
+	_speed = speed;
+}
+
+float BasicMovementComponent::getSpeed() {
+	return _speed;
+}
