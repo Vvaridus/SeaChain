@@ -3,30 +3,36 @@
 #include <iostream>
 #include <thread>
 #include "scene_combat.h"
+#include "../logger.h"
 
 using namespace std;
 using namespace sf;
 
 void Combat::Load() {
-    cout << " Scene < Load" << endl;
+    Logger::sceneLoading(typeid(*this).name());
+
     ls::loadLevelFile("resources/combat.txt", 54);
 
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
     ls::setOffset(Vector2f(0, ho));
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-    cout << " Scene 1 Load Done" << endl;
+    
+    Logger::sceneLoading(typeid(*this).name());
 
     setLoaded(true);
 }
 
 void Combat::UnLoad() {
-  cout << "Scene 1 Unload" << endl;
+    Logger::sceneUnloading(typeid(*this).name());
+
   ls::unload();
   Scene::UnLoad();
 }
 
 void Combat::Update(const double& dt) {
+    //Logger::sceneUpdating(typeid(*this).name(), dt);
+
   Scene::Update(dt);
 }
 
