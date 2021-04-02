@@ -8,8 +8,8 @@ using namespace std;
 using namespace sf;
 
 void Combat::Load() {
-    cout << " Scene 1 Load" << endl;
-    ls::loadLevelFile("resources/map.txt", 54);
+    cout << " Scene < Load" << endl;
+    ls::loadLevelFile("resources/combat.txt", 54);
 
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
     ls::setOffset(Vector2f(0, ho));
