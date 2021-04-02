@@ -6,6 +6,7 @@
 #include <iostream>
 #include <thread>
 #include "../components/cmp_basic_movement.h"
+#include "../logger.h"
 
 using namespace std;
 using namespace sf;
@@ -14,7 +15,8 @@ static shared_ptr<Entity> player;
 vector<shared_ptr<Entity>> enemies;
 
 void TutorialMain::Load() {
-    cout << " Scene 1 Load" << endl;
+    Logger::sceneLoading(typeid(*this).name());
+
     ls::loadLevelFile("resources/map.txt", 54);
 
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
@@ -40,19 +42,21 @@ void TutorialMain::Load() {
 
     //Simulate long loading times
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-    cout << " Scene 1 Load Done" << endl;
+    Logger::sceneLoaded(typeid(*this).name());
 
     setLoaded(true);
 }
 
 void TutorialMain::UnLoad() {
-  cout << "Scene 1 Unload" << endl;
+    Logger::sceneUnloading(typeid(*this).name());
   player.reset();
   ls::unload();
   Scene::UnLoad();
 }
 
 void TutorialMain::Update(const double& dt) {
+
+    //Logger::sceneUpdating(typeid(*this).name(), dt);
 
   if (ls::getTileAt(player->getPosition()) == ls::END) {
 
