@@ -2,7 +2,7 @@
 
 #include "engine.h"
 
-class TutorialMain : public Scene {
+class Combat : public Scene {
 public:
   void Load() override;
 
