@@ -30,7 +30,7 @@ void Logger::addEvent(const EventType type, const Action action, const std::stri
 	}
 
 	switch (action) {
-		case Action::Loaded: stringAction = "Engine"; break;
+		case Action::Loaded: stringAction = "Loaded"; break;
 		case Action::Unloaded: stringAction = "Unloaded"; break;
 		case Action::Loading: stringAction = "Loading"; break;
 		case Action::Updated: stringAction = "Updated"; break;
