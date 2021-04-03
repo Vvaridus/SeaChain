@@ -8,9 +8,8 @@ std::string Logger::getTime() {
 	struct tm* tt;
 	time(&t);
 	tt = gmtime(&t);
-	std::string currentTime = asctime(tt);
-	currentTime.pop_back();
 
+	std::string currentTime = std::to_string(tt->tm_hour) + ":" + std::to_string(tt->tm_min) + ":" + std::to_string(tt->tm_sec);
 	return currentTime;
 }
 
