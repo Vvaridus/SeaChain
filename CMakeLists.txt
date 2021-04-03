@@ -31,7 +31,7 @@ link_directories("${CMAKE_BINARY_DIR}/libaries/sfml/lib")
 file(GLOB_RECURSE SOURCE_FILES engine/*.cpp engine/*.h)
 add_library(lib_engine STATIC ${SOURCE_FILES} ${RESOURCE_FILES})
 target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS} )
-target_link_libraries(lib_engine lib_tile_level_loader lib_maths lib_ecm Box2D sfml-graphics sfml-audio)
+target_link_libraries(lib_engine lib_tile_level_loader lib_maths lib_ecm lib_logger Box2D sfml-graphics sfml-audio)
 
 # Maths lib
 add_library(lib_maths INTERFACE)
@@ -42,19 +42,25 @@ target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" S
 file(GLOB_RECURSE SOURCE_FILES lib_tile_level_loader/*.cpp lib_tile_level_loader/*.h)
 add_library(lib_tile_level_loader STATIC ${SOURCE_FILES})
 target_include_directories(lib_tile_level_loader INTERFACE "${CMAKE_SOURCE_DIR}/lib_tile_level_loader/" )
-target_link_libraries(lib_tile_level_loader lib_maths sfml-graphics)
+target_link_libraries(lib_tile_level_loader lib_maths lib_logger sfml-graphics)
 
 ##ECM Lib
 file(GLOB_RECURSE SOURCE_FILES lib_ecm/*.cpp lib_ecm/*.h)
 add_library(lib_ecm STATIC ${SOURCE_FILES})
 target_include_directories(lib_ecm INTERFACE "${CMAKE_SOURCE_DIR}/lib_ecm" )
-target_link_libraries(lib_ecm PRIVATE lib_maths)
+target_link_libraries(lib_ecm lib_logger lib_maths)
 
 ##JSON Tag Lib
 file(GLOB_RECURSE SOURCE_FILES lib_tag/*.cpp lib_tag/*.h)
 add_library(lib_tag STATIC ${SOURCE_FILES})
 target_include_directories(lib_tag INTERFACE "${CMAKE_SOURCE_DIR}/lib_tag" )
-target_link_libraries(lib_tag)
+target_link_libraries(lib_tag lib_logger)
+
+##Logger lib
+file(GLOB_RECURSE SOURCE_FILES lib_logger/*.cpp lib_logger/*.h)
+add_library(lib_logger STATIC ${SOURCE_FILES})
+target_include_directories(lib_logger INTERFACE "${CMAKE_SOURCE_DIR}/lib_logger" )
+target_link_libraries(lib_logger)
 
 file(GLOB_RECURSE SOURCES Sea_Chain/*.cpp Sea_Chain/*.h)
 file(GLOB_RECURSE CMPNTS Sea_Chain/components/*.cpp Sea_Chain/components/*.h)
