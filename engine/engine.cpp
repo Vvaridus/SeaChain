@@ -7,6 +7,7 @@
 #include <future>
 #include <iostream>
 #include <stdexcept>
+#include <logger.h>
 
 using namespace sf;
 using namespace std;
@@ -21,7 +22,8 @@ static RenderWindow* _window;
 void Loading_update(float dt, const Scene* const scn) {
   //  cout << "Eng: Loading Screen\n";
   if (scn->isLoaded()) {
-    cout << "Eng: Exiting Loading Screen\n";
+      Logger::addEvent(Logger::EventType::Engine, Logger::Action::Leaving_Loading_Screen, "");
+    //cout << "Eng: Exiting Loading Screen\n";
     loading = false;
   } else {
     loadingspinner += 220.0f * dt;
@@ -121,7 +123,8 @@ std::shared_ptr<Entity> Scene::makeEntity() {
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
 
 void Engine::ChangeScene(Scene* s) {
-  cout << "Eng: changing scene: " << s << endl;
+  //cout << "Eng: changing scene: " << s << endl;
+  Logger::addEvent(Logger::EventType::Engine, Logger::Action::Scene_Change, "");
   auto old = _activeScene;
   _activeScene = s;
 
@@ -130,7 +133,8 @@ void Engine::ChangeScene(Scene* s) {
   }
 
   if (!s->isLoaded()) {
-    cout << "Eng: Entering Loading Screen\n";
+    //cout << "Eng: Entering Loading Screen\n";
+    Logger::addEvent(Logger::EventType::Engine, Logger::Action::Entering_Loading_Screen, "");
     loadingTime =0;
     _activeScene->LoadAsync();
     loading = true;
