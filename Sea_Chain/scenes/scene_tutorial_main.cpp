@@ -6,7 +6,7 @@
 #include <iostream>
 #include <thread>
 #include "../components/cmp_basic_movement.h"
-#include "../logger.h"
+#include <logger.h>
 
 using namespace std;
 using namespace sf;

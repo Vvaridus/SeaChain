@@ -3,7 +3,7 @@
 #include "../game.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
-#include "../logger.h"
+#include <logger.h>
 
 using namespace std;
 using namespace sf;
