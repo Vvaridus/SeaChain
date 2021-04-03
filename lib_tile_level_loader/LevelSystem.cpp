@@ -1,5 +1,6 @@
 #include "LevelSystem.h"
 #include <fstream>
+#include <logger.h>
 
 using namespace std;
 using namespace sf;
@@ -71,7 +72,10 @@ void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
   _width = w; // set static class vars
   _height = h;
   std::copy(temp_tiles.begin(), temp_tiles.end(), &_tiles[0]);
-  cout << "Level " << path << " Loaded. " << w << "x" << h << std::endl;
+
+  std::string log = path + " at " + std::to_string(w) + "x" + std::to_string(h);
+  Logger::addEvent(Logger::EventType::Tile_Loader, Logger::Action::Loaded, log);
+
   buildSprites();
 }
 
@@ -167,8 +171,9 @@ void LevelSystem::buildSprites(bool optimise) {
     _sprites.push_back(move(s));
   }
 
-  cout << "Level with " << (_width * _height) << " Tiles, With " << nonempty
-       << " Not Empty, using: " << _sprites.size() << " Sprites\n";
+  std::string log = "Level with " + to_string(_width * _height) + " Tiles, With " + to_string(nonempty)
+      + " Not Empty, using: " + to_string(_sprites.size()) + " Sprites";
+  Logger::addEvent(Logger::EventType::Tile_Loader, Logger::Action::Loaded, log);
 }
 
 void LevelSystem::render(RenderWindow& window) {
@@ -229,13 +234,14 @@ void LevelSystem::setOffset(const Vector2f& _offset) {
   buildSprites();
 }
 
-void LevelSystem::unload() {
-  cout << "LevelSystem unloading\n";
+void LevelSystem::unload() {  
   _sprites.clear();
   _tiles.reset();
   _width = 0;
   _height = 0;
   _offset = {0, 0};
+
+  Logger::addEvent(Logger::EventType::Tile_Loader, Logger::Action::Unloaded, "");
 }
 
 const Vector2f& LevelSystem::getOffset() { return _offset; }
