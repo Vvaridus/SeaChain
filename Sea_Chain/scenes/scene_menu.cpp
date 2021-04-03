@@ -9,7 +9,7 @@ using namespace std;
 using namespace sf;
 
 void MenuScene::Load() {
-    Logger::sceneLoading(typeid(this).name());
+    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
     {
         auto txt = makeEntity();
@@ -17,13 +17,11 @@ void MenuScene::Load() {
             "Sea Chain\nPress Space to Start");
     }
 
-    Logger::sceneLoaded(typeid(this).name());
+    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
     setLoaded(true);
 }
 
 void MenuScene::Update(const double& dt) {
-    //Logger::sceneUpdating(typeid(this).name(), dt);
-
     if (sf::Keyboard::isKeyPressed(Keyboard::Space)) {
         Engine::ChangeScene(&tutorialMain);
     }

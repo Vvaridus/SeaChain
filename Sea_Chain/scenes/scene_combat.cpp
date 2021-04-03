@@ -9,7 +9,7 @@ using namespace std;
 using namespace sf;
 
 void Combat::Load() {
-    Logger::sceneLoading(typeid(*this).name());
+    //Logger::sceneLoading(typeid(*this).name());
 
     ls::loadLevelFile("resources/combat.txt", 54);
 
@@ -18,13 +18,13 @@ void Combat::Load() {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
     
-    Logger::sceneLoading(typeid(*this).name());
+    //Logger::sceneLoading(typeid(*this).name());
 
     setLoaded(true);
 }
 
 void Combat::UnLoad() {
-    Logger::sceneUnloading(typeid(*this).name());
+    //Logger::sceneUnloading(typeid(*this).name());
 
   ls::unload();
   Scene::UnLoad();

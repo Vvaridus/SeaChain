@@ -15,8 +15,7 @@ static shared_ptr<Entity> player;
 vector<shared_ptr<Entity>> enemies;
 
 void TutorialMain::Load() {
-    Logger::sceneLoading(typeid(*this).name());
-
+    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
     ls::loadLevelFile("resources/map.txt", 54);
 
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
@@ -42,22 +41,19 @@ void TutorialMain::Load() {
 
     //Simulate long loading times
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-    Logger::sceneLoaded(typeid(*this).name());
+    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
 
     setLoaded(true);
 }
 
 void TutorialMain::UnLoad() {
-    Logger::sceneUnloading(typeid(*this).name());
+    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
   player.reset();
   ls::unload();
   Scene::UnLoad();
 }
 
 void TutorialMain::Update(const double& dt) {
-
-    //Logger::sceneUpdating(typeid(*this).name(), dt);
-
   if (ls::getTileAt(player->getPosition()) == ls::END) {
 
     //Engine::ChangeScene((Scene*)&level2);
