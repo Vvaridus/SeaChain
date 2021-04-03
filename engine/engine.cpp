@@ -20,10 +20,8 @@ static float loadingTime;
 static RenderWindow* _window;
 
 void Loading_update(float dt, const Scene* const scn) {
-  //  cout << "Eng: Loading Screen\n";
   if (scn->isLoaded()) {
       Logger::addEvent(Logger::EventType::Engine, Logger::Action::Leaving_Loading_Screen, "");
-    //cout << "Eng: Exiting Loading Screen\n";
     loading = false;
   } else {
     loadingspinner += 220.0f * dt;
@@ -31,7 +29,6 @@ void Loading_update(float dt, const Scene* const scn) {
   }
 }
 void Loading_render() {
-  // cout << "Eng: Loading Screen Render\n";
   static CircleShape octagon(80, 8);
   octagon.setOrigin(80, 80);
   octagon.setRotation(loadingspinner);
@@ -123,7 +120,6 @@ std::shared_ptr<Entity> Scene::makeEntity() {
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
 
 void Engine::ChangeScene(Scene* s) {
-  //cout << "Eng: changing scene: " << s << endl;
   Logger::addEvent(Logger::EventType::Engine, Logger::Action::Scene_Change, "");
   auto old = _activeScene;
   _activeScene = s;
@@ -133,7 +129,6 @@ void Engine::ChangeScene(Scene* s) {
   }
 
   if (!s->isLoaded()) {
-    //cout << "Eng: Entering Loading Screen\n";
     Logger::addEvent(Logger::EventType::Engine, Logger::Action::Entering_Loading_Screen, "");
     loadingTime =0;
     _activeScene->LoadAsync();
