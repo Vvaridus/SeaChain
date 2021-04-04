@@ -1,6 +1,6 @@
 #pragma once
 #include <ecm.h>
-#include "../steering.h"
+#include "../helpers/steering.h"
 
 class SteeringComponent : public Component {
 protected:

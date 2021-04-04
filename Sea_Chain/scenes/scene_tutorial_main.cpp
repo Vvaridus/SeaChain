@@ -12,31 +12,40 @@ using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
-vector<shared_ptr<Entity>> enemies;
+static shared_ptr<Entity> enemy;
 
 void TutorialMain::Load() {
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
     ls::loadLevelFile("resources/map.txt", 54);
 
-    auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
+    auto ho = Engine::getWindowSize().y - (ls::getHeight() * 54.f);
     ls::setOffset(Vector2f(0, ho));
 
     // Create player
     {
         player = makeEntity();
+        player->addTag("player");
         player->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2));
 
         auto s = player->addComponent<ShapeComponent>();
         s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-        s->getShape().setFillColor(Color::Magenta);
+        s->getShape().setFillColor(sf::Color::Magenta);
         s->getShape().setOrigin(10.f, 15.f);
 
         auto b = player->addComponent<BasicMovementComponent>();
+        b->setSpeed(400.f);
     }
 
     // Create enemies
     {
-         
+        enemy = makeEntity();
+        enemy->addTag("enemy");
+        enemy->setPosition(Vector2f(100, 100));
+
+        auto s = enemy->addComponent<ShapeComponent>();
+        s->setShape<sf::CircleShape>(25);
+        s->getShape().setFillColor(sf::Color::Green);
+        s->getShape().setOrigin(12.5, 12.5);
     }
 
     //Simulate long loading times
@@ -54,9 +63,8 @@ void TutorialMain::UnLoad() {
 }
 
 void TutorialMain::Update(const double& dt) {
-  if (ls::getTileAt(player->getPosition()) == ls::END) {
-
-    //Engine::ChangeScene((Scene*)&level2);
+  if (length(player->getPosition() - enemy->getPosition()) < 50) {
+    Engine::ChangeScene((Scene*)&combat);
   }
 
   Scene::Update(dt);

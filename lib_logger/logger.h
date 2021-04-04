@@ -3,6 +3,9 @@
 
 class Logger {
 public:
+	// Enums so that logs are as strongly typed as possible
+	// Also makes sure their is no inconsistencies in the logs. 
+	// Does add issues to easily adding new ones.
 	static enum class EventType {
 		Engine,
 		Tile_Loader,
