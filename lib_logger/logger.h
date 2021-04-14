@@ -11,7 +11,8 @@ public:
 		Tile_Loader,
 		Tag,
 		Scene,
-		Entity
+		Entity,
+		Inventory
 	};
 	static enum class Action {
 		Loaded,
@@ -23,7 +24,10 @@ public:
 		Leaving_Loading_Screen,
 		Interaction,
 		Entity_Created,
-		Entity_Deleted
+		Entity_Deleted,
+		Item_Added,
+		Item_Removed,
+		Item_Changed
 	};
 
 	static void addEvent(const Logger::EventType type, const Logger::Action action, const std::string message);

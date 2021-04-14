@@ -28,6 +28,7 @@ void Logger::addEvent(const EventType type, const Action action, const std::stri
 		case EventType::Tag: stringType = "Tag"; break;
 		case EventType::Scene: stringType = "Scene"; break;
 		case EventType::Entity: stringType = "Entity"; break;
+		case EventType::Inventory: stringType = "Inventory"; break;
 	}
 
 	switch (action) {
@@ -36,11 +37,14 @@ void Logger::addEvent(const EventType type, const Action action, const std::stri
 		case Action::Loading: stringAction = "Loading"; break;
 		case Action::Updated: stringAction = "Updated"; break;
 		case Action::Scene_Change: stringAction = "Scene_Change"; break;
-		case Action::Entering_Loading_Screen: stringAction = "Entering_Loading_Screen"; break;
-		case Action::Leaving_Loading_Screen: stringAction = "Leaving_Loading_Screen"; break;
+		case Action::Entering_Loading_Screen: stringAction = "Entering Loading Screen"; break;
+		case Action::Leaving_Loading_Screen: stringAction = "Leaving Loading Screen"; break;
 		case Action::Interaction: stringAction = "Interaction"; break;
-		case Action::Entity_Created: stringAction = "Entity_Created"; break;
-		case Action::Entity_Deleted: stringAction = "Entity_Deleted"; break;
+		case Action::Entity_Created: stringAction = "Entity reated"; break;
+		case Action::Entity_Deleted: stringAction = "Entity Deleted"; break;
+		case Action::Item_Added: stringAction = "Item Added"; break;
+		case Action::Item_Removed: stringAction = "Item Removed"; break;
+		case Action::Item_Changed: stringAction = "Item Changed"; break;
 	}
 
 	// Output the time, EventType and action to the console.
