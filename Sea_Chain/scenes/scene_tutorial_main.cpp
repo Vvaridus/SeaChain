@@ -7,6 +7,8 @@
 #include <thread>
 #include "../components/cmp_basic_movement.h"
 #include <logger.h>
+#include "../weapon.h"
+#include "../components/cmp_inventory.h"
 
 using namespace std;
 using namespace sf;
@@ -34,6 +36,8 @@ void TutorialMain::Load() {
 
         auto b = player->addComponent<BasicMovementComponent>();
         b->setSpeed(400.f);
+
+        i = player->addComponent<InventoryComponent>();
     }
 
     // Create enemies
@@ -64,7 +68,7 @@ void TutorialMain::UnLoad() {
 
 void TutorialMain::Update(const double& dt) {
   if (length(player->getPosition() - enemy->getPosition()) < 50) {
-    Engine::ChangeScene((Scene*)&combat);
+
   }
 
   Scene::Update(dt);

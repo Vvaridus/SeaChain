@@ -6,7 +6,6 @@ using namespace std;
 
 MenuScene menu;
 TutorialMain tutorialMain;
-Combat combat;
 
 int main() {
 
