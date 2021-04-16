@@ -36,8 +36,6 @@ void TutorialMain::Load() {
 
         auto b = player->addComponent<BasicMovementComponent>();
         b->setSpeed(400.f);
-
-        i = player->addComponent<InventoryComponent>();
     }
 
     // Create enemies
@@ -68,7 +66,7 @@ void TutorialMain::UnLoad() {
 
 void TutorialMain::Update(const double& dt) {
   if (length(player->getPosition() - enemy->getPosition()) < 50) {
-
+      
   }
 
   Scene::Update(dt);
