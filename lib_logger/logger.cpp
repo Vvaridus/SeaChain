@@ -36,7 +36,7 @@ void Logger::addEvent(const EventType type, const Action action, const std::stri
 		case Action::Unloaded: stringAction = "Unloaded"; break;
 		case Action::Loading: stringAction = "Loading"; break;
 		case Action::Updated: stringAction = "Updated"; break;
-		case Action::Scene_Change: stringAction = "Scene_Change"; break;
+		case Action::Scene_Change: stringAction = "Scene Change"; break;
 		case Action::Entering_Loading_Screen: stringAction = "Entering Loading Screen"; break;
 		case Action::Leaving_Loading_Screen: stringAction = "Leaving Loading Screen"; break;
 		case Action::Interaction: stringAction = "Interaction"; break;
