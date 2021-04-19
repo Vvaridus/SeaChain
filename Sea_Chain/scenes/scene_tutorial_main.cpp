@@ -27,7 +27,7 @@ void TutorialMain::Load() {
     {
         player = makeEntity();
         player->addTag("player");
-        player->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2));
+        player->setPosition(Vector2f((Engine::getWindowSize().x / 2) - 100, Engine::getWindowSize().y / 2));
 
         auto s = player->addComponent<ShapeComponent>();
         s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
@@ -37,6 +37,7 @@ void TutorialMain::Load() {
         auto b = player->addComponent<BasicMovementComponent>();
         b->setSpeed(400.f);
     }
+
 
     // Create enemies
     {
