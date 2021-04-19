@@ -1,15 +1,9 @@
 #pragma once
 #include <memory>
+#include <string>
 
 class Item {
 public:
-	enum class ItemType {
-		MeleeWeapon,
-		Tool,
-		Food,
-		Material
-	};
-
 	enum class Quality {
 		Wood,
 		Stone,
@@ -21,13 +15,15 @@ public:
 		Steel
 	};
 
-	Item::ItemType getType() const { return _type; };
 	Item::Quality getQuality() const {	return _quality; };
+	std::string getItemID() const { return _itemID; }
+	int getID() const {	return _ID;	}
 
-	Item::Item(ItemType type, Quality quality) : _type(type), _quality(quality) {}
+	Item::Item(std::string itemID, int id, Quality quality) : _itemID(itemID), _ID(id), _quality(quality) {}
 	Item::~Item(){}
 
 protected:
-	Item::ItemType _type;
 	Item::Quality _quality;
+	std::string _itemID;
+	int _ID;
 };

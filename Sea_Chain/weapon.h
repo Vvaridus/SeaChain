@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "item.h"
+#include <string>
 
 class Weapon : public Item {
 public:
@@ -10,7 +11,7 @@ public:
 	const int getUses() const;
 	void setUses(int);
 
-	Weapon(Item::ItemType type, Item::Quality quality, int minDamage, int maxDamage, int uses) : Item(type, quality), damageMax(minDamage), damageMin(maxDamage), usesLeft(uses) {}
+	Weapon(std::string itemID, int id, Item::Quality quality, int minDamage, int maxDamage, int uses) : Item(itemID, id, quality), damageMax(minDamage), damageMin(maxDamage), usesLeft(uses) {}
 	virtual ~Weapon();
 
 protected:
