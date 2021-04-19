@@ -2,6 +2,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <engine.h>
 #include <maths.h>
+#include <LevelSystem.h>
 
 void BasicMovementComponent::update(double dt) {
 	sf::Vector2f direction(0.0f, 0.0f);
@@ -25,10 +26,12 @@ void BasicMovementComponent::update(double dt) {
 BasicMovementComponent::BasicMovementComponent(Entity* p) : _speed(100.0f), Component(p) { }
 
 bool BasicMovementComponent::validMove(const sf::Vector2f& pos) {
-	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y) {
+	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y)
 		return false;
-	}
-	return true;
+	else if (ls::getTileAt(pos) == ls::WATER)
+		return false;
+	else
+		return true;
 }
 
 void BasicMovementComponent::move(const sf::Vector2f& p) {
