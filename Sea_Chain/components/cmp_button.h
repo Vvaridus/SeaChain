@@ -22,6 +22,7 @@ public:
 	const std::string& getID() const;
 	void setID(std::string id);
 	void setBounds(sf::Vector2f position, sf::Vector2f size);
+	void setBounds(sf::Vector2f position);
 protected:
 	// storing the buttons current stat
 	ButtonState _state; 
