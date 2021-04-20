@@ -60,7 +60,7 @@ target_link_libraries(lib_tag lib_logger)
 file(GLOB_RECURSE SOURCE_FILES lib_logger/*.cpp lib_logger/*.h)
 add_library(lib_logger STATIC ${SOURCE_FILES})
 target_include_directories(lib_logger INTERFACE "${CMAKE_SOURCE_DIR}/lib_logger" )
-target_link_libraries(lib_logger)
+target_link_libraries(lib_logger lib_engine)
 
 file(GLOB_RECURSE SOURCES Sea_Chain/*.cpp Sea_Chain/*.h)
 file(GLOB_RECURSE CMPNTS Sea_Chain/components/*.cpp Sea_Chain/components/*.h)

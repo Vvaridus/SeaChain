@@ -12,7 +12,8 @@ public:
 		Tag,
 		Scene,
 		Entity,
-		Inventory
+		Inventory,
+		Logging
 	};
 	static enum class Action {
 		Loaded,
@@ -27,10 +28,14 @@ public:
 		Entity_Deleted,
 		Item_Added,
 		Item_Removed,
-		Item_Changed
+		Item_Changed,
+		CreatingFolder,
+		CreatingLogFile
 	};
 
 	static void addEvent(const Logger::EventType type, const Logger::Action action, const std::string message);
 private:
+	static void fileOutput(std::string log);
 	static std::string getTime();
+	static std::string Logger::getDate();
 };
