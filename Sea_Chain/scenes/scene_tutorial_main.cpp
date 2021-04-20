@@ -36,7 +36,7 @@ void TutorialMain::Load() {
         s->getShape().setOrigin(10.f, 15.f);
 
         auto b = player->addComponent<BasicMovementComponent>();
-        b->setSpeed(400.f);
+        b->setSpeed(600.f);
     }
 
 
