@@ -11,6 +11,16 @@ void SpriteComponent::setTexure(std::shared_ptr<sf::Texture> tex)
   _sprite->setTexture(*_texture);
 }
 
+void SpriteComponent::setOrigin(sf::Vector2f orig) {
+    _sprite->setOrigin(orig);
+    _sprite->setScale(sf::Vector2f(1, 1.5));
+}
+
+std::unique_ptr<sf::FloatRect> SpriteComponent::getBounds() {
+    //return std::make_unique<sf::FloatRect>(_sprite->getLocalBounds());
+    return std::make_unique<sf::FloatRect>(_sprite->getGlobalBounds());
+}
+
 
 SpriteComponent::SpriteComponent(Entity* p)
     : Component(p), _sprite(make_shared<sf::Sprite>()) {}

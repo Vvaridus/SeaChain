@@ -16,8 +16,9 @@ public:
   void render() override;
 
   sf::Sprite& getSprite() const;
+  std::unique_ptr<sf::FloatRect> getBounds();
 
-
+  void setOrigin(sf::Vector2f orig);
   void setTexure(std::shared_ptr<sf::Texture> tex);
 };
 
