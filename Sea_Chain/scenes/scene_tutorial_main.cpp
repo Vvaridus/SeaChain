@@ -9,6 +9,7 @@
 #include <logger.h>
 #include "../weapon.h"
 #include "../components/cmp_inventory.h"
+#include "../gameData.h"
 
 using namespace std;
 using namespace sf;
@@ -67,7 +68,9 @@ void TutorialMain::UnLoad() {
 
 void TutorialMain::Update(const double& dt) {
   if (length(player->getPosition() - enemy->getPosition()) < 50) {
-      
+      auto ins = Singleton::getInstance();
+      auto value = ins->getValue();
+      cout << *value;
   }
 
   Scene::Update(dt);
