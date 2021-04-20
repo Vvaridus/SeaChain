@@ -33,6 +33,7 @@ void Entity::render() {
   }
 }
 
+
 const sf::Vector2f& Entity::getPosition() const { return _position; }
 
 void Entity::setPosition(const sf::Vector2f& _position) {
