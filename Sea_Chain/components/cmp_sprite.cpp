@@ -12,8 +12,11 @@ void SpriteComponent::setTexure(std::shared_ptr<sf::Texture> tex)
 }
 
 void SpriteComponent::setOrigin(sf::Vector2f orig) {
-    _sprite->setOrigin(orig);
-    _sprite->setScale(sf::Vector2f(1, 1.5));
+    _sprite->setOrigin(orig);    
+}
+
+void SpriteComponent::setScaling(sf::Vector2f scale) {
+    _sprite->setScale(scale);
 }
 
 std::unique_ptr<sf::FloatRect> SpriteComponent::getBounds() {

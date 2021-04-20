@@ -20,6 +20,7 @@ public:
 
   void setOrigin(sf::Vector2f orig);
   void setTexure(std::shared_ptr<sf::Texture> tex);
+  void setScaling(sf::Vector2f scale);
 };
 
 class ShapeComponent : public Component {
