@@ -68,6 +68,9 @@ void TutorialMain::UnLoad() {
 
 void TutorialMain::Update(const double& dt) {
   if (length(player->getPosition() - enemy->getPosition()) < 50) {
+      auto ins = Data::getInstance();
+      ins->setPlayer(player);
+
       Engine::ChangeScene(&combat);
   }
 

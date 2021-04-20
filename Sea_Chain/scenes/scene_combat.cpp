@@ -24,6 +24,11 @@ void CombatScene::Load() {
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 54.f);
     ls::setOffset(Vector2f(0, ho));
 
+    auto ins = Data::getInstance();
+    auto p = ins->getPlayer();
+    player = move(p);
+
+
     //Simulate long loading times
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
