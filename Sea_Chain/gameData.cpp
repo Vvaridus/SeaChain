@@ -1,7 +1,7 @@
 #include "gameData.h"
 #include <string>
 
-std::string* Singleton::value;
+Entity* Singleton::player;
 Singleton* Singleton::instance;
 
 Singleton* Singleton::getInstance() {
@@ -11,17 +11,17 @@ Singleton* Singleton::getInstance() {
 	return instance;
 }
 
-std::string* Singleton::getValue() {
-	return value;
+Entity* Singleton::getPlayer() {
+	return player;
 }
 
-void Singleton::setValue(std::string*v) {
-	value = std::move(v);
+void Singleton::setPlayer(Entity* p) {
+	player = std::move(p);
 }
 
 Singleton::Singleton() {}
 
 Singleton::~Singleton() {
 	delete instance;
-	delete value;
+	delete player;
 }

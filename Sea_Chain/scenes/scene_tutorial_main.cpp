@@ -44,7 +44,7 @@ void TutorialMain::Load() {
     {
         enemy = makeEntity();
         enemy->addTag("enemy");
-        enemy->setPosition(Vector2f(100, 100));
+        enemy->setPosition(Vector2f(432, 100));
 
         auto s = enemy->addComponent<ShapeComponent>();
         s->setShape<sf::CircleShape>(25);
@@ -68,9 +68,7 @@ void TutorialMain::UnLoad() {
 
 void TutorialMain::Update(const double& dt) {
   if (length(player->getPosition() - enemy->getPosition()) < 50) {
-      auto ins = Singleton::getInstance();
-      auto value = ins->getValue();
-      cout << *value;
+      Engine::ChangeScene(&combat);
   }
 
   Scene::Update(dt);
