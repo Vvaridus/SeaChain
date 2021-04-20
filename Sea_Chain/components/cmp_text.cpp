@@ -17,3 +17,33 @@ void TextComponent::SetText(const std::string& str) {
   _string = str;
   _text.setString(_string);
 }
+
+void TextComponent::setCharSize(int s)
+{
+    _text.setCharacterSize(s);
+}
+
+void TextComponent::setOrigin(sf::Vector2f o)
+{
+    _text.setOrigin(o);
+}
+
+void TextComponent::setPosition(sf::Vector2f p)
+{
+    _text.setPosition(p);
+}
+
+void TextComponent::setRotation(float r)
+{
+    _text.setRotation(r);
+}
+
+void TextComponent::setFillColor(sf::Color c)
+{
+    _text.setFillColor(c);
+}
+
+void TextComponent::setStyle(sf::Text::Style s)
+{
+    _text.setStyle(s);
+}
