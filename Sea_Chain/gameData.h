@@ -6,13 +6,12 @@
 class Singleton
 {
 private:
-	static Singleton* instance;
-	static Entity* player;
-	Singleton();
-	~Singleton();
+	static std::shared_ptr<Singleton> instance;
+	static std::shared_ptr<Entity> player;
 
 public:
-	static Singleton* getInstance();
-	static Entity* getPlayer();
-	static void setPlayer(Entity* p);
+	Singleton();
+	static std::shared_ptr<Singleton> getInstance();
+	static std::shared_ptr<Entity> getPlayer();
+	static void setPlayer(std::shared_ptr<Entity> p);
 };

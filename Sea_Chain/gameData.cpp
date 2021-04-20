@@ -1,27 +1,22 @@
 #include "gameData.h"
 #include <string>
 
-Entity* Singleton::player;
-Singleton* Singleton::instance;
+std::shared_ptr<Entity> Data::player;
+std::shared_ptr<Data> Data::instance;
 
-Singleton* Singleton::getInstance() {
+std::shared_ptr<Data> Data::getInstance() {
 	if (instance == nullptr)
-		instance = new Singleton();
+		instance = std::make_shared<Data>();
 
 	return instance;
 }
 
-Entity* Singleton::getPlayer() {
+std::shared_ptr<Entity> Data::getPlayer() {
 	return player;
 }
 
-void Singleton::setPlayer(Entity* p) {
+void Data::setPlayer(std::shared_ptr<Entity> p) {
 	player = std::move(p);
 }
 
-Singleton::Singleton() {}
-
-Singleton::~Singleton() {
-	delete instance;
-	delete player;
-}
+Data::Data() {}
