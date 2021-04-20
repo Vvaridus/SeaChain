@@ -22,7 +22,8 @@ std::string Logger::getDate() {
 	tt = localtime(&t); // get the current date and time in UTC format.
 
 	// Easily take the time into an appropriate format. Keeps the logs readable.
-	std::string currentDate = std::to_string(tt->tm_mday) + std::to_string(tt->tm_mon) + std::to_string(tt->tm_year) + std::to_string(tt->tm_hour) + std::to_string(tt->tm_min) + std::to_string(tt->tm_sec);
+	//std::string currentDate = std::to_string(tt->tm_mday) + std::to_string(tt->tm_mon) + std::to_string(tt->tm_year) + std::to_string(tt->tm_hour) + std::to_string(tt->tm_min) + std::to_string(tt->tm_sec);
+	std::string currentDate = std::to_string(tt->tm_mday) + "." + std::to_string(tt->tm_mon + 1) + "." + std::to_string(tt->tm_year + 1900) + " ~ " + std::to_string(tt->tm_hour) + "-" + std::to_string(tt->tm_min) + "-" + std::to_string(tt->tm_sec);
 	return currentDate;
 }
 
@@ -84,7 +85,6 @@ void Logger::fileOutput(std::string log) {
 	if (ins->getLogFile() == "") {
 		ins->setLogFile(getDate() + ".txt");
 	}
-
 
 	std::ofstream file;
 	// write to the path and log folder with the title.
