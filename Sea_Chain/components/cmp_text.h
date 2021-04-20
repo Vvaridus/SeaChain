@@ -20,6 +20,7 @@ public:
   void setRotation(float r);
   void setFillColor(sf::Color c);
   void setStyle(sf::Text::Style s);
+  sf::FloatRect getBounds();
 
 protected:
   std::shared_ptr<sf::Font> _font;

@@ -47,3 +47,8 @@ void TextComponent::setStyle(sf::Text::Style s)
 {
     _text.setStyle(s);
 }
+
+sf::FloatRect TextComponent::getBounds()
+{
+    return _text.getLocalBounds();
+}
