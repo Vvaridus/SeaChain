@@ -10,44 +10,40 @@
 #include "../weapon.h"
 #include "../components/cmp_inventory.h"
 #include "../gameData.h"
+#include <system_renderer.h>
+#include "../components/cmp_button.h"
+#include "../components/cmp_text.h"
 
 using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
-static shared_ptr<Entity> enemy;
 
 void CombatScene::Load() {
-    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
-    ls::loadLevelFile("resources/combat.txt", 54);
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
-    auto ho = Engine::getWindowSize().y - (ls::getHeight() * 54.f);
-    ls::setOffset(Vector2f(0, ho));
+	auto ins = Data::getInstance();
+	auto p = ins->getPlayer();
+	player = makeEntity();
 
-    auto ins = Data::getInstance();
-    auto p = ins->getPlayer();
-    player = move(p);
+	//Simulate long loading times
+	std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
 
-
-    //Simulate long loading times
-    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
-
-    setLoaded(true);
+	setLoaded(true);
 }
 
 void CombatScene::UnLoad() {
-    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
-  player.reset();
-  ls::unload();
-  Scene::UnLoad();
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	ls::unload();
+	Scene::UnLoad();
 }
 
 void CombatScene::Update(const double& dt) {
-  Scene::Update(dt);
+	Scene::Update(dt);
 }
 
 void CombatScene::Render() {
-  ls::render(Engine::GetWindow());
-  Scene::Render();
+	ls::render(Engine::GetWindow());
+	Scene::Render();
 }
