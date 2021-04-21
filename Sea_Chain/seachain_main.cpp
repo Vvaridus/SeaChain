@@ -9,5 +9,5 @@ TutorialMain tutorialMain;
 CombatScene combat;
 
 int main() {
-	Engine::Start(2000, 980, "Sea Chain", &menu);
+	Engine::Start(1920, 1080, "Sea Chain", &menu);
 }
