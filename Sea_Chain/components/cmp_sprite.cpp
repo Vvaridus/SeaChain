@@ -24,6 +24,7 @@ std::unique_ptr<sf::FloatRect> SpriteComponent::getBounds() {
     return std::make_unique<sf::FloatRect>(_sprite->getGlobalBounds());
 }
 
+sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }
 
 SpriteComponent::SpriteComponent(Entity* p)
     : Component(p), _sprite(make_shared<sf::Sprite>()) {}
@@ -44,7 +45,15 @@ void ShapeComponent::render() { Renderer::queue(_shape.get()); }
 
 sf::Shape& ShapeComponent::getShape() const { return *_shape; }
 
+std::unique_ptr<sf::FloatRect> ShapeComponent::getBounds() {
+    //return std::make_unique<sf::FloatRect>(_sprite->getLocalBounds());
+    return std::make_unique<sf::FloatRect>(_shape->getGlobalBounds());
+}
+
+void ShapeComponent::setOrigin(sf::Vector2f orig) {
+    _shape->setOrigin(orig);
+}
+
 ShapeComponent::ShapeComponent(Entity* p)
     : Component(p), _shape(make_shared<sf::CircleShape>()) {}
 
-sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }

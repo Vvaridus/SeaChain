@@ -35,7 +35,11 @@ public:
 
   void update(double dt) override;
   void render() override;
+
   sf::Shape& getShape() const;
+  std::unique_ptr<sf::FloatRect> getBounds();
+
+  void setOrigin(sf::Vector2f orig);
   template <typename T, typename... Targs> void setShape(Targs... params) {
     _shape.reset(new T(params...));
   }
