@@ -18,6 +18,27 @@ static bool loading = false;
 static float loadingspinner = 0.f;
 static float loadingTime;
 static RenderWindow* _window;
+static Vector2f pos = Vector2f(-500, 540); // position of loading sprites
+// loading sprite
+static Texture _shipSprite; 
+static Texture _textSprite;
+// whether or not the loading textures have been loaded.
+static bool _loadTextures;
+
+void loadTextures() {
+	// load ship texture
+	Texture ship;
+	ship.loadFromFile("resources/SeaChainLoadingShip.png", IntRect(0, 0, 1920, 1080));
+	_shipSprite = ship;
+
+	// load text texture
+	Texture text;
+	text.loadFromFile("resources/SeaChainLoadingText.png", IntRect(0, 0, 1920, 1080));
+	_textSprite = text;
+
+	// set the textures to loaded
+	_loadTextures = true;
+}
 
 void Loading_update(float dt, const Scene* const scn) {
 	if (scn->isLoaded()) {
@@ -25,21 +46,38 @@ void Loading_update(float dt, const Scene* const scn) {
 		loading = false;
 	}
 	else {
-		loadingspinner += 220.0f * dt;
+		pos += Vector2f(500.0f * dt, 0);
 		loadingTime += dt;
 	}
 }
 void Loading_render() {
-	static CircleShape octagon(80, 8);
-	octagon.setOrigin(80, 80);
-	octagon.setRotation(loadingspinner);
-	octagon.setPosition(Vcast<float>(Engine::getWindowSize()) * .5f);
-	octagon.setFillColor(Color(255, 255, 255, min(255.f, 40.f * loadingTime)));
-	static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
-	t.setFillColor(Color(255, 255, 255, min(255.f, 40.f * loadingTime)));
-	t.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.4f, 0.3f));
-	Renderer::queue(&t);
-	Renderer::queue(&octagon);
+	auto windowSize = Engine::getWindowSize();
+
+	// Create ship sprite, set the position, set the origin to centre point
+	static Sprite ship;
+	ship.setTexture(_shipSprite);
+	ship.setPosition(pos);
+	ship.setOrigin(Vector2f(_shipSprite.getSize().x / 2, _shipSprite.getSize().y / 2));
+
+	// create text sprite, if position is within 200+/- of the centre lock it's position to exactly the centre
+	// set origin to centre point. 
+	static Sprite text;
+	text.setTexture(_textSprite);
+
+	if (text.getPosition().x > ((windowSize.x / 2) - 10) && text.getPosition().x < ((windowSize.x / 2) + 10)) {
+		text.setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+	}
+	else {
+		text.setPosition(Vector2f(pos.x, windowSize.y / 2));
+	}
+
+	text.setOrigin(Vector2f(_textSprite.getSize().x / 2, _textSprite.getSize().y / 2));
+
+	cout << text.getPosition() << " : " << text.getPosition().x << " : " << ((windowSize.x / 2) - 200) << " : ";
+	cout << text.getPosition().x << " : " << ((windowSize.x / 2) + 200) << endl;
+
+	Renderer::queue(&ship);
+	Renderer::queue(&text);
 }
 
 float frametimes[256] = {};
@@ -65,13 +103,19 @@ void Engine::Update() {
 		Loading_update(dt, _activeScene);
 	}
 	else if (_activeScene != nullptr) {
+		_loadTextures = false;
+		pos = Vector2f(-500, 540);
 		Physics::update(dt);
 		_activeScene->Update(dt);
 	}
 }
 
 void Engine::Render(RenderWindow& window) {
+
 	if (loading) {
+		if (!_loadTextures)
+			loadTextures();
+
 		Loading_render();
 	}
 	else if (_activeScene != nullptr) {
@@ -83,7 +127,7 @@ void Engine::Render(RenderWindow& window) {
 
 void Engine::Start(unsigned int width, unsigned int height,
 	const std::string& gameName, Scene* scn) {
-	RenderWindow window(VideoMode(width, height), gameName);
+	RenderWindow window(VideoMode(width, height), gameName, sf::Style::Titlebar | sf::Style::Close);
 	_gameName = gameName;
 	_window = &window;
 	Renderer::initialise(window);

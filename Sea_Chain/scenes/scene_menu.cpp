@@ -69,7 +69,7 @@ void MenuScene::Load() {
         btnEnd->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
     setLoaded(true);
 }
