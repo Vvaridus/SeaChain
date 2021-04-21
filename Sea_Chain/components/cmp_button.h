@@ -16,10 +16,11 @@ public:
 	explicit ButtonComponent(Entity* p);
 	void update(double dt) override;
 	void render() override;
-	~ButtonComponent() override = default;
+	~ButtonComponent() = default;
 
 	const bool isPressed() const;
 	const std::string& getID() const;
+	void setInteraction(bool interaction);
 	void setID(std::string id);
 	void setBounds(sf::Vector2f position, sf::Vector2f size);
 	void setBounds(sf::Vector2f position);
@@ -32,4 +33,5 @@ protected:
 	sf::Vector2f _pos;
 	// size of the button
 	sf::Vector2f _size;
+	bool _allowInteraction;
 };

@@ -29,7 +29,9 @@ bool BasicMovementComponent::validMove(const sf::Vector2f& pos) {
 	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y)
 		return false;
 	else if (ls::getTileAt(pos) == ls::WATER)
+	{
 		return false;
+	}
 	else
 		return true;
 }

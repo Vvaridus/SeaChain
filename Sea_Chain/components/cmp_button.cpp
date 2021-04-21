@@ -15,22 +15,25 @@ void ButtonComponent::update(double dt) {
 	sf::Vector2f worldPos = Engine::GetWindow().mapPixelToCoords(pixelPos); // this gets world pos which is mouse position relative to scale
 	// get top left of the button (This is presuming origin is always middle. Could do with rework)
 	sf::Vector2f topLeft = sf::Vector2f(_pos.x - (_size.x / 2), _pos.y - (_size.y / 2));
-	
+
 	// Cool down on pressing
 	static float triggertime = 0.0f;
 	triggertime -= dt;
 
-	if(triggertime <= 0){
+	if (triggertime <= 0) {
 		// Check mouse is within the button
-		if (worldPos.x > topLeft.x && worldPos.x < (topLeft.x + _size.x) &&
-			worldPos.y > topLeft.y && worldPos.y < (topLeft.y + _size.y)) {
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				// Set button to active
-				_state = ButtonState::BTN_ACTIVE;
+		if (_allowInteraction)
+		{
+			if (worldPos.x > topLeft.x && worldPos.x < (topLeft.x + _size.x) &&
+				worldPos.y > topLeft.y && worldPos.y < (topLeft.y + _size.y)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					// Set button to active
+					_state = ButtonState::BTN_ACTIVE;
 
-				triggertime = .5f;
+					triggertime = .5f;
+				}
 			}
-		}		
+		}
 	}
 }
 
@@ -49,7 +52,7 @@ void ButtonComponent::setBounds(sf::Vector2f position)
 }
 
 ButtonComponent::ButtonComponent(Entity* const p)
-	: Component(p) {
+	: Component(p), _allowInteraction(true) {
 }
 
 // For getting ID
@@ -58,14 +61,20 @@ const std::string& ButtonComponent::getID() const {
 }
 
 // For setting ID
-void ButtonComponent::setID(std::string id){
+void ButtonComponent::setID(std::string id) {
 	_id = id;
 }
 
+void ButtonComponent::setInteraction(bool interaction) {
+	_allowInteraction = interaction;
+}
 
 // Check if button is pressed
 const bool ButtonComponent::isPressed() const {
 	// if the state is active return true
+	
+	// if there is a read access violation
+	// The button does not exist or not defined properly.
 	if (_state == ButtonState::BTN_ACTIVE)
 		return true;
 	else
