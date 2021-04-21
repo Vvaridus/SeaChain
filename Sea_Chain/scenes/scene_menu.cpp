@@ -4,27 +4,94 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include <logger.h>
+#include "../components/cmp_sprite.h"
+#include <SFML/Graphics.hpp>
+#include "../components/cmp_button.h"
 
 using namespace std;
 using namespace sf;
 
+std::shared_ptr<ButtonComponent> btnStart;
+std::shared_ptr<ButtonComponent> btnEnd;
+
 void MenuScene::Load() {
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
+    sf::Vector2f btnDimentions = Vector2f(500, 150);
+
+    // Display background
     {
-        auto txt = makeEntity();
-        auto t = txt->addComponent<TextComponent>(
-            "Sea Chain\nPress Space to Start");
+        Texture spritesheet;
+        spritesheet.loadFromFile("resources/mainMenu.png", IntRect(0, 0, 1920, 1080));
+
+        shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
+
+        auto windowSize = Engine::getWindowSize();
+
+        auto background = makeEntity();
+        background->addTag("backgroundImage");
+        background->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+        auto spriteComp = background->addComponent<SpriteComponent>();
+        spriteComp->setTexure(sprite);
+        spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
+    }
+     //Draw first button
+    {
+        auto button = makeEntity();
+        button->addTag("btnStart");
+        button->setPosition(Vector2f(709, 180));
+        auto buttonShape = button->addComponent<ShapeComponent>();
+        buttonShape->setShape<RectangleShape>(btnDimentions);
+        buttonShape->getShape().setFillColor(Color::Transparent);
+        buttonShape->getShape().setOutlineThickness(2);
+        buttonShape->getShape().setOutlineColor(Color::White);
+        button->setVisible(false);
+    
+        auto bounds = buttonShape->getBounds();
+    
+         btnStart = button->addComponent<ButtonComponent>();
+         btnStart->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+    }
+    {
+        auto button = makeEntity();
+        button->addTag("btnEnd");
+        button->setPosition(Vector2f(709, 800));
+        auto buttonShape = button->addComponent<ShapeComponent>();
+        buttonShape->setShape<RectangleShape>(btnDimentions);
+        buttonShape->getShape().setFillColor(Color::Transparent);
+        buttonShape->getShape().setOutlineThickness(2);
+        buttonShape->getShape().setOutlineColor(Color::White);
+        button->setVisible(false);
+
+        auto bounds = buttonShape->getBounds();
+
+        btnEnd = button->addComponent<ButtonComponent>();
+        btnEnd->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
     }
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
     setLoaded(true);
 }
 
 void MenuScene::Update(const double& dt) {
-    if (sf::Keyboard::isKeyPressed(Keyboard::Space)) {
+    if (btnStart->isPressed()) {      
+        Nullify();
         Engine::ChangeScene(&tutorialMain);
+    }
+    else if (btnEnd->isPressed()) {
+        Nullify();
+        Engine::GetWindow().close();
+        std::exit(EXIT_SUCCESS);
     }
 
     Scene::Update(dt);
+}
+
+// Nullify all buttons with a shared_ptr
+// Otherwise, engine can't delete the components
+// and throws exceptions.
+void MenuScene::Nullify() {
+    btnStart = nullptr;
+    btnEnd = nullptr;
 }
