@@ -11,4 +11,7 @@ public:
   void Update(const double& dt) override;
 
   void Render() override;
+
+protected:
+	void CreateButtons();
 };

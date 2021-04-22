@@ -35,7 +35,7 @@ void MenuScene::Load() {
         spriteComp->setTexure(sprite);
         spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
     }
-     //Draw first button
+     //Draw first button (START BUTTON)
     {
         auto button = makeEntity();
         button->addTag("btnStart");
@@ -52,6 +52,7 @@ void MenuScene::Load() {
          btnStart = button->addComponent<ButtonComponent>();
          btnStart->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
     }
+    //Draw second button (end BUTTON)
     {
         auto button = makeEntity();
         button->addTag("btnEnd");

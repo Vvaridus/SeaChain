@@ -73,9 +73,6 @@ void Loading_render() {
 
 	text.setOrigin(Vector2f(_textSprite.getSize().x / 2, _textSprite.getSize().y / 2));
 
-	cout << text.getPosition() << " : " << text.getPosition().x << " : " << ((windowSize.x / 2) - 200) << " : ";
-	cout << text.getPosition().x << " : " << ((windowSize.x / 2) + 200) << endl;
-
 	Renderer::queue(&ship);
 	Renderer::queue(&text);
 }
@@ -140,9 +137,9 @@ void Engine::Start(unsigned int width, unsigned int height,
 				window.close();
 			}
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-			window.close();
-		}
+		//if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+		//	window.close();
+		//}
 
 		window.clear();
 		Update();
