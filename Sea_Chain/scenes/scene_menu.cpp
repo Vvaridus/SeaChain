@@ -7,6 +7,7 @@
 #include "../components/cmp_sprite.h"
 #include <SFML/Graphics.hpp>
 #include "../components/cmp_button.h"
+#include "../gameData.h"
 
 using namespace std;
 using namespace sf;
@@ -18,6 +19,9 @@ void MenuScene::Load() {
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
     sf::Vector2f btnDimentions = Vector2f(500, 150);
+
+    auto ins = Data::getInstance();
+    auto debug = ins->getDebug();
 
     // Display background
     {
@@ -45,7 +49,7 @@ void MenuScene::Load() {
         buttonShape->getShape().setFillColor(Color::Transparent);
         buttonShape->getShape().setOutlineThickness(2);
         buttonShape->getShape().setOutlineColor(Color::White);
-        button->setVisible(false);
+        button->setVisible(debug);
     
         auto bounds = buttonShape->getBounds();
     
@@ -62,7 +66,7 @@ void MenuScene::Load() {
         buttonShape->getShape().setFillColor(Color::Transparent);
         buttonShape->getShape().setOutlineThickness(2);
         buttonShape->getShape().setOutlineColor(Color::White);
-        button->setVisible(false);
+        button->setVisible(debug);
 
         auto bounds = buttonShape->getBounds();
 

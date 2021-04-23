@@ -11,9 +11,10 @@ std::shared_ptr<Entity> Data::player;
 // store the file path to %appdata%
 std::filesystem::path Data::filePath;
 // Store the default folder name for the application inside the file path
-std::string Data::fileFolder = ".seachain";
+std::string Data::fileFolder;
 // the current log file of the session
 std::string Data::currentLogFile = "";
+bool Data::debugMode;
 
 // method to get the current instance or create one
 std::shared_ptr<Data> Data::getInstance() {
@@ -49,6 +50,10 @@ void Data::setPlayer(std::shared_ptr<Entity> p) {
 	player = std::move(p);
 }
 
+bool Data::getDebug() {
+	return debugMode;
+}
+
 Data::Data() {
 	// to hold the address of a pointer that SHGetKnownFolderPath returns for the known Folder.
 	PWSTR path_tmp; 
@@ -57,6 +62,9 @@ Data::Data() {
 	auto folder_path = SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &path_tmp);
 	// Convert it to the filesystem::path
 	filePath = path_tmp;
-	CoTaskMemFree(path_tmp); // free up that memory.
+	CoTaskMemFree(path_tmp); // free up that memory
+	
 	player = nullptr;
+	fileFolder = ".seachain";
+	debugMode = true;
 }

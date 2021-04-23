@@ -13,6 +13,7 @@ private:
 	static std::filesystem::path filePath;
 	static std::string fileFolder;
 	static std::string currentLogFile;
+	static bool debugMode;
 
 public:
 	Data();
@@ -23,4 +24,5 @@ public:
 	static std::string getLogFile();
 	static void setLogFile(std::string logFile);
 	static void setPlayer(std::shared_ptr<Entity> p);
+	static bool getDebug();
 };
