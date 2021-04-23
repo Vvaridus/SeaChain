@@ -4,6 +4,7 @@
 #include "../components/cmp_sprite.h"
 #include <engine.h>
 #include "maths.h"
+#include <logger.h>
 
 void ButtonComponent::update(double dt) {
 	// Set it to not pressed, in most this is to reset the button once clicked.
@@ -26,11 +27,13 @@ void ButtonComponent::update(double dt) {
 		{
 			if (worldPos.x > topLeft.x && worldPos.x < (topLeft.x + _size.x) &&
 				worldPos.y > topLeft.y && worldPos.y < (topLeft.y + _size.y)) {
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
 					// Set button to active
 					_state = ButtonState::BTN_ACTIVE;
 
-					triggertime = .7f;
+					triggertime = 1.2f;
 				}
 			}
 		}
@@ -72,7 +75,7 @@ void ButtonComponent::setInteraction(bool interaction) {
 // Check if button is pressed
 const bool ButtonComponent::isPressed() const {
 	// if the state is active return true
-	
+
 	// if there is a read access violation
 	// The button does not exist or not defined properly.
 	if (_state == ButtonState::BTN_ACTIVE)

@@ -5,6 +5,7 @@
 class HealthComponent : public Component {
 protected:
 	float _health;
+	float _maxHealth;
 
 public:
 	void update(double dt) override;
@@ -14,4 +15,7 @@ public:
 
 	float const getHealth() const;
 	void setHealth(float hp);
+	float const getMaxHealth() const;
+	void setMaxHealth(float hp);
+	void setAll(float hp, float max);
 };

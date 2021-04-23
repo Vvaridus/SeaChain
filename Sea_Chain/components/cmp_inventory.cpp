@@ -38,6 +38,7 @@ void InventoryComponent::clear() {
 const bool InventoryComponent::addWeapon(Weapon item) {
     if (itemCount < capacity) {
         weaponItem.push_back(item);
+        ++itemCount;
 
         return true;
     }

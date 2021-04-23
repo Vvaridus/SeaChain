@@ -23,7 +23,6 @@ public:
 	void clear();
 	const bool empty() const;
 
-	//const bool add(std::unique_ptr<Item> item);
 	const bool addWeapon(Weapon item);
 	const bool removeWeapon(const unsigned index);
 
