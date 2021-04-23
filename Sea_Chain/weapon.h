@@ -11,7 +11,7 @@ public:
 	const int getUses() const; // get the amount of uses left of item.
 	void setUses(int); // set the uses of the item.
 
-	Weapon(std::string itemID, int id, Item::Quality quality, int minDamage, int maxDamage, int uses) : Item(itemID, id, quality), damageMax(minDamage), damageMin(maxDamage), usesLeft(uses) {}
+	Weapon(std::string itemID, int id, Item::Quality quality, int minDamage, int maxDamage, int uses);
 	virtual ~Weapon();
 
 protected:

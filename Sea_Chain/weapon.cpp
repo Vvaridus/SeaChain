@@ -20,6 +20,8 @@ void Weapon::setUses(int uses) {
 	usesLeft = uses; // set uses
 }
 
+Weapon::Weapon(std::string itemID, int id, Item::Quality quality, int minDamage, int maxDamage, int uses) : Item(itemID, id, quality), damageMax(minDamage), damageMin(maxDamage), usesLeft(uses) {}
+
 Weapon::~Weapon()
 {
 }

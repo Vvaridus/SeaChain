@@ -11,7 +11,6 @@ void InventoryComponent::update(double dt) {
 InventoryComponent::InventoryComponent(Entity* p)
     : Component(p) {
     itemCount = 0;
-    itemArray = new Item * [capacity];
     nullify();
 }
 
@@ -31,13 +30,13 @@ const int& InventoryComponent::maxSize() const {
 
 void InventoryComponent::clear() {
     for (size_t i = 0; i < itemCount; i++) {
-        delete[] itemArray[i];
+        delete[] itemArray[i].get();
     }
     
     nullify();
 }
 
-const bool InventoryComponent::add(Item* item) {
+const bool InventoryComponent::add(std::unique_ptr<Item> item) {
     if (itemCount < capacity) {
         itemArray[itemCount++] = move(item);
 
@@ -52,7 +51,7 @@ const bool InventoryComponent::remove(const unsigned index) {
         if (index < 0 || index >= capacity)
             return false;
 
-        delete itemArray[index];
+        delete itemArray[index].get();
         itemArray[index] = nullptr;
         --itemCount;
 
@@ -60,4 +59,34 @@ const bool InventoryComponent::remove(const unsigned index) {
     }
 
     return false;
+}
+
+const int InventoryComponent::getUsing()
+{
+    return itemUsing;
+}
+
+const void InventoryComponent::setUsing(int item)
+{
+    itemUsing = item;
+}
+
+std::unique_ptr<Item> InventoryComponent::find(std::string id)
+{
+    for (size_t i = 0; i < capacity; i++) {
+        if (itemArray[i]->getItemID() == id)
+            return move(itemArray[i]);
+    }
+
+    return nullptr;
+}
+
+std::unique_ptr<Item> InventoryComponent::find(int id)
+{
+    for (size_t i = 0; i < capacity; i++) {
+        if (itemArray[i]->getID() == id)
+            return move(itemArray[i]);
+    }
+
+    return nullptr;
 }
