@@ -11,13 +11,6 @@ void InventoryComponent::update(double dt) {
 InventoryComponent::InventoryComponent(Entity* p)
     : Component(p) {
     itemCount = 0;
-    nullify();
-}
-
-void InventoryComponent::nullify() {
-    for (size_t i = 0; i < capacity; i++) {
-        itemArray[i] = nullptr;
-    }
 }
 
 const int& InventoryComponent::size() const {
@@ -29,16 +22,22 @@ const int& InventoryComponent::maxSize() const {
 }
 
 void InventoryComponent::clear() {
-    for (size_t i = 0; i < itemCount; i++) {
-        delete[] itemArray[i].get();
-    }
-    
-    nullify();
+    weaponItem.clear();
 }
 
-const bool InventoryComponent::add(std::unique_ptr<Item> item) {
+//const bool InventoryComponent::add(std::unique_ptr<Item> item) {
+//    if (itemCount < capacity) {
+//        itemArray.push_back(move(item));
+//
+//        return true;
+//    }
+//
+//    return false;
+//}
+
+const bool InventoryComponent::addWeapon(Weapon item) {
     if (itemCount < capacity) {
-        itemArray[itemCount++] = move(item);
+        weaponItem.push_back(item);
 
         return true;
     }
@@ -46,13 +45,12 @@ const bool InventoryComponent::add(std::unique_ptr<Item> item) {
     return false;
 }
 
-const bool InventoryComponent::remove(const unsigned index) {
+const bool InventoryComponent::removeWeapon(const unsigned index) {
     if (this->itemCount > 0) {
         if (index < 0 || index >= capacity)
             return false;
 
-        delete itemArray[index].get();
-        itemArray[index] = nullptr;
+        weaponItem.erase(weaponItem.begin() + index);
         --itemCount;
 
         return true;
@@ -71,22 +69,18 @@ const void InventoryComponent::setUsing(int item)
     itemUsing = item;
 }
 
-std::unique_ptr<Item> InventoryComponent::find(std::string id)
+Weapon& InventoryComponent::findWeapon(std::string id)
 {
     for (size_t i = 0; i < capacity; i++) {
-        if (itemArray[i]->getItemID() == id)
-            return move(itemArray[i]);
+        if (weaponItem[i].getItemID() == id)
+            return move(weaponItem[i]);
     }
-
-    return nullptr;
 }
 
-std::unique_ptr<Item> InventoryComponent::find(int id)
+Weapon& InventoryComponent::findWeapon(int index)
 {
     for (size_t i = 0; i < capacity; i++) {
-        if (itemArray[i]->getID() == id)
-            return move(itemArray[i]);
+        if (i == index)
+            return weaponItem[i];
     }
-
-    return nullptr;
 }

@@ -1,14 +1,14 @@
 #pragma once
 #include <ecm.h>
 #include "../item.h"
+#include "../weapon.h"
 #include <string>	
 
 class InventoryComponent : public Component {
 private:
-	std::vector<std::unique_ptr<Item>> itemArray;
+	std::vector<Weapon> weaponItem;
 	int itemCount;
 	int capacity = 16; // default capacity
-	void nullify();
 	int itemUsing;
 
 public:
@@ -23,12 +23,13 @@ public:
 	void clear();
 	const bool empty() const;
 
-	const bool add(std::unique_ptr<Item> item);
-	const bool remove(const unsigned index);
+	//const bool add(std::unique_ptr<Item> item);
+	const bool addWeapon(Weapon item);
+	const bool removeWeapon(const unsigned index);
 
 	const int getUsing();
 	const void setUsing(int item);
 
-	std::unique_ptr<Item> find(std::string id);
-	std::unique_ptr<Item> find(int id);
+	Weapon& findWeapon(std::string id);
+	Weapon& findWeapon(int index);
 };
