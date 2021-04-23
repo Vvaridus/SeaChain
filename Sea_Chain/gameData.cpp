@@ -58,4 +58,5 @@ Data::Data() {
 	// Convert it to the filesystem::path
 	filePath = path_tmp;
 	CoTaskMemFree(path_tmp); // free up that memory.
+	player = nullptr;
 }

@@ -11,7 +11,7 @@ void HealthComponent::update(double dt) {
 }
 
 HealthComponent::HealthComponent(Entity* p)
-	: Component(p), _player(_parent->scene->ents.find("player")[0]), _health(100) {}
+	: Component(p), _health(100) {}
 
 float const HealthComponent::getHealth() const
 {
@@ -22,3 +22,4 @@ void HealthComponent::setHealth(float hp)
 {
 	_health = hp;
 }
+

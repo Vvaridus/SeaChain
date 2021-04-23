@@ -30,7 +30,7 @@ void ButtonComponent::update(double dt) {
 					// Set button to active
 					_state = ButtonState::BTN_ACTIVE;
 
-					triggertime = .5f;
+					triggertime = .7f;
 				}
 			}
 		}

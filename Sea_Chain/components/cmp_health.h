@@ -4,7 +4,6 @@
 
 class HealthComponent : public Component {
 protected:
-	std::weak_ptr<Entity> _player;
 	float _health;
 
 public:
