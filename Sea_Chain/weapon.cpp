@@ -10,7 +10,8 @@ const int Weapon::getDamageMax() const {
 }
 
 const int Weapon::getDamage() const {
-	return rand() % (damageMax - damageMin + 1) + (damageMin); // return a random amount of damage
+	srand(time(NULL));
+	return rand() % damageMin + damageMax; // return a random amount of damage
 }
 
 const int Weapon::getUses() const {
