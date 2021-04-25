@@ -11,6 +11,7 @@
 #include "../components/cmp_inventory.h"
 #include "../gameData.h"
 #include "../components/cmp_health.h"
+#include <SFML/Audio/Music.hpp>
 
 using namespace std;
 using namespace sf;
