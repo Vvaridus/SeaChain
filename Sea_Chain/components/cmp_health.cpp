@@ -11,7 +11,7 @@ void HealthComponent::update(double dt) {
 }
 
 HealthComponent::HealthComponent(Entity* p)
-	: Component(p), _health(100), _maxHealth(100) {}
+	: Component(p), _health(500), _maxHealth(500) {}
 
 float const HealthComponent::getHealth() const
 {
