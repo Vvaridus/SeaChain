@@ -1,5 +1,6 @@
 #include "weapon.h"
 #include <iostream>
+#include <random>
 
 const int Weapon::getDamageMin() const {
 	return damageMin; // return min damage
@@ -10,8 +11,11 @@ const int Weapon::getDamageMax() const {
 }
 
 const int Weapon::getDamage() const {
-	srand(time(NULL));
-	return rand() % damageMin + damageMax; // return a random amount of damage
+	std::random_device dev;
+	std::default_random_engine engine(dev());
+	std::uniform_real_distribution<float> damage(damageMin, damageMax);
+
+	return damage(engine); // return a random amount of damage
 }
 
 const int Weapon::getUses() const {

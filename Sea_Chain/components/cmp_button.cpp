@@ -44,11 +44,15 @@ void ButtonComponent::render() { }
 
 // Function for setting the position of the button and size of the button (Or just button, doesn't require shape)
 
+
+// Origin position must be the centre.
 void ButtonComponent::setBounds(sf::Vector2f position, sf::Vector2f size)
 {
 	_pos = position;
 	_size = size;
 }
+
+// Origin position must be the centre.
 void ButtonComponent::setBounds(sf::Vector2f position)
 {
 	_pos = position;

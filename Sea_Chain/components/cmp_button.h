@@ -22,7 +22,9 @@ public:
 	const std::string& getID() const;
 	void setInteraction(bool interaction);
 	void setID(std::string id);
+	// Origin position must be the centre.
 	void setBounds(sf::Vector2f position, sf::Vector2f size);
+	// Origin position must be the centre.
 	void setBounds(sf::Vector2f position);
 protected:
 	// storing the buttons current stat
