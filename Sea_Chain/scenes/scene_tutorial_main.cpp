@@ -10,19 +10,32 @@
 #include "../weapon.h"
 #include "../components/cmp_inventory.h"
 #include "../gameData.h"
+#include <system_resources.h>
 
 using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> enemy;
+sf::Music music;
+int volumeMusic = 50;
 
 void TutorialMain::Load() {
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
     ls::loadLevelFile("resources/map.txt", 54);
 
+<<<<<<< Updated upstream
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 54.f);
     ls::setOffset(Vector2f(0, ho));
+=======
+	music.openFromFile("resources/sound/Pirate_1.wav");
+	music.setVolume(volumeMusic);
+	music.play();
+	music.setLoop(true);
+
+	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 54.f);
+	ls::setOffset(Vector2f(0, ho));
+>>>>>>> Stashed changes
 
     // Create player
     {
