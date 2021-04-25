@@ -10,6 +10,7 @@
 #include "../weapon.h"
 #include "../components/cmp_inventory.h"
 #include "../gameData.h"
+#include "../components/cmp_health.h"
 
 using namespace std;
 using namespace sf;
@@ -26,17 +27,41 @@ void TutorialMain::Load() {
 
 	// Create player
 	{
-		player = makeEntity();
-		player->addTag("player");
-		player->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2));
+		auto ins = Data::getInstance();
+		std::shared_ptr<HealthComponent> h;
 
-		auto s = player->addComponent<ShapeComponent>();
-		s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-		s->getShape().setFillColor(sf::Color::Magenta);
-		s->getShape().setOrigin(10.f, 15.f);
+		if (ins->getPlayer() == nullptr)
+		{
+			ins->setPlayer(makeEntity());
+			player = ins->getPlayer();
+			player->addTag("player");
+			player->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2));
 
-		auto b = player->addComponent<BasicMovementComponent>();
-		b->setSpeed(600.f);
+			h = player->addComponent<HealthComponent>();
+
+			auto s = player->addComponent<ShapeComponent>();
+			s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+			s->getShape().setFillColor(sf::Color::Magenta);
+			s->getShape().setOrigin(10.f, 15.f);
+
+			auto b = player->addComponent<BasicMovementComponent>();
+			b->setSpeed(600.f);
+
+			player->addComponent<InventoryComponent>();
+		}
+		else
+		{
+			player = ins->getPlayer();
+			player->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2));
+
+			cout << player->getPosition() << endl;
+
+			// Add the entity back to the list to be rendered, it was removed earlier.
+			tutorialMain.ents.list.push_back(player);
+		}
+
+
+		h = player->GetCompatibleComponent<HealthComponent>()[0];
 	}
 
 

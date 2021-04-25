@@ -13,7 +13,7 @@ const int Weapon::getDamageMax() const {
 const int Weapon::getDamage() const {
 	std::random_device dev;
 	std::default_random_engine engine(dev());
-	std::uniform_real_distribution<float> damage(damageMin, damageMax);
+	std::uniform_int_distribution<int> damage(damageMin, damageMax);
 
 	return damage(engine); // return a random amount of damage
 }
@@ -36,7 +36,7 @@ void Weapon::setUses(int uses) {
 	usesLeft = uses; // set uses
 }
 
-Weapon::Weapon(std::string itemID, Item::Quality quality, int minDamage, int maxDamage, int uses, float crit, float parry) : Item(itemID, quality), damageMax(minDamage), damageMin(maxDamage), usesLeft(uses), critChance(crit), parryChance(parry) {}
+Weapon::Weapon(std::string itemID, Item::Quality quality, int minDamage, int maxDamage, int uses, float crit, float parry) : Item(itemID, quality), damageMax(maxDamage), damageMin(minDamage), usesLeft(uses), critChance(crit), parryChance(parry) {}
 
 Weapon::~Weapon()
 {
