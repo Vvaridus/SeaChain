@@ -41,32 +41,33 @@ void CombatScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	playerTurn = true;
-	playerMain = makeEntity();
-	enemy = makeEntity();
-	enemy->addComponent<HealthComponent>();
-	enemy->addComponent<EnemyAttackComponent>();
-
+	
 	auto windowSize = Engine::getWindowSize();
 
-	// Draw temp background colour
+	// Draw background overlay
 	{
-		auto combat = makeEntity();
-		combat->addTag("background");
-		combat->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
-		auto backgroundRect = combat->addComponent<ShapeComponent>();
-		backgroundRect->setShape<sf::RectangleShape>(Vector2f(1920, 1080));
-		backgroundRect->getShape().setFillColor(Color::White);
-		backgroundRect->getShape().setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		// load the sprite
+		Texture spritesheet;
+		spritesheet.loadFromFile("resources/SeaChainCombatOverlayANDBG.png", IntRect(0, 0, 1920, 1080));
+		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
+	
+		// set the position, add a tag, add the sprite component with the texture
+		auto background = makeEntity();
+		background->addTag("background");
+		background->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		auto spriteComp = background->addComponent<SpriteComponent>();
+		spriteComp->setTexure(sprite);
+		spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 	}
-
+	
 	// Draw the combat overlay
 	{
+		// load the sprite
 		Texture spritesheet;
 		spritesheet.loadFromFile("resources/SeaChainCombatOverlay.png", IntRect(0, 0, 1920, 1080));
-
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
-
-
+	
+		// set the position, add a tag, add the sprite component with the texture
 		auto combat = makeEntity();
 		combat->addTag("combatOverlayImage");
 		combat->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
@@ -74,26 +75,101 @@ void CombatScene::Load() {
 		spriteComp->setTexure(sprite);
 		spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 	}
-
+	
 	// Draw the UI overlay
 	{
-		Texture spritesheet;
-		spritesheet.loadFromFile("resources/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
+		// load the sprite
+		Texture mainBanner;
+		mainBanner.loadFromFile("resources/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
+		shared_ptr<Texture> spriteBanner = make_shared<Texture>(mainBanner);
+		Texture healthBar;
+		healthBar.loadFromFile("resources/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
+		shared_ptr<Texture> spriteHealth = make_shared<Texture>(healthBar);
+	
+		// set the position, add a tag, add the sprite component with the texture
+		auto banner = makeEntity();
+		banner->addTag("mainBanner");
+		banner->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		auto bannerSprite = banner->addComponent<SpriteComponent>();
+		bannerSprite->setTexure(spriteBanner);
+		bannerSprite->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 
-		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
-
-		auto combat = makeEntity();
-		combat->addTag("mainBanner");
-		combat->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
-		auto spriteComp = combat->addComponent<SpriteComponent>();
-		spriteComp->setTexure(sprite);
-		spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		auto healthBanner = makeEntity();
+		healthBanner->addTag("healthUIBar");
+		healthBanner->setPosition(Vector2f(256, 34));
+		auto healthSprite = healthBanner->addComponent<SpriteComponent>();
+		healthSprite->setTexure(spriteHealth);
 	}
+
+	// Draw the enemy
+	{
+		// We declare enemy after everything else to make sure they are on top
+		// make the enemy entity with a healt and attack component
+		enemy = makeEntity();
+		enemy->addComponent<HealthComponent>();
+		enemy->addComponent<EnemyAttackComponent>();
+
+		// load the sprite
+		Texture enemySpriteSheet;
+		enemySpriteSheet.loadFromFile("resources/SeaChainEnemy.png", IntRect(0, 64, 64, 64));
+		shared_ptr<Texture> spriteCharacter = make_shared<Texture>(enemySpriteSheet);
+
+		Texture healthBarOverlaySpriteSheet;
+		healthBarOverlaySpriteSheet.loadFromFile("resources/HealthBarRed.png", IntRect(0, 0, 256, 64));
+		shared_ptr<Texture> spriteHealthBarOverlay = make_shared<Texture>(healthBarOverlaySpriteSheet);
+
+		Texture healthbarSpriteSheet;
+		healthbarSpriteSheet.loadFromFile("resources/HealthBarOutline.png", IntRect(0, 0, 256, 64));
+		shared_ptr<Texture> spriteHealthBarBackground = make_shared<Texture>(healthbarSpriteSheet);
+
+		// set the position, add a tag, add the sprite component with the texture
+		enemy->setPosition(Vector2f(0.35 * windowSize.x, windowSize.y / 2));
+		auto spriteComp = enemy->addComponent<SpriteComponent>();
+		spriteComp->setTexure(spriteCharacter);
+		spriteComp->setOrigin(Vector2f(spriteCharacter->getSize().x / 2, spriteCharacter->getSize().y / 2));
+		spriteComp->setScaling(Vector2f(4, 4));
+
+		// Create another healthbar entity so we can set the position seperately.
+		// Add two different spriteComponents, the background and overlay. 
+		auto healthBar = makeEntity();
+		healthBar->setPosition(Vector2f(0.35 * windowSize.x, 0.35 * windowSize.y));
+
+		healthBar->addTag("enemyHealthBar");
+		auto healthBarSprite = healthBar->addComponent<SpriteComponent>();
+		healthBarSprite->setTexure(spriteHealthBarOverlay);
+		healthBarSprite->setOrigin(Vector2f(spriteHealthBarOverlay->getSize().x / 2, spriteHealthBarOverlay->getSize().y / 2));
+		//healthBarSprite->setScaling(Vector2f(1, 0.5));
+
+		auto healthBarBackgroundSprite = healthBar->addComponent<SpriteComponent>();
+		healthBarBackgroundSprite->setTexure(spriteHealthBarBackground);
+		healthBarBackgroundSprite->setOrigin(Vector2f(spriteHealthBarBackground->getSize().x / 2, spriteHealthBarBackground->getSize().y / 2));
+		//healthBarBackgroundSprite->setScaling(Vector2f(1, 0.5));
+	}
+
+	// Draw the player
+	{
+		// This entity is soley for drawing, since the one in Data belongs to the scene, Tutorial_main
+		// We declare player after everything else to make sure they are on top
+		playerMain = makeEntity();
+		// load the sprite
+		Texture spritesheet;
+		spritesheet.loadFromFile("resources/SeaChainPlayer.png", IntRect(0, 128, 64, 64));
+		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
+	
+		// set the position, add a tag, add the sprite component with the texture
+		playerMain->setPosition(Vector2f(0.65 * windowSize.x, windowSize.y / 2));
+		auto spriteComp = playerMain->addComponent<SpriteComponent>();
+		spriteComp->setTexure(sprite);
+		spriteComp->setOrigin(Vector2f(sprite->getSize().x / 2, sprite->getSize().y / 2));
+		spriteComp->setScaling(Vector2f(4, 4));
+	}
+
+	cout << enemy->getPosition() << "\n" << playerMain->getPosition() << endl;
 
 	createButtons();
 
 	//Simulate long loading times
-	std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
 
 	setLoaded(true);
@@ -140,7 +216,6 @@ void CombatScene::Update(const double& dt) {
 		// Attack the enemy with the attack stats
 		attack(at, "enemy");
 	}
-
 	// handle enemy turn.
 	if (!playerTurn) {
 		// get the attack stats and decide the move to make
@@ -148,11 +223,31 @@ void CombatScene::Update(const double& dt) {
 		// Attack the player with the attack stats
 		attack(at, "player");
 	}
+
+	updateHealthBars(dt);
 	Scene::Update(dt);
 }
 
+void CombatScene::updateHealthBars(const double& dt) {
+	auto ins = Data::getInstance();
+	auto player = ins->getPlayer();
+	auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
+	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
+	float barWidth;
+
+	auto uiBar = this->ents.find("healthUIBar")[0];
+	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
+	barWidth = (playerHealth->getHealth() / playerHealth->getMaxHealth()) * 224;
+	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), 33));
+
+	auto enemyHealthBar = this->ents.find("enemyHealthBar")[0];
+	spriteComponent = enemyHealthBar->GetCompatibleComponent<SpriteComponent>()[0];
+	barWidth = (enemyHealth->getHealth() / enemyHealth->getMaxHealth()) * 224;
+	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), 33));
+}
+
 AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
-	int damage, crit;
+	int damage, crit = 0;
 	bool critSuccess;
 
 	if (attacker == "player") {
@@ -184,21 +279,21 @@ AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
 	return AttackData(type, damage, 0, 0, critSuccess);
 }
 
-void CombatScene::attack(AttackData ad, std::string attacked) {
+void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 	auto ins = Data::getInstance();
 	auto player = ins->getPlayer();
 	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
-		auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
+	auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
 
 	// Player attacking the enemy AI
-	if (attacked == "enemy") {
+	if (beingAttacked == "enemy") {
 		auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
 		enemyHealth->setHealth(enemyHealth->getHealth() - ad.damage);
 		cout << "PLAYER ATTACKING ENEMY: " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
 		enemyAttack->setHumanAttack(ad.attack);
 	}
 	// Enemy AI attacking the Player
-	else if (attacked == "player") {
+	else if (beingAttacked == "player") {
 		playerHealth->setHealth(playerHealth->getHealth() - ad.damage);
 		cout << "ENEMY ATTACKING PLAYER: " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
 		enemyAttack->setEnemyAttack(ad.attack);
@@ -233,9 +328,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnBribe = button->addComponent<ButtonComponent>();
-		btnBribe->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnBribe->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw second button (RUN BUTTON)
@@ -251,9 +346,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnRun = button->addComponent<ButtonComponent>();
-		btnRun->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnRun->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw third button (SWAP WEAPON BUTTON)
@@ -269,9 +364,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnWepSwap = button->addComponent<ButtonComponent>();
-		btnWepSwap->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnWepSwap->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw fourth button (CONSUMABLE BUTTON)
@@ -287,9 +382,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnConsum = button->addComponent<ButtonComponent>();
-		btnConsum->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnConsum->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw fifth button (QUICK ATTACK BUTTON)
@@ -307,8 +402,9 @@ void CombatScene::createButtons() {
 		auto bounds = buttonShape->getBounds();
 
 		btnQuickAttack = button->addComponent<ButtonComponent>();
+		btnQuickAttack = button->addComponent<ButtonComponent>();
 		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
-		btnQuickAttack->setBounds(xy, Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		btnQuickAttack->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw sixth button (NORMAL ATTACK BUTTON)
@@ -324,9 +420,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnNormalAttack = button->addComponent<ButtonComponent>();
-		btnNormalAttack->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnNormalAttack->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw seventh button (NORMAL ATTACK BUTTON)
@@ -342,9 +438,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnHeavyAttack = button->addComponent<ButtonComponent>();
-		btnHeavyAttack->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnHeavyAttack->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 
 	//Draw eighth button (PARRY BUTTON)
@@ -360,9 +456,9 @@ void CombatScene::createButtons() {
 		button->setVisible(debug);
 
 		auto bounds = buttonShape->getBounds();
-
 		btnParry = button->addComponent<ButtonComponent>();
-		btnParry->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnParry->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
 }
 

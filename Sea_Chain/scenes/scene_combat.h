@@ -27,8 +27,8 @@ public:
 	};
 
 protected:
-	void updateHealthBar(const double& dt);
-	void attack(AttackData ad, std::string attacked);
+	void updateHealthBars(const double& dt);
+	void attack(AttackData ad, std::string beingAttacked);
 	AttackData getAttackStats(attackType type, std::string attacker);
 
 	void createButtons();
