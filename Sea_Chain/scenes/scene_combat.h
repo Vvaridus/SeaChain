@@ -16,6 +16,8 @@ public:
 
 	void Render() override;
 
+	int randomNumber(int min, int max);
+
 	enum class attackType {
 		None,
 		Quick,
@@ -25,9 +27,9 @@ public:
 	};
 
 protected:
+	void updateHealthBar(const double& dt);
 	void attack(AttackData ad, std::string attacked);
-	AttackData handlePlayerAttack(attackType attack);
-	AttackData quickAttack();
+	AttackData getAttackStats(attackType type, std::string attacker);
 
 	void createButtons();
 	void nullify();

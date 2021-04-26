@@ -14,7 +14,7 @@ int EnemyAttackComponent::getDamage()
 {
 	std::random_device dev;
 	std::default_random_engine engine(dev());
-	std::uniform_real_distribution<float> damage(minDamage, maxDamage);
+	std::uniform_real_distribution<float> damage(_minDamage, _maxDamage);
 
 	return damage(engine); // return a random amount of damage
 }
@@ -41,6 +41,10 @@ void EnemyAttackComponent::setHumanHealth(float hp)
 void EnemyAttackComponent::setHumanMaxHealth(float hp)
 {
 	_humanMaxHP = hp;
+}
+
+int EnemyAttackComponent::getCritChance() {
+	return _crit;
 }
 
 CombatScene::attackType EnemyAttackComponent::decideAttack() {

@@ -15,8 +15,9 @@ protected:
 	float _humanMaxHP;
 
 	// enemy attack stats
-	int minDamage = 5;
-	int maxDamage = 50;
+	int _minDamage = 5;
+	int _maxDamage = 50;
+	int _crit = 20;
 
 
 public:
@@ -28,7 +29,8 @@ public:
 
 	EnemyAttackComponent() = delete;
 
-	int getDamage();  // get a random damage.
+	// get a random amount of damage between min and max damage
+	int getDamage();  
 
 	// set _humanPreviousAttack
 	void setHumanAttack(CombatScene::attackType attack);
@@ -40,6 +42,8 @@ public:
 	void setEnemyAttack(CombatScene::attackType attack);
 	// get _enemyPreviousAttack
 	CombatScene::attackType getEnemyAttack();
+	// get the crit chance
+	int getCritChance();
 
 	// Decide what attack to do.
 	CombatScene::attackType decideAttack();

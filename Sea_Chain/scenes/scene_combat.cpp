@@ -15,10 +15,10 @@
 #include "../components/cmp_text.h"
 #include "../components/cmp_health.h"
 #include "../components/cmp_enemy_attack.h"
+#include <random>
 
 using namespace std;
 using namespace sf;
-static shared_ptr<Entity> player;
 static shared_ptr<Entity> playerMain;
 static shared_ptr<Entity> enemy;
 static bool playerTurn = false;
@@ -113,103 +113,100 @@ void CombatScene::Update(const double& dt) {
 	auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
-		nullify();
+		// Go back to previous screen, nullify and change scene
+		nullify(); 
 		Engine::ChangeScene(&tutorialMain);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+		// triggertime for a cool down on pressing the key, so it doesn't trigger several times in a second.
 		static float triggertime = 0.0f;
 		triggertime -= dt;
 		if (triggertime <= 0)
 		{
+			// get the inventory, create the weapon, add it and set it to using.
 			std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
-			//std::string itemID, int id, Item::Quality quality, int minDamage, int maxDamage, int uses
 			wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100, 50, 20);
 			ic->addWeapon(wep);
 			ic->setUsing(0);
 
 			cout << "Added item" << endl;
+			// set the cooldown
 			triggertime = .5f;
 		}
 	}
 	else if (btnQuickAttack->isPressed()) {
-		at = handlePlayerAttack(attackType::Quick);
-
+		// Get the attack stats with the quick move
+		at = getAttackStats(attackType::Quick, "player");
+		// Attack the enemy with the attack stats
 		attack(at, "enemy");
 	}
 
 	// handle enemy turn.
 	if (!playerTurn) {
-		auto attackMove = enemyAttack->decideAttack();
-		attack(AttackData(CombatScene::attackType::Quick, enemyAttack->getDamage(), 0, 0, 0), "player");
+		// get the attack stats and decide the move to make
+		at = getAttackStats(attackType::None, "enemy");
+		// Attack the player with the attack stats
+		attack(at, "player");
 	}
 	Scene::Update(dt);
 }
 
-void CombatScene::attack(AttackData ad, std::string attacked)
-{
+AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
+	int damage, crit;
+	bool critSuccess;
+
+	if (attacker == "player") {
+		// find the weapon inside the player inventory component.
+		auto ins = Data::getInstance();
+		auto player = ins->getPlayer();
+		std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
+		Weapon& wep = ic->findWeapon(ic->getUsing());
+		// get the damage and crit of the weapon
+		damage = wep.getDamage();
+		crit = wep.getCrit();
+	}
+	else if (attacker == "enemy") {
+		// get the damage and crit from the EnemyAttackComponent.
+		std::shared_ptr<EnemyAttackComponent> eac = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
+		type = eac->decideAttack();
+		damage = eac->getDamage();
+		crit = eac->getCritChance();
+	}
+	// generate a random number to check if crit will succeed. if so double the damage
+	if (randomNumber(0, 100) <= crit) {
+		damage = damage * 2;
+		critSuccess = true;
+	}
+	else
+		critSuccess = false;
+
+	// Return the attack data gathered
+	return AttackData(type, damage, 0, 0, critSuccess);
+}
+
+void CombatScene::attack(AttackData ad, std::string attacked) {
 	auto ins = Data::getInstance();
 	auto player = ins->getPlayer();
 	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
-	auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
-	auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
+		auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
 
+	// Player attacking the enemy AI
 	if (attacked == "enemy") {
+		auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
 		enemyHealth->setHealth(enemyHealth->getHealth() - ad.damage);
-
 		cout << "PLAYER ATTACKING ENEMY: " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
-
 		enemyAttack->setHumanAttack(ad.attack);
-
-		playerTurn = !playerTurn;
 	}
-	if (attacked == "player") {
+	// Enemy AI attacking the Player
+	else if (attacked == "player") {
 		playerHealth->setHealth(playerHealth->getHealth() - ad.damage);
-
 		cout << "ENEMY ATTACKING PLAYER: " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
-
 		enemyAttack->setEnemyAttack(ad.attack);
-		playerTurn = !playerTurn;
 	}
 
 	enemyAttack->setHumanHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getHealth());
 	enemyAttack->setHumanMaxHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getMaxHealth());
-}
-
-AttackData CombatScene::handlePlayerAttack(attackType attack) {
-	AttackData at;
-	switch (attack) {
-	case attackType::Quick:
-		at = quickAttack();
-		break;
-	}
-
-
-	return at;
-}
-
-AttackData CombatScene::quickAttack()
-{
-	auto ins = Data::getInstance();
-	auto player = ins->getPlayer();
-	bool parrySuccess;
-	bool critSuccess = false;
-
-	// get the current weapon and the stats
-	std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
-	Weapon& wep = ic->findWeapon(ic->getUsing());
-
-	auto damage = wep.getDamage();
-	auto crit = wep.getCrit();
-
-	// find chance of crit and double damage if successful.
-	auto random = rand() % 100 + 1; // 1-100
-	if (random <= crit)
-	{
-		damage = damage * 2;
-		critSuccess = true;
-	}
-
-	return AttackData(attackType::Quick, damage, 0, 0, critSuccess);
+	playerTurn = !playerTurn;
 }
 
 void CombatScene::Render() {
@@ -370,6 +367,8 @@ void CombatScene::createButtons() {
 }
 
 void CombatScene::nullify() {
+	// Nullify all the buttons, otherwise the entity can't be deleted
+
 	btnBribe = nullptr;
 	btnRun = nullptr;
 	btnWepSwap = nullptr;
@@ -378,4 +377,13 @@ void CombatScene::nullify() {
 	btnNormalAttack = nullptr;
 	btnHeavyAttack = nullptr;
 	btnParry = nullptr;
+}
+
+int CombatScene::randomNumber(int min, int max) {
+	// Seed the random_device with the random engine and get a uniform_real_distribution between the min and max value
+	std::random_device dev;
+	std::default_random_engine engine(dev());
+	std::uniform_int_distribution<int> damage(min, max);
+
+	return damage(engine);
 }
