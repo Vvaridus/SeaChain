@@ -53,8 +53,8 @@ void MenuScene::Load() {
     
         auto bounds = buttonShape->getBounds();
     
-         btnStart = button->addComponent<ButtonComponent>();
-         btnStart->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+        Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+        btnStart->setBounds(xy, Vector2f(bounds->width, bounds->height));
     }
     //Draw second button (end BUTTON)
     {
@@ -70,8 +70,8 @@ void MenuScene::Load() {
 
         auto bounds = buttonShape->getBounds();
 
-        btnEnd = button->addComponent<ButtonComponent>();
-        btnEnd->setBounds(Vector2f(button->getPosition().x, button->getPosition().y), Vector2f(bounds->width, bounds->height)); // this doesn't scale with the rectangle
+        Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+        btnEnd->setBounds(xy, Vector2f(bounds->width, bounds->height));
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(5000));
