@@ -53,8 +53,9 @@ void MenuScene::Load() {
     
         auto bounds = buttonShape->getBounds();
     
-        Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
-        btnStart->setBounds(xy, Vector2f(bounds->width, bounds->height));
+         btnStart = button->addComponent<ButtonComponent>();
+         Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+         btnStart->setBounds(xy, Vector2f(bounds->width, bounds->height));
     }
     //Draw second button (end BUTTON)
     {
@@ -70,6 +71,7 @@ void MenuScene::Load() {
 
         auto bounds = buttonShape->getBounds();
 
+        btnEnd = button->addComponent<ButtonComponent>();
         Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
         btnEnd->setBounds(xy, Vector2f(bounds->width, bounds->height));
     }
