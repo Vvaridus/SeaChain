@@ -23,10 +23,11 @@ public:
     WALL = 'w',
     WATER = 'W',
     SAND = 'S',
-    STONE = 'T',
-    ENEMY = 'n',
     GRASS = 'G',
     DIRT = 'D',
+    STONE = 'T',
+    ENEMY = 'n',
+    
     WAYPOINT = '+'
   };
 

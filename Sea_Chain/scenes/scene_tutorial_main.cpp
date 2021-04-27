@@ -42,9 +42,12 @@ void TutorialMain::Load() {
 	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 64.f);
 	ls::setOffset(Vector2f(0, ho));
 
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(256,0,64,64), ls::WATER);
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::GRASS);
 	createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::SAND);
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::DIRT);
 	createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::STONE);
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::WATER);
+			
 	// Create player
 	{
 		auto ins = Data::getInstance();
@@ -62,7 +65,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(800.f);
+			b->setSpeed(120.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -226,7 +229,6 @@ void TutorialMain::createTexture(std::string path, sf::IntRect bounds, ls::TILES
 	auto tiles = ls::findTiles(tile);
 	for (auto t : tiles) {		
 		auto pos = ls::getTilePosition(t);
-		pos += Vector2f(0.f, 0.f);
 		auto e = makeEntity();
 		e->setPosition(pos);
 		auto t = e->addComponent<SpriteComponent>();
