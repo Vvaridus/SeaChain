@@ -18,12 +18,21 @@ using namespace sf;
 
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> enemy;
-sf::Music music;
-int volumeMusic = 50;
+
+static sf::Music music;
+static int volumeMusic = 100;
+
+static Image playerImage;
+static Texture playerTexture;
+static IntRect playerRect = IntRect(64, 0, 64, 64);
+
 
 void TutorialMain::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 	ls::loadLevelFile("resources/map.txt", 54);
+
+	playerImage.loadFromFile("resources/SeaChainPlayer.png");
+	playerTexture.loadFromImage(playerImage);
 
 	music.openFromFile("resources/sound/Pirate_1.wav");
 	music.setVolume(volumeMusic);
@@ -44,17 +53,13 @@ void TutorialMain::Load() {
 			player = ins->getPlayer();
 			player->addTag("player");
 			player->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2));
-
 			h = player->addComponent<HealthComponent>();
-
-			auto s = player->addComponent<ShapeComponent>();
-			s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-			s->getShape().setFillColor(sf::Color::Magenta);
-			s->getShape().setOrigin(10.f, 15.f);
-
+			auto s = player->addComponent<SpriteComponent>();
+			s->getSprite().setTexture(playerTexture);
+			s->getSprite().setTextureRect(playerRect);
+			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(600.f);
-
+			b->setSpeed(120.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -67,8 +72,6 @@ void TutorialMain::Load() {
 			// Add the entity back to the list to be rendered, it was removed earlier.
 			tutorialMain.ents.list.push_back(player);
 		}
-
-
 		h = player->GetCompatibleComponent<HealthComponent>()[0];
 	}
 
@@ -107,6 +110,95 @@ void TutorialMain::Update(const double& dt) {
 		Engine::ChangeScene(&combat);
 	}
 
+	auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
+	static sf::Clock clock;
+	float elapsed = clock.getElapsedTime().asSeconds();
+	//PLAYER ANIMATION FOR UP
+	if (Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		if (elapsed > 0.2f)
+		{
+			if (playerRect.left == 128)
+			{
+				playerRect.top = 192;
+				playerRect.left = 64;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+			else
+			{
+				playerRect.top = 192;
+				playerRect.left += 64;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+		}
+	}
+	//PLAYER ANIMATION FOR DOWN
+	else if (Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		if (elapsed > 0.2f)
+		{
+			if (playerRect.left == 128)
+			{
+				playerRect.top = 0;
+				playerRect.left = 64;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+			else
+			{
+				playerRect.top = 0;
+				playerRect.left += 64;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+		}
+	}
+	//PLAYER ANIMATION FOR LEFT
+	else if (Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		if (elapsed > 0.15f)
+		{
+			if (playerRect.left == 128)
+			{
+				playerRect.top = 128;
+				playerRect.left = 0;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+			else
+			{
+				playerRect.top = 128;
+				playerRect.left += 64;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+		}
+	}
+	//PLAYER ANIMATION FOR RIGHT
+	else if (Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		if (elapsed > 0.15f)
+		{
+			if (playerRect.left == 128)
+			{
+				playerRect.top = 64;
+				playerRect.left = 0;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+			else
+			{
+				playerRect.top = 64;
+				playerRect.left += 64;
+				s->getSprite().setTextureRect(playerRect);
+				clock.restart();
+			}
+		}
+	}
+
+	s->getSprite().setTextureRect(playerRect);
 	Scene::Update(dt);
 }
 
