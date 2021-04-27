@@ -16,6 +16,8 @@ std::shared_ptr<ButtonComponent> btnStart;
 std::shared_ptr<ButtonComponent> btnEnd;
 
 void MenuScene::Load() {
+    //Engine::GetWindow().setFramerateLimit(60);
+    Engine::GetWindow().setVerticalSyncEnabled(true);
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
     sf::Vector2f btnDimentions = Vector2f(500, 150);
@@ -78,7 +80,7 @@ void MenuScene::Load() {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
-    setLoaded(true);
+    setLoaded(true);    
 }
 
 void MenuScene::Update(const double& dt) {

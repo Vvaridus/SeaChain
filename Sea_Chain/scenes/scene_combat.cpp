@@ -23,6 +23,7 @@ static shared_ptr<Entity> playerMain;
 static shared_ptr<Entity> enemy;
 static bool playerTurn = false;
 static bool dead = false;
+static bool parry = false;
 static shared_ptr<ButtonComponent> btnBribe;
 static shared_ptr<ButtonComponent> btnRun;
 static shared_ptr<ButtonComponent> btnWepSwap;
@@ -42,6 +43,7 @@ void CombatScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	playerTurn = true;
+	dead = false;
 
 	auto windowSize = Engine::getWindowSize();
 
@@ -133,7 +135,7 @@ void CombatScene::Load() {
 		// Create another healthbar entity so we can set the position seperately.
 		// Add two different spriteComponents, the background and overlay. 
 		auto healthBar = makeEntity();
-		healthBar->setPosition(Vector2f(0.35 * windowSize.x, 0.30 * windowSize.y));
+		healthBar->setPosition(Vector2f(0.35 * windowSize.x, 0.35 * windowSize.y));
 
 		healthBar->addTag("enemyHealthBar");
 		auto healthBarSprite = healthBar->addComponent<SpriteComponent>();
@@ -201,7 +203,7 @@ void CombatScene::Update(const double& dt) {
 		{
 			// get the inventory, create the weapon, add it and set it to using.
 			std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
-			wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100, 50, 20);
+			wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100);
 			ic->addWeapon(wep);
 			ic->setUsing(0);
 
@@ -213,6 +215,24 @@ void CombatScene::Update(const double& dt) {
 	else if (btnQuickAttack->isPressed()) {
 		// Get the attack stats with the quick move
 		at = getAttackStats(attackType::Quick, "player");
+		// Attack the enemy with the attack stats
+		attack(at, "enemy");
+	}
+	else if (btnNormalAttack->isPressed()) {
+		// Get the attack stats with the quick move
+		at = getAttackStats(attackType::Normal, "player");
+		// Attack the enemy with the attack stats
+		attack(at, "enemy");
+	}
+	else if (btnHeavyAttack->isPressed()) {
+		// Get the attack stats with the quick move
+		at = getAttackStats(attackType::Heavy, "player");
+		// Attack the enemy with the attack stats
+		attack(at, "enemy");
+	}
+	else if (btnParry->isPressed()) {
+		// Get the attack stats with the quick move
+		at = getAttackStats(attackType::Parry, "player");
 		// Attack the enemy with the attack stats
 		attack(at, "enemy");
 	}
@@ -232,8 +252,8 @@ void CombatScene::Update(const double& dt) {
 }
 
 AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
-	int damage, crit = 0;
-	bool critSuccess;
+	int damage = 0;
+	bool critSuccess = false;
 
 	if (attacker == "player") {
 		// find the weapon inside the player inventory component.
@@ -243,25 +263,61 @@ AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
 		Weapon& wep = ic->findWeapon(ic->getUsing());
 		// get the damage and crit of the weapon
 		damage = wep.getDamage();
-		crit = wep.getCrit();
 	}
 	else if (attacker == "enemy") {
 		// get the damage and crit from the EnemyAttackComponent.
 		std::shared_ptr<EnemyAttackComponent> eac = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
 		type = eac->decideAttack();
 		damage = eac->getDamage();
-		crit = eac->getCritChance();
 	}
-	// generate a random number to check if crit will succeed. if so double the damage
-	if (randomNumber(0, 100) <= crit) {
-		damage = damage * 2;
-		critSuccess = true;
+
+	switch (type) {
+	case attackType::Quick:
+		if (randomNumber(0, 100) <= 5) {
+			damage = damage * 2;
+			critSuccess = true;
+		}
+		else
+			critSuccess = false;
+		// This may get stuck in parry loop
+		if (randomNumber(0, 100) <= 75) {
+			parry = true;
+		}
+		else
+			parry = false;
+		break;
+	case attackType::Normal:
+		if (randomNumber(0, 100) <= 20) {
+			damage = damage * 2;
+			critSuccess = true;
+		}
+		else
+			critSuccess = false;
+		// This may get stuck in parry loop
+		if (randomNumber(0, 100) <= 45) {
+			parry = true;
+		}
+		else
+			parry = false;
+		break;
+	case attackType::Heavy:
+		if (randomNumber(0, 100) <= 75) {
+			damage = damage * 2;
+			critSuccess = true;
+		}
+		else
+			critSuccess = false;
+		// This may get stuck in parry loop
+		if (randomNumber(0, 100) <= 60) {
+			parry = true;
+		}
+		else
+			parry = false;
+		break;
 	}
-	else
-		critSuccess = false;
 
 	// Return the attack data gathered
-	return AttackData(type, damage, 0, 0, critSuccess);
+	return AttackData(type, damage, parry, critSuccess);
 }
 
 void CombatScene::attack(AttackData ad, std::string beingAttacked) {
@@ -274,13 +330,13 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 	if (beingAttacked == "enemy") {
 		auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
 		enemyHealth->setHealth(enemyHealth->getHealth() - ad.damage);
-		cout << "PLAYER ATTACKING ENEMY: " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
+		cout << "PLAYER ATTACKING ENEMY: " << ad.attack << " : " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
 		enemyAttack->setHumanAttack(ad.attack);
 	}
 	// Enemy AI attacking the Player
 	else if (beingAttacked == "player") {
 		playerHealth->setHealth(playerHealth->getHealth() - ad.damage);
-		cout << "ENEMY ATTACKING PLAYER: " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
+		cout << "ENEMY ATTACKING PLAYER: " << ad.attack << " : " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
 		enemyAttack->setEnemyAttack(ad.attack);
 	}
 

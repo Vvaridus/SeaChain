@@ -19,7 +19,7 @@ public:
 	int randomNumber(int min, int max);
 
 
-	enum class attackType {
+	enum attackType {
 		None,
 		Quick,
 		Normal,
@@ -40,10 +40,9 @@ class AttackData {
 public:
 	CombatScene::attackType attack;
 	int damage;
-	float dmgModifier;
-	float parryChance;
+	bool parryChance;
 	bool critChance;
 	AttackData() = default;
-	AttackData(CombatScene::attackType move, int dam, float mod, float parry, bool crit) : attack(move), damage(dam), dmgModifier(mod), parryChance(parry), critChance(crit) {}
+	AttackData(CombatScene::attackType move, int dam, bool parry, bool crit) : attack(move), damage(dam), parryChance(parry), critChance(crit) {}
 };
 
