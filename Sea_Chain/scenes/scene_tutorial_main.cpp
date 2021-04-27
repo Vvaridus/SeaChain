@@ -47,6 +47,13 @@ void TutorialMain::Load() {
 	createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::DIRT);
 	createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::STONE);
 	createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::WATER);
+	
+	//This will draw a tree over GRASS tiles
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), ls::GRASS);
+	//This will draw a rock over STONE tiles
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), ls::STONE);
+	//This will draw a skeliton on DIRT tiles
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), ls::DIRT);
 			
 	// Create player
 	{
