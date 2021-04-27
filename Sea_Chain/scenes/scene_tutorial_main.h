@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine.h"
+#include "LevelSystem.h"
 
 class TutorialMain : public Scene {
 public:
@@ -11,4 +12,6 @@ public:
   void Update(const double& dt) override;
 
   void Render() override;
+
+  void createTexture(std::string path, sf::IntRect bounds, ls::TILES tile);
 };

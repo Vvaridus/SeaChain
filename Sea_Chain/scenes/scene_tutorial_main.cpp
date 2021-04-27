@@ -29,7 +29,7 @@ static IntRect playerRect = IntRect(64, 0, 64, 64);
 
 void TutorialMain::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
-	ls::loadLevelFile("resources/map.txt", 54);
+	ls::loadLevelFile("resources/map.txt", 64);
 
 	playerImage.loadFromFile("resources/SeaChainPlayer.png");
 	playerTexture.loadFromImage(playerImage);
@@ -39,9 +39,12 @@ void TutorialMain::Load() {
 	music.play();
 	music.setLoop(true);
 
-	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 54.f);
+	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 64.f);
 	ls::setOffset(Vector2f(0, ho));
 
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(256,0,64,64), ls::WATER);
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::SAND);
+	createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::STONE);
 	// Create player
 	{
 		auto ins = Data::getInstance();
@@ -211,4 +214,22 @@ void TutorialMain::Update(const double& dt) {
 void TutorialMain::Render() {
 	ls::render(Engine::GetWindow());
 	Scene::Render();
+}
+
+void TutorialMain::createTexture(std::string path, sf::IntRect bounds, ls::TILES tile)
+{
+	//Tile Texture
+	Texture worldSpriteSheet;
+	worldSpriteSheet.loadFromFile(path, bounds);
+
+	shared_ptr<Texture> worldSheet = make_shared<Texture>(worldSpriteSheet);
+	auto tiles = ls::findTiles(tile);
+	for (auto t : tiles) {		
+		auto pos = ls::getTilePosition(t);
+		pos += Vector2f(0.f, 0.f);
+		auto e = makeEntity();
+		e->setPosition(pos);
+		auto t = e->addComponent<SpriteComponent>();
+		t->setTexure(worldSheet);
+	}
 }
