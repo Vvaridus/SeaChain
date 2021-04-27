@@ -22,6 +22,7 @@ using namespace sf;
 static shared_ptr<Entity> playerMain;
 static shared_ptr<Entity> enemy;
 static bool playerTurn = false;
+static bool dead = false;
 static shared_ptr<ButtonComponent> btnBribe;
 static shared_ptr<ButtonComponent> btnRun;
 static shared_ptr<ButtonComponent> btnWepSwap;
@@ -41,7 +42,7 @@ void CombatScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	playerTurn = true;
-	
+
 	auto windowSize = Engine::getWindowSize();
 
 	// Draw background overlay
@@ -50,7 +51,7 @@ void CombatScene::Load() {
 		Texture spritesheet;
 		spritesheet.loadFromFile("resources/SeaChainCombatOverlayANDBG.png", IntRect(0, 0, 1920, 1080));
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
-	
+
 		// set the position, add a tag, add the sprite component with the texture
 		auto background = makeEntity();
 		background->addTag("background");
@@ -59,14 +60,14 @@ void CombatScene::Load() {
 		spriteComp->setTexure(sprite);
 		spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 	}
-	
+
 	// Draw the combat overlay
 	{
 		// load the sprite
 		Texture spritesheet;
 		spritesheet.loadFromFile("resources/SeaChainCombatOverlay.png", IntRect(0, 0, 1920, 1080));
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
-	
+
 		// set the position, add a tag, add the sprite component with the texture
 		auto combat = makeEntity();
 		combat->addTag("combatOverlayImage");
@@ -75,7 +76,7 @@ void CombatScene::Load() {
 		spriteComp->setTexure(sprite);
 		spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 	}
-	
+
 	// Draw the UI overlay
 	{
 		// load the sprite
@@ -85,7 +86,7 @@ void CombatScene::Load() {
 		Texture healthBar;
 		healthBar.loadFromFile("resources/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
 		shared_ptr<Texture> spriteHealth = make_shared<Texture>(healthBar);
-	
+
 		// set the position, add a tag, add the sprite component with the texture
 		auto banner = makeEntity();
 		banner->addTag("mainBanner");
@@ -132,7 +133,7 @@ void CombatScene::Load() {
 		// Create another healthbar entity so we can set the position seperately.
 		// Add two different spriteComponents, the background and overlay. 
 		auto healthBar = makeEntity();
-		healthBar->setPosition(Vector2f(0.35 * windowSize.x, 0.35 * windowSize.y));
+		healthBar->setPosition(Vector2f(0.35 * windowSize.x, 0.30 * windowSize.y));
 
 		healthBar->addTag("enemyHealthBar");
 		auto healthBarSprite = healthBar->addComponent<SpriteComponent>();
@@ -142,7 +143,6 @@ void CombatScene::Load() {
 		auto healthBarBackgroundSprite = healthBar->addComponent<SpriteComponent>();
 		healthBarBackgroundSprite->setTexure(spriteHealthBarBackground);
 		healthBarBackgroundSprite->setOrigin(Vector2f(spriteHealthBarBackground->getSize().x / 2, spriteHealthBarBackground->getSize().y / 2));
-		//healthBarBackgroundSprite->setScaling(Vector2f(0.95, 0.8));
 	}
 
 	// Draw the player
@@ -154,7 +154,7 @@ void CombatScene::Load() {
 		Texture spritesheet;
 		spritesheet.loadFromFile("resources/SeaChainPlayer.png", IntRect(0, 128, 64, 64));
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
-	
+
 		// set the position, add a tag, add the sprite component with the texture
 		playerMain->setPosition(Vector2f(0.65 * windowSize.x, windowSize.y / 2));
 		auto spriteComp = playerMain->addComponent<SpriteComponent>();
@@ -182,13 +182,15 @@ void CombatScene::UnLoad() {
 
 void CombatScene::Update(const double& dt) {
 	Weapon wep;
+	bool changingScene = false;
 	AttackData at;
 	auto ins = Data::getInstance();
 	auto player = ins->getPlayer();
 	auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) || dead) {
 		// Go back to previous screen, nullify and change scene
+		changingScene = true;
 		Engine::ChangeScene(&tutorialMain);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
@@ -222,8 +224,11 @@ void CombatScene::Update(const double& dt) {
 		attack(at, "player");
 	}
 
-	updateHealthBars(dt);
-	Scene::Update(dt);
+	if (!changingScene)
+	{
+		updateHealthBars(dt);
+		Scene::Update(dt);
+	}
 }
 
 AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
@@ -295,11 +300,15 @@ void CombatScene::updateHealthBars(const double& dt) {
 	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
 	barWidth = max((playerHealth->getHealth() / playerHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
 	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
+	if (barWidth <= 0)
+		dead = true;
 
 	auto enemyHealthBar = this->ents.find("enemyHealthBar")[0];
 	spriteComponent = enemyHealthBar->GetCompatibleComponent<SpriteComponent>()[0];
 	barWidth = max((enemyHealth->getHealth() / enemyHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
 	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
+	if (barWidth <= 0)
+		dead = true;
 }
 
 void CombatScene::Render() {
