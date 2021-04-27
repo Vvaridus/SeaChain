@@ -18,6 +18,7 @@ public:
 
 	int randomNumber(int min, int max);
 
+
 	enum class attackType {
 		None,
 		Quick,

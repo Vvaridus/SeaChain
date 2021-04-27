@@ -138,12 +138,11 @@ void CombatScene::Load() {
 		auto healthBarSprite = healthBar->addComponent<SpriteComponent>();
 		healthBarSprite->setTexure(spriteHealthBarOverlay);
 		healthBarSprite->setOrigin(Vector2f(spriteHealthBarOverlay->getSize().x / 2, spriteHealthBarOverlay->getSize().y / 2));
-		//healthBarSprite->setScaling(Vector2f(1, 0.5));
 
 		auto healthBarBackgroundSprite = healthBar->addComponent<SpriteComponent>();
 		healthBarBackgroundSprite->setTexure(spriteHealthBarBackground);
 		healthBarBackgroundSprite->setOrigin(Vector2f(spriteHealthBarBackground->getSize().x / 2, spriteHealthBarBackground->getSize().y / 2));
-		//healthBarBackgroundSprite->setScaling(Vector2f(1, 0.5));
+		//healthBarBackgroundSprite->setScaling(Vector2f(0.95, 0.8));
 	}
 
 	// Draw the player
@@ -169,7 +168,7 @@ void CombatScene::Load() {
 	createButtons();
 
 	//Simulate long loading times
-	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+	std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
 
 	setLoaded(true);
@@ -177,7 +176,7 @@ void CombatScene::Load() {
 
 void CombatScene::UnLoad() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
-	ls::unload();
+	nullify();
 	Scene::UnLoad();
 }
 
@@ -190,7 +189,6 @@ void CombatScene::Update(const double& dt) {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
 		// Go back to previous screen, nullify and change scene
-		nullify(); 
 		Engine::ChangeScene(&tutorialMain);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
@@ -226,24 +224,6 @@ void CombatScene::Update(const double& dt) {
 
 	updateHealthBars(dt);
 	Scene::Update(dt);
-}
-
-void CombatScene::updateHealthBars(const double& dt) {
-	auto ins = Data::getInstance();
-	auto player = ins->getPlayer();
-	auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
-	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
-	float barWidth;
-
-	auto uiBar = this->ents.find("healthUIBar")[0];
-	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
-	barWidth = (playerHealth->getHealth() / playerHealth->getMaxHealth()) * 224;
-	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), 33));
-
-	auto enemyHealthBar = this->ents.find("enemyHealthBar")[0];
-	spriteComponent = enemyHealthBar->GetCompatibleComponent<SpriteComponent>()[0];
-	barWidth = (enemyHealth->getHealth() / enemyHealth->getMaxHealth()) * 224;
-	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), 33));
 }
 
 AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
@@ -302,6 +282,24 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 	enemyAttack->setHumanHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getHealth());
 	enemyAttack->setHumanMaxHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getMaxHealth());
 	playerTurn = !playerTurn;
+}
+
+void CombatScene::updateHealthBars(const double& dt) {
+	auto ins = Data::getInstance();
+	auto player = ins->getPlayer();
+	auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
+	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
+	float barWidth;
+
+	auto uiBar = this->ents.find("healthUIBar")[0];
+	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
+	barWidth = max((playerHealth->getHealth() / playerHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
+	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
+
+	auto enemyHealthBar = this->ents.find("enemyHealthBar")[0];
+	spriteComponent = enemyHealthBar->GetCompatibleComponent<SpriteComponent>()[0];
+	barWidth = max((enemyHealth->getHealth() / enemyHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
+	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
 }
 
 void CombatScene::Render() {

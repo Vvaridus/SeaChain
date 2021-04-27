@@ -95,6 +95,12 @@ void MenuScene::Update(const double& dt) {
     Scene::Update(dt);
 }
 
+void MenuScene::UnLoad() {
+    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+    Nullify();
+    Scene::UnLoad();
+}
+
 // Nullify all buttons with a shared_ptr
 // Otherwise, engine can't delete the components
 // and throws exceptions.
