@@ -59,7 +59,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(120.f);
+			b->setSpeed(800.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -103,103 +103,109 @@ void TutorialMain::UnLoad() {
 }
 
 void TutorialMain::Update(const double& dt) {
+	bool changingScenes = false;
 	if (length(player->getPosition() - enemy->getPosition()) < 50) {
 		auto ins = Data::getInstance();
 		ins->setPlayer(player);
+		changingScenes = true;
 
 		Engine::ChangeScene(&combat);
 	}
 
-	auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
-	static sf::Clock clock;
-	float elapsed = clock.getElapsedTime().asSeconds();
-	//PLAYER ANIMATION FOR UP
-	if (Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (!changingScenes)
 	{
-		if (elapsed > 0.2f)
-		{
-			if (playerRect.left == 128)
-			{
-				playerRect.top = 192;
-				playerRect.left = 64;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-			else
-			{
-				playerRect.top = 192;
-				playerRect.left += 64;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-		}
-	}
-	//PLAYER ANIMATION FOR DOWN
-	else if (Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		if (elapsed > 0.2f)
-		{
-			if (playerRect.left == 128)
-			{
-				playerRect.top = 0;
-				playerRect.left = 64;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-			else
-			{
-				playerRect.top = 0;
-				playerRect.left += 64;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-		}
-	}
-	//PLAYER ANIMATION FOR LEFT
-	else if (Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		if (elapsed > 0.15f)
-		{
-			if (playerRect.left == 128)
-			{
-				playerRect.top = 128;
-				playerRect.left = 0;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-			else
-			{
-				playerRect.top = 128;
-				playerRect.left += 64;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-		}
-	}
-	//PLAYER ANIMATION FOR RIGHT
-	else if (Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		if (elapsed > 0.15f)
-		{
-			if (playerRect.left == 128)
-			{
-				playerRect.top = 64;
-				playerRect.left = 0;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-			else
-			{
-				playerRect.top = 64;
-				playerRect.left += 64;
-				s->getSprite().setTextureRect(playerRect);
-				clock.restart();
-			}
-		}
-	}
+		auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
+		static sf::Clock clock;
+		float elapsed = clock.getElapsedTime().asSeconds();
 
-	s->getSprite().setTextureRect(playerRect);
-	Scene::Update(dt);
+		//PLAYER ANIMATION FOR UP
+		if (Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			if (elapsed > 0.2f)
+			{
+				if (playerRect.left == 128)
+				{
+					playerRect.top = 192;
+					playerRect.left = 64;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+				else
+				{
+					playerRect.top = 192;
+					playerRect.left += 64;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+			}
+		}
+		//PLAYER ANIMATION FOR DOWN
+		else if (Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			if (elapsed > 0.2f)
+			{
+				if (playerRect.left == 128)
+				{
+					playerRect.top = 0;
+					playerRect.left = 64;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+				else
+				{
+					playerRect.top = 0;
+					playerRect.left += 64;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+			}
+		}
+		//PLAYER ANIMATION FOR LEFT
+		else if (Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			if (elapsed > 0.15f)
+			{
+				if (playerRect.left == 128)
+				{
+					playerRect.top = 128;
+					playerRect.left = 0;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+				else
+				{
+					playerRect.top = 128;
+					playerRect.left += 64;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+			}
+		}
+		//PLAYER ANIMATION FOR RIGHT
+		else if (Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			if (elapsed > 0.15f)
+			{
+				if (playerRect.left == 128)
+				{
+					playerRect.top = 64;
+					playerRect.left = 0;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+				else
+				{
+					playerRect.top = 64;
+					playerRect.left += 64;
+					s->getSprite().setTextureRect(playerRect);
+					clock.restart();
+				}
+			}
+		}
+
+		s->getSprite().setTextureRect(playerRect);
+		Scene::Update(dt);
+	}
 }
 
 void TutorialMain::Render() {
