@@ -25,6 +25,8 @@ public:
     SAND = 'S',
     STONE = 'T',
     ENEMY = 'n',
+    GRASS = 'G',
+    DIRT = 'D',
     WAYPOINT = '+'
   };
 
