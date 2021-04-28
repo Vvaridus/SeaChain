@@ -99,7 +99,7 @@ void CombatScene::Load() {
 
 		auto healthBanner = makeEntity();
 		healthBanner->addTag("healthUIBar");
-		healthBanner->setPosition(Vector2f(256, 34));
+		healthBanner->setPosition(Vector2f(256, 49));
 		auto healthSprite = healthBanner->addComponent<SpriteComponent>();
 		healthSprite->setTexure(spriteHealth);
 	}
@@ -165,6 +165,22 @@ void CombatScene::Load() {
 		spriteComp->setScaling(Vector2f(4, 4));
 	}
 
+	// Draw text log of whats happening
+	{
+		auto text = makeEntity();
+		text->addTag("textLog");
+		text->setPosition(Vector2f(0.38 * windowSize.x, 0.78 * windowSize.y));
+		//auto textShape = text->addComponent<ShapeComponent>();
+		//textShape->setShape<CircleShape>(15.f);
+		//textShape->getShape().setFillColor(Color::White);
+		//textShape->getShape().setOrigin(Vector2f(7.5, 7.5));
+		auto textBox = text->addComponent<TextComponent>("Let the battle \nbegin!");
+		textBox->setFillColor(Color::White);
+		textBox->setCharSize(32);
+		textBox->setPosition(text->getPosition());
+		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
+	}
+
 	cout << enemy->getPosition() << "\n" << playerMain->getPosition() << endl;
 
 	createButtons();
@@ -191,9 +207,10 @@ void CombatScene::Update(const double& dt) {
 	auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) || dead) {
-		// Go back to previous screen, nullify and change scene
+		 //Go back to previous screen, nullify and change scene
 		changingScene = true;
 		Engine::ChangeScene(&tutorialMain);
+
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
 		// triggertime for a cool down on pressing the key, so it doesn't trigger several times in a second.
@@ -330,19 +347,43 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 	if (beingAttacked == "enemy") {
 		auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
 		enemyHealth->setHealth(enemyHealth->getHealth() - ad.damage);
-		cout << "PLAYER ATTACKING ENEMY: " << ad.attack << " : " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
+		cout << "PLAYER ATTACKING ENEMY: " << ad.attack << " : " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critSuccess << endl;
 		enemyAttack->setHumanAttack(ad.attack);
+		updateLog("Player", "Enemy", ad);
 	}
 	// Enemy AI attacking the Player
 	else if (beingAttacked == "player") {
 		playerHealth->setHealth(playerHealth->getHealth() - ad.damage);
-		cout << "ENEMY ATTACKING PLAYER: " << ad.attack << " : " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critChance << endl;
+		cout << "ENEMY ATTACKING PLAYER: " << ad.attack << " : " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critSuccess << endl;
 		enemyAttack->setEnemyAttack(ad.attack);
+		updateLog("Enemy", "Player", ad);
 	}
 
 	enemyAttack->setHumanHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getHealth());
 	enemyAttack->setHumanMaxHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getMaxHealth());
-	playerTurn = !playerTurn;
+	playerTurn = !playerTurn;	
+}
+
+void CombatScene::updateLog(string attacking, string defending, AttackData ad) {
+	auto textBox = this->ents.find("textLog")[0];
+	auto text = textBox->GetCompatibleComponent<TextComponent>()[0];
+	string move;
+
+	switch (ad.attack) {
+	case attackType::Quick: move = "Quick Attack"; break;
+	case attackType::Normal: move = "Normal Attack"; break;
+	case attackType::Heavy: move = "Heavy Attack"; break;
+	case attackType::Parry: move = "Parry Attack"; break;
+	case attackType::None: move = "Uh oh!"; break;
+	};
+
+	string output = attacking + " Has chosen \n" + move + ".";
+	if (ad.attack != attackType::Parry)
+		output += "\nWhich dealt " + to_string(ad.damage) + "\nto " + defending;
+	if (ad.critSuccess == true)
+		output += " \nwith a successful \ncrit!";
+
+	text->SetText(output);
 }
 
 void CombatScene::updateHealthBars(const double& dt) {

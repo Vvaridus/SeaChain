@@ -31,7 +31,7 @@ protected:
 	void updateHealthBars(const double& dt);
 	void attack(AttackData ad, std::string beingAttacked);
 	AttackData getAttackStats(attackType type, std::string attacker);
-
+	void updateLog(std::string attacking, std::string defending, AttackData ad);
 	void createButtons();
 	void nullify();
 };
@@ -40,9 +40,9 @@ class AttackData {
 public:
 	CombatScene::attackType attack;
 	int damage;
-	bool parryChance;
-	bool critChance;
+	bool parrySuccess;
+	bool critSuccess;
 	AttackData() = default;
-	AttackData(CombatScene::attackType move, int dam, bool parry, bool crit) : attack(move), damage(dam), parryChance(parry), critChance(crit) {}
+	AttackData(CombatScene::attackType move, int dam, bool parry, bool crit) : attack(move), damage(dam), parrySuccess(parry), critSuccess(crit) {}
 };
 
