@@ -11,11 +11,13 @@ public:
 
   void Update(const double& dt) override;
 
+  void checkEventPresses(const double& dt);
+
   void updateHealthBars(const double& dt);
 
   void Render() override;
 
-  void createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles);
+  void createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles, std::string tag);
 
   int randomNumber(int min, int max);
 };

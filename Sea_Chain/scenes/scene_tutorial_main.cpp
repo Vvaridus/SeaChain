@@ -50,14 +50,14 @@ void TutorialMain::Load() {
 
 	// create basic world textures
 	{
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::findTiles(ls::GRASS));
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::findTiles(ls::SAND));
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::findTiles(ls::DIRT));
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE));
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER));
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::findTiles(ls::GRASS), "grass");
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::findTiles(ls::SAND), "sand");
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::findTiles(ls::DIRT), "dirt");
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE), "stone");
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER), "water");
 	}
 
-	// add extra detail textures
+	// add extra entities rocks, skeletons, trees
 	{
 
 		// This will draw a tree over GRASS tiles
@@ -73,7 +73,7 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), randomTiles);
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), randomTiles, "tree");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -90,7 +90,7 @@ void TutorialMain::Load() {
 		}
 
 
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles);
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles, "rock");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -106,7 +106,7 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), randomTiles);
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), randomTiles, "skeleton");
 		randomTiles.clear();
 		tileList.clear();
 	}
@@ -223,127 +223,148 @@ void TutorialMain::Update(const double& dt) {
 		Engine::ChangeScene(&combat);
 	}
 
+	if (!changingScenes)
+	{
+		// Movement annimation
+		{
+			auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
+			static sf::Clock clock;
+			float elapsed = clock.getElapsedTime().asSeconds();
+
+			//PLAYER ANIMATION FOR UP
+			if (Keyboard::isKeyPressed(sf::Keyboard::W))
+			{
+				if (elapsed > 0.2f)
+				{
+					if (playerRect.left == 128)
+					{
+						playerRect.top = 192;
+						playerRect.left = 64;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+					else
+					{
+						playerRect.top = 192;
+						playerRect.left += 64;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+				}
+			}
+			//PLAYER ANIMATION FOR DOWN
+			else if (Keyboard::isKeyPressed(sf::Keyboard::S))
+			{
+				if (elapsed > 0.2f)
+				{
+					if (playerRect.left == 128)
+					{
+						playerRect.top = 0;
+						playerRect.left = 64;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+					else
+					{
+						playerRect.top = 0;
+						playerRect.left += 64;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+				}
+			}
+			//PLAYER ANIMATION FOR LEFT
+			else if (Keyboard::isKeyPressed(sf::Keyboard::A))
+			{
+				if (elapsed > 0.15f)
+				{
+					if (playerRect.left == 128)
+					{
+						playerRect.top = 128;
+						playerRect.left = 0;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+					else
+					{
+						playerRect.top = 128;
+						playerRect.left += 64;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+				}
+			}
+			//PLAYER ANIMATION FOR RIGHT
+			else if (Keyboard::isKeyPressed(sf::Keyboard::D))
+			{
+				if (elapsed > 0.15f)
+				{
+					if (playerRect.left == 128)
+					{
+						playerRect.top = 64;
+						playerRect.left = 0;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+					else
+					{
+						playerRect.top = 64;
+						playerRect.left += 64;
+						s->getSprite().setTextureRect(playerRect);
+						clock.restart();
+					}
+				}
+			}
+
+			s->getSprite().setTextureRect(playerRect);
+		}
+
+		checkEventPresses(dt);
+		updateHealthBars(dt);
+		Scene::Update(dt);
+	}
+}
+
+void TutorialMain::checkEventPresses(const double& dt) {
 	static sf::Clock bedCooldown;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-		// triggertime for a cool down on pressing the key, so it doesn't trigger several times in a second.
-		if (bedCooldown.getElapsedTime().asSeconds() > 10)
+		auto bed = this->ents.find("bed")[0];
+		auto skeleton = this->ents.find("skeleton");
+
+		// check the player is close to the bed
+		if (length(player->getPosition() - bed->getPosition()) < 50)
 		{
-			// get the inventory, create the weapon, add it and set it to using.
-			auto bed = this->ents.find("bed")[0];
-			if (length(player->getPosition() - bed->getPosition()) < 50)
+			// clock counter as a cooldown for using the bed, can only use it once ever 1 minute (its in seconds)
+			if (bedCooldown.getElapsedTime().asSeconds() > 60)
 			{
+				// get player health component and set the health to max health.
 				auto ins = Data::getInstance();
 				auto player = ins->getPlayer();
 				auto health = player->GetCompatibleComponent<HealthComponent>()[0];
 				health->setHealth(health->getMaxHealth());
+				// reset the cooldown clock.
 				bedCooldown.restart();
 			}
 		}
-		cout << bedCooldown.getElapsedTime().asSeconds() << endl;
+		// loop through all skeleton entities on the map and check if player is within range
+		for (auto s : skeleton) {
+			if (length(player->getPosition() - s->getPosition()) < 50) {
+				// get inventory component, create the weapon and add it to the inventory
+				std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
+				auto wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100);
+				ic->addWeapon(wep);
+				ic->setUsing(0);
+				// delete the skeleton as it's been looted
+				s->setForDelete();
+			}
+		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
 		auto ins = Data::getInstance();
 		auto player = ins->getPlayer();
 		auto health = player->GetCompatibleComponent<HealthComponent>()[0];
 		health->setHealth(5);
-	}
-
-
-	if (!changingScenes)
-	{
-		auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
-		static sf::Clock clock;
-		float elapsed = clock.getElapsedTime().asSeconds();
-
-		//PLAYER ANIMATION FOR UP
-		if (Keyboard::isKeyPressed(sf::Keyboard::W))
-		{
-			if (elapsed > 0.2f)
-			{
-				if (playerRect.left == 128)
-				{
-					playerRect.top = 192;
-					playerRect.left = 64;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-				else
-				{
-					playerRect.top = 192;
-					playerRect.left += 64;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-			}
-		}
-		//PLAYER ANIMATION FOR DOWN
-		else if (Keyboard::isKeyPressed(sf::Keyboard::S))
-		{
-			if (elapsed > 0.2f)
-			{
-				if (playerRect.left == 128)
-				{
-					playerRect.top = 0;
-					playerRect.left = 64;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-				else
-				{
-					playerRect.top = 0;
-					playerRect.left += 64;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-			}
-		}
-		//PLAYER ANIMATION FOR LEFT
-		else if (Keyboard::isKeyPressed(sf::Keyboard::A))
-		{
-			if (elapsed > 0.15f)
-			{
-				if (playerRect.left == 128)
-				{
-					playerRect.top = 128;
-					playerRect.left = 0;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-				else
-				{
-					playerRect.top = 128;
-					playerRect.left += 64;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-			}
-		}
-		//PLAYER ANIMATION FOR RIGHT
-		else if (Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			if (elapsed > 0.15f)
-			{
-				if (playerRect.left == 128)
-				{
-					playerRect.top = 64;
-					playerRect.left = 0;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-				else
-				{
-					playerRect.top = 64;
-					playerRect.left += 64;
-					s->getSprite().setTextureRect(playerRect);
-					clock.restart();
-				}
-			}
-		}
-
-		s->getSprite().setTextureRect(playerRect);
-		updateHealthBars(dt);
-		Scene::Update(dt);
 	}
 }
 
@@ -364,7 +385,7 @@ void TutorialMain::Render() {
 	Scene::Render();
 }
 
-void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles)
+void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles, std::string tag)
 {
 	//Tile Texture
 	Texture worldSpriteSheet;
@@ -375,6 +396,7 @@ void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vect
 		auto pos = ls::getTilePosition(t);
 		auto e = makeEntity();
 		e->setPosition(pos);
+		e->addTag(tag);
 		auto t = e->addComponent<SpriteComponent>();
 		t->setTexure(worldSheet);
 	}
