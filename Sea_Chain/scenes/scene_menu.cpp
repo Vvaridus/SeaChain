@@ -8,9 +8,13 @@
 #include <SFML/Graphics.hpp>
 #include "../components/cmp_button.h"
 #include "../gameData.h"
+#include <SFML/Audio/Music.hpp>
 
 using namespace std;
 using namespace sf;
+
+static sf::Music music;
+static int volumeMusic = 100;
 
 std::shared_ptr<ButtonComponent> btnStart;
 std::shared_ptr<ButtonComponent> btnEnd;
@@ -24,6 +28,12 @@ void MenuScene::Load() {
 
     auto ins = Data::getInstance();
     auto debug = ins->getDebug();
+
+    
+    music.openFromFile("resources/sound/Pirate_1.wav");
+    music.setVolume(volumeMusic);
+    music.play();
+    music.setLoop(true);
 
     // Display background
     {

@@ -20,9 +20,6 @@ using namespace sf;
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> enemy;
 
-static sf::Music music;
-static int volumeMusic = 100;
-
 static Image playerImage;
 static Texture playerTexture;
 static IntRect playerRect = IntRect(64, 0, 64, 64);
@@ -40,10 +37,7 @@ void TutorialMain::Load() {
 	enemyImage.loadFromFile("resources/SeaChainEnemy.png");
 	enemyTexture.loadFromImage(enemyImage);
 
-	music.openFromFile("resources/sound/Pirate_1.wav");
-	music.setVolume(volumeMusic);
-	music.play();
-	music.setLoop(true);
+	
 
 	auto windowSize = Engine::getWindowSize();
 	auto ho = windowSize.y - (ls::getHeight() * 64.f);
