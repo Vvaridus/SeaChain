@@ -11,6 +11,7 @@ void InventoryComponent::update(double dt) {
 InventoryComponent::InventoryComponent(Entity* p)
     : Component(p) {
     itemCount = 0;
+    itemUsing = -1;
 }
 
 const int& InventoryComponent::size() const {

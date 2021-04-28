@@ -26,6 +26,9 @@ static int volumeMusic = 100;
 static Image playerImage;
 static Texture playerTexture;
 static IntRect playerRect = IntRect(64, 0, 64, 64);
+static Image enemyImage;
+static Texture enemyTexture;
+static IntRect enemyRect = IntRect(0, 0, 64, 64);
 
 
 void TutorialMain::Load() {
@@ -34,6 +37,8 @@ void TutorialMain::Load() {
 
 	playerImage.loadFromFile("resources/SeaChainPlayer.png");
 	playerTexture.loadFromImage(playerImage);
+	enemyImage.loadFromFile("resources/SeaChainEnemy.png");
+	enemyTexture.loadFromImage(enemyImage);
 
 	music.openFromFile("resources/sound/Pirate_1.wav");
 	music.setVolume(volumeMusic);
@@ -168,10 +173,10 @@ void TutorialMain::Load() {
 		enemy->addTag("enemy");
 		enemy->setPosition(Vector2f(432, 250));
 
-		auto s = enemy->addComponent<ShapeComponent>();
-		s->setShape<sf::CircleShape>(25);
-		s->getShape().setFillColor(sf::Color::Green);
-		s->getShape().setOrigin(12.5, 12.5);
+		auto s = enemy->addComponent<SpriteComponent>();
+		s->getSprite().setTexture(enemyTexture);
+		s->getSprite().setTextureRect(enemyRect);
+		s->getSprite().setOrigin(32.f, 32.f);
 	}
 
 	// Draw the UI overlay
