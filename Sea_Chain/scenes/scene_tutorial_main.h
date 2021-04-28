@@ -11,7 +11,7 @@ public:
 
   void Update(const double& dt) override;
 
-  void checkEventPresses(const double& dt);
+  void checkEventPresses(const double& dt, bool& changingScenes);
 
   void updateHealthBars(const double& dt);
 

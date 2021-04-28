@@ -146,7 +146,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(120.f);
+			b->setSpeed(600.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -200,7 +200,7 @@ void TutorialMain::Load() {
 	}
 
 	//Simulate long loading times
-	std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
 
 	setLoaded(true);
@@ -219,7 +219,7 @@ void TutorialMain::Update(const double& dt) {
 		auto ins = Data::getInstance();
 		ins->setPlayer(player);
 		changingScenes = true;
-
+		enemy->setForDelete();
 		Engine::ChangeScene(&combat);
 	}
 
@@ -319,13 +319,12 @@ void TutorialMain::Update(const double& dt) {
 			s->getSprite().setTextureRect(playerRect);
 		}
 
-		checkEventPresses(dt);
-		updateHealthBars(dt);
+		checkEventPresses(dt, changingScenes);
 		Scene::Update(dt);
 	}
 }
 
-void TutorialMain::checkEventPresses(const double& dt) {
+void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 	static sf::Clock bedCooldown;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
@@ -333,10 +332,10 @@ void TutorialMain::checkEventPresses(const double& dt) {
 		auto skeleton = this->ents.find("skeleton");
 
 		// check the player is close to the bed
-		if (length(player->getPosition() - bed->getPosition()) < 50)
+		if (length(player->getPosition() - bed->getPosition()) < ls::getTileSize())
 		{
 			// clock counter as a cooldown for using the bed, can only use it once ever 1 minute (its in seconds)
-			if (bedCooldown.getElapsedTime().asSeconds() > 60)
+			if (bedCooldown.getElapsedTime().asSeconds() > 5)
 			{
 				// get player health component and set the health to max health.
 				auto ins = Data::getInstance();
@@ -345,18 +344,22 @@ void TutorialMain::checkEventPresses(const double& dt) {
 				health->setHealth(health->getMaxHealth());
 				// reset the cooldown clock.
 				bedCooldown.restart();
+				changingScenes = true;
+				Engine::ChangeScene(&tutorialMain);
 			}
 		}
 		// loop through all skeleton entities on the map and check if player is within range
-		for (auto s : skeleton) {
-			if (length(player->getPosition() - s->getPosition()) < 50) {
-				// get inventory component, create the weapon and add it to the inventory
-				std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
-				auto wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100);
-				ic->addWeapon(wep);
-				ic->setUsing(0);
-				// delete the skeleton as it's been looted
-				s->setForDelete();
+		if(!changingScenes){
+			for (auto s : skeleton) {
+				if (length(player->getPosition() - s->getPosition()) < ls::getTileSize()) {
+					// get inventory component, create the weapon and add it to the inventory
+					std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
+					auto wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100);
+					ic->addWeapon(wep);
+					ic->setUsing(0);
+					// delete the skeleton as it's been looted
+					s->setForDelete();
+				}
 			}
 		}
 	}

@@ -186,7 +186,7 @@ void CombatScene::Load() {
 	createButtons();
 
 	//Simulate long loading times
-	std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
 
 	setLoaded(true);
@@ -205,64 +205,55 @@ void CombatScene::Update(const double& dt) {
 	auto ins = Data::getInstance();
 	auto player = ins->getPlayer();
 	auto enemyAttack = enemy->GetCompatibleComponent<EnemyAttackComponent>()[0];
+	std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) || dead) {
-		 //Go back to previous screen, nullify and change scene
+	// if enemy or user dead return to main island
+	if (dead) {
 		changingScene = true;
 		Engine::ChangeScene(&tutorialMain);
 
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-		// triggertime for a cool down on pressing the key, so it doesn't trigger several times in a second.
-		static float triggertime = 0.0f;
-		triggertime -= dt;
-		if (triggertime <= 0)
-		{
-			// get the inventory, create the weapon, add it and set it to using.
-			std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
-			wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100);
-			ic->addWeapon(wep);
-			ic->setUsing(0);
-
-			cout << "Added item" << endl;
-			// set the cooldown
-			triggertime = .5f;
-		}
-	}
-	else if (btnQuickAttack->isPressed()) {
-		// Get the attack stats with the quick move
-		at = getAttackStats(attackType::Quick, "player");
-		// Attack the enemy with the attack stats
-		attack(at, "enemy");
-	}
-	else if (btnNormalAttack->isPressed()) {
-		// Get the attack stats with the quick move
-		at = getAttackStats(attackType::Normal, "player");
-		// Attack the enemy with the attack stats
-		attack(at, "enemy");
-	}
-	else if (btnHeavyAttack->isPressed()) {
-		// Get the attack stats with the quick move
-		at = getAttackStats(attackType::Heavy, "player");
-		// Attack the enemy with the attack stats
-		attack(at, "enemy");
-	}
-	else if (btnParry->isPressed()) {
-		// Get the attack stats with the quick move
-		at = getAttackStats(attackType::Parry, "player");
-		// Attack the enemy with the attack stats
-		attack(at, "enemy");
-	}
-	// handle enemy turn.
-	if (!playerTurn) {
-		// get the attack stats and decide the move to make
-		at = getAttackStats(attackType::None, "enemy");
-		// Attack the player with the attack stats
-		attack(at, "player");
+	// if user has no weapon go back to main island
+	if (ic->getUsing() < 0) {
+		changingScene = true;
+		Engine::ChangeScene(&tutorialMain);
 	}
 
 	if (!changingScene)
 	{
+		if (btnQuickAttack->isPressed()) {
+			// Get the attack stats with the quick move
+			at = getAttackStats(attackType::Quick, "player");
+			// Attack the enemy with the attack stats
+			attack(at, "enemy");
+		}
+		else if (btnNormalAttack->isPressed()) {
+			// Get the attack stats with the quick move
+			at = getAttackStats(attackType::Normal, "player");
+			// Attack the enemy with the attack stats
+			attack(at, "enemy");
+		}
+		else if (btnHeavyAttack->isPressed()) {
+			// Get the attack stats with the quick move
+			at = getAttackStats(attackType::Heavy, "player");
+			// Attack the enemy with the attack stats
+			attack(at, "enemy");
+		}
+		else if (btnParry->isPressed()) {
+			// Get the attack stats with the quick move
+			at = getAttackStats(attackType::Parry, "player");
+			// Attack the enemy with the attack stats
+			attack(at, "enemy");
+		}
+		// handle enemy turn.
+		if (!playerTurn) {
+			// get the attack stats and decide the move to make
+			at = getAttackStats(attackType::None, "enemy");
+			// Attack the player with the attack stats
+			attack(at, "player");
+		}
+
+
 		updateHealthBars(dt);
 		Scene::Update(dt);
 	}
@@ -361,7 +352,7 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 
 	enemyAttack->setHumanHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getHealth());
 	enemyAttack->setHumanMaxHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getMaxHealth());
-	playerTurn = !playerTurn;	
+	playerTurn = !playerTurn;
 }
 
 void CombatScene::updateLog(string attacking, string defending, AttackData ad) {
