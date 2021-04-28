@@ -12,6 +12,7 @@
 #include "../gameData.h"
 #include "../components/cmp_health.h"
 #include <SFML/Audio/Music.hpp>
+#include <random>
 
 using namespace std;
 using namespace sf;
@@ -42,19 +43,69 @@ void TutorialMain::Load() {
 	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 64.f);
 	ls::setOffset(Vector2f(0, ho));
 
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::GRASS);
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::SAND);
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::DIRT);
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::STONE);
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::WATER);
-	
-	//This will draw a tree over GRASS tiles
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), ls::GRASS);
-	//This will draw a rock over STONE tiles
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), ls::STONE);
-	//This will draw a skeliton on DIRT tiles
-	createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), ls::DIRT);
-			
+	// create basic world textures
+	{
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::findTiles(ls::GRASS));
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::findTiles(ls::SAND));
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::findTiles(ls::DIRT));
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE));
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER));
+	}
+	// add extra detail textures
+	{
+		// to shuffle the list randomly
+		std::random_device rd;
+		auto rng = std::default_random_engine{ rd() };
+
+		// This will draw a tree over GRASS tiles
+		// Get a list of all grass tiles and then shuffle the vector
+		// get a random numberOfTiles of 0-80% of the vector size
+		// then get a random tile from the list and add that to a vector to be set to a tree.
+		auto tileList = ls::findTiles(ls::GRASS);
+		std::shuffle(std::begin(tileList), std::end(tileList), rng);
+		std::vector<sf::Vector2ul> randomTiles;
+		int numberOfTiles = randomNumber(0, 0.8 * (tileList.size()-1));
+		for (int i = 0; i < numberOfTiles; i++) {
+			int rand = randomNumber(0, tileList.size() - 1);
+			randomTiles.push_back(tileList[rand]);
+		}
+
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), randomTiles);
+		randomTiles.clear();
+		tileList.clear();
+
+		// This will draw a rock over STONE tiles
+		// Get a list of all stone tiles and then shuffle the vector
+		// get a random numberOfTiles of 0-40% of the vector size
+		// then get a random tile from the list and add that to a vector to be set to a rock.
+		tileList = ls::findTiles(ls::STONE);
+		std::shuffle(std::begin(tileList), std::end(tileList), rng);
+		numberOfTiles = randomNumber(0, 0.4 * (tileList.size() - 1));
+		for (int i = 0; i < numberOfTiles; i++) {
+			int rand = randomNumber(0, tileList.size() - 1);
+			randomTiles.push_back(tileList[rand]);
+		}
+
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles);
+		randomTiles.clear();
+		tileList.clear();
+
+		// This will draw a skeliton on DIRT tiles
+		// Get a list of all dirt tiles and then shuffle the vector
+		// get a random numberOfTiles of 0-5% of the vector size
+		// then get a random tile from the list and add that to a vector to be set to a tree.
+		tileList = ls::findTiles(ls::DIRT);
+		std::shuffle(std::begin(tileList), std::end(tileList), rng);
+		numberOfTiles = randomNumber(0, 0.05 * (tileList.size() - 1));
+		for (int i = 0; i < numberOfTiles; i++) {
+			int rand = randomNumber(0, tileList.size() - 1);
+			randomTiles.push_back(tileList[rand]);
+		}
+
+		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), randomTiles);
+		randomTiles.clear();
+		tileList.clear();
+	}
 	// Create player
 	{
 		auto ins = Data::getInstance();
@@ -72,7 +123,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(120.f);
+			b->setSpeed(600.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -93,7 +144,7 @@ void TutorialMain::Load() {
 	{
 		enemy = makeEntity();
 		enemy->addTag("enemy");
-		enemy->setPosition(Vector2f(432, 100));
+		enemy->setPosition(Vector2f(432, 250));
 
 		auto s = enemy->addComponent<ShapeComponent>();
 		s->setShape<sf::CircleShape>(25);
@@ -226,14 +277,13 @@ void TutorialMain::Render() {
 	Scene::Render();
 }
 
-void TutorialMain::createTexture(std::string path, sf::IntRect bounds, ls::TILES tile)
+void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles)
 {
 	//Tile Texture
 	Texture worldSpriteSheet;
 	worldSpriteSheet.loadFromFile(path, bounds);
 
 	shared_ptr<Texture> worldSheet = make_shared<Texture>(worldSpriteSheet);
-	auto tiles = ls::findTiles(tile);
 	for (auto t : tiles) {		
 		auto pos = ls::getTilePosition(t);
 		auto e = makeEntity();
@@ -241,4 +291,13 @@ void TutorialMain::createTexture(std::string path, sf::IntRect bounds, ls::TILES
 		auto t = e->addComponent<SpriteComponent>();
 		t->setTexure(worldSheet);
 	}
+}
+
+int TutorialMain::randomNumber(int min, int max) {
+	// Seed the random_device with the random engine and get a uniform_real_distribution between the min and max value
+	std::random_device rd;
+	std::default_random_engine engine(rd());
+	std::uniform_int_distribution<int> damage(min, max);
+
+	return damage(engine);
 }

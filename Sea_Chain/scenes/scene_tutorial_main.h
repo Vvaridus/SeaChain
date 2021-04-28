@@ -13,5 +13,7 @@ public:
 
   void Render() override;
 
-  void createTexture(std::string path, sf::IntRect bounds, ls::TILES tile);
+  void createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles);
+
+  int randomNumber(int min, int max);
 };
