@@ -93,7 +93,7 @@ void TutorialMain::Load() {
 		randomTiles.clear();
 		tileList.clear();
 
-		// This will draw a skeliton on DIRT tiles
+		// This will draw a skeleton on DIRT tiles
 		// Get a list of all dirt tiles and then shuffle the vector
 		// get a random numberOfTiles of 0-5% of the vector size
 		// then get a random tile from the list and add that to a vector to be set to a tree.

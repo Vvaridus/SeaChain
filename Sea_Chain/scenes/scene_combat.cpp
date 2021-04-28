@@ -16,6 +16,7 @@
 #include "../components/cmp_health.h"
 #include "../components/cmp_enemy_attack.h"
 #include <random>
+#include <SFML/Audio.hpp>
 
 using namespace std;
 using namespace sf;
@@ -39,11 +40,22 @@ static enum class attackType {
 	Parry
 };
 
+static sf::SoundBuffer sfxQuickAttack;
+static sf::SoundBuffer sfxNormalAttack;
+static sf::SoundBuffer sfxHeavyAttack;
+static sf::SoundBuffer sfxParryAttack;
+static sf::Sound sound;
+
 void CombatScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	playerTurn = true;
 	dead = false;
+	
+	sfxQuickAttack.loadFromFile("resources/sound/SeaChainQuickSlash.wav");
+	sfxNormalAttack.loadFromFile("resources/sound/SeaChainNormalAttack.wav");
+	sfxHeavyAttack.loadFromFile("resources/sound/SeaChainHeavyAttack.wav");
+	sfxParryAttack.loadFromFile("resources/sound/SeaChainParry.wav");
 
 	auto windowSize = Engine::getWindowSize();
 
@@ -222,24 +234,41 @@ void CombatScene::Update(const double& dt) {
 	if (!changingScene)
 	{
 		if (btnQuickAttack->isPressed()) {
+			//play attack sound
+			sound.setBuffer(sfxQuickAttack);
+			sound.setVolume(100);
+			sound.play();
 			// Get the attack stats with the quick move
 			at = getAttackStats(attackType::Quick, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
+			
 		}
 		else if (btnNormalAttack->isPressed()) {
+			//play attack sound
+			sound.setBuffer(sfxNormalAttack);
+			sound.setVolume(100);
+			sound.play();
 			// Get the attack stats with the quick move
 			at = getAttackStats(attackType::Normal, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
 		}
 		else if (btnHeavyAttack->isPressed()) {
+			//play attack sound
+			sound.setBuffer(sfxHeavyAttack);
+			sound.setVolume(100);
+			sound.play();
 			// Get the attack stats with the quick move
 			at = getAttackStats(attackType::Heavy, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
 		}
 		else if (btnParry->isPressed()) {
+			//play attack sound
+			sound.setBuffer(sfxParryAttack);
+			sound.setVolume(100);
+			sound.play();
 			// Get the attack stats with the quick move
 			at = getAttackStats(attackType::Parry, "player");
 			// Attack the enemy with the attack stats
