@@ -13,7 +13,7 @@ public:
 
   void checkEventPresses(const double& dt, bool& changingScenes);
 
-  void updateHealthBars(const double& dt);
+  void updateHealthBars(const double& dt, bool changingScenes);
 
   void Render() override;
 

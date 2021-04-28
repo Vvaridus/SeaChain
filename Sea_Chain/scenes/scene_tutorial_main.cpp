@@ -137,7 +137,6 @@ void TutorialMain::Load() {
 	// Create player
 	{
 		auto ins = Data::getInstance();
-		std::shared_ptr<HealthComponent> h;
 
 		if (ins->getPlayer() == nullptr)
 		{
@@ -145,7 +144,7 @@ void TutorialMain::Load() {
 			player = ins->getPlayer();
 			player->addTag("player");
 			player->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2));
-			h = player->addComponent<HealthComponent>();
+			player->addComponent<HealthComponent>();
 			auto s = player->addComponent<SpriteComponent>();
 			s->getSprite().setTexture(playerTexture);
 			s->getSprite().setTextureRect(playerRect);
@@ -164,7 +163,6 @@ void TutorialMain::Load() {
 			// Add the entity back to the list to be rendered, it was removed earlier.
 			tutorialMain.ents.list.push_back(player);
 		}
-		h = player->GetCompatibleComponent<HealthComponent>()[0];
 	}
 
 	// Create enemies
@@ -324,6 +322,7 @@ void TutorialMain::Update(const double& dt) {
 			s->getSprite().setTextureRect(playerRect);
 		}
 
+		updateHealthBars(dt, changingScenes);
 		checkEventPresses(dt, changingScenes);
 		Scene::Update(dt);
 	}
@@ -376,16 +375,18 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 	}
 }
 
-void TutorialMain::updateHealthBars(const double& dt) {
-	auto ins = Data::getInstance();
-	auto player = ins->getPlayer();
-	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
-	float barWidth;
+void TutorialMain::updateHealthBars(const double& dt, bool changingScenes) {
+	if (!changingScenes) {
+		auto ins = Data::getInstance();
+		auto player = ins->getPlayer();
+		auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
+		float barWidth;
 
-	auto uiBar = this->ents.find("healthUIBar")[0];
-	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
-	barWidth = max((playerHealth->getHealth() / playerHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
-	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
+		auto uiBar = this->ents.find("healthUIBar")[0];
+		auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
+		barWidth = max((playerHealth->getHealth() / playerHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
+		spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
+	}
 }
 
 void TutorialMain::Render() {
