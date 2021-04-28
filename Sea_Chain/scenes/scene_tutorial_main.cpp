@@ -144,7 +144,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(600.f);
+			b->setSpeed(400.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -333,7 +333,7 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 		if (length(player->getPosition() - bed->getPosition()) < ls::getTileSize())
 		{
 			// clock counter as a cooldown for using the bed, can only use it once ever 1 minute (its in seconds)
-			if (bedCooldown.getElapsedTime().asSeconds() > 5)
+			if (bedCooldown.getElapsedTime().asSeconds() > 60)
 			{
 				// get player health component and set the health to max health.
 				auto ins = Data::getInstance();
