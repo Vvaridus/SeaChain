@@ -11,6 +11,8 @@ public:
 
   void Update(const double& dt) override;
 
+  void updateHealthBars(const double& dt);
+
   void Render() override;
 
   void createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles);

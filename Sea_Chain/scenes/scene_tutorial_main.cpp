@@ -40,8 +40,13 @@ void TutorialMain::Load() {
 	music.play();
 	music.setLoop(true);
 
-	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 64.f);
+	auto windowSize = Engine::getWindowSize();
+	auto ho = windowSize.y - (ls::getHeight() * 64.f);
 	ls::setOffset(Vector2f(0, ho));
+
+	// Allow us to randomly shuffle a vector
+	std::random_device rd;
+	auto rng = std::default_random_engine{ rd() };
 
 	// create basic world textures
 	{
@@ -51,11 +56,9 @@ void TutorialMain::Load() {
 		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE));
 		createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER));
 	}
+
 	// add extra detail textures
 	{
-		// to shuffle the list randomly
-		std::random_device rd;
-		auto rng = std::default_random_engine{ rd() };
 
 		// This will draw a tree over GRASS tiles
 		// Get a list of all grass tiles and then shuffle the vector
@@ -64,7 +67,7 @@ void TutorialMain::Load() {
 		auto tileList = ls::findTiles(ls::GRASS);
 		std::shuffle(std::begin(tileList), std::end(tileList), rng);
 		std::vector<sf::Vector2ul> randomTiles;
-		int numberOfTiles = randomNumber(0, 0.8 * (tileList.size()-1));
+		int numberOfTiles = randomNumber(0, 0.8 * (tileList.size() - 1));
 		for (int i = 0; i < numberOfTiles; i++) {
 			int rand = randomNumber(0, tileList.size() - 1);
 			randomTiles.push_back(tileList[rand]);
@@ -86,6 +89,7 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
+
 		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles);
 		randomTiles.clear();
 		tileList.clear();
@@ -106,6 +110,25 @@ void TutorialMain::Load() {
 		randomTiles.clear();
 		tileList.clear();
 	}
+
+	// Add bed to map
+	{
+		auto tileList = ls::findTiles(ls::STONE);
+		std::shuffle(std::begin(tileList), std::end(tileList), rng);
+		std::vector<sf::Vector2ul> randomTiles;
+
+		Texture bedSheet;
+		bedSheet.loadFromFile("resources/Bed.png", IntRect(0, 0, 64, 64));
+
+		shared_ptr<Texture> bedSprite = make_shared<Texture>(bedSheet);
+
+		auto bed = makeEntity();
+		bed->addTag("bed");
+		bed->setPosition(ls::getTilePosition(tileList[randomNumber(0, tileList.size() - 1)]));
+		auto bedSpriteComp = bed->addComponent<SpriteComponent>();
+		bedSpriteComp->setTexure(bedSprite);
+	}
+
 	// Create player
 	{
 		auto ins = Data::getInstance();
@@ -123,7 +146,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(600.f);
+			b->setSpeed(120.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -139,7 +162,6 @@ void TutorialMain::Load() {
 		h = player->GetCompatibleComponent<HealthComponent>()[0];
 	}
 
-
 	// Create enemies
 	{
 		enemy = makeEntity();
@@ -150,6 +172,31 @@ void TutorialMain::Load() {
 		s->setShape<sf::CircleShape>(25);
 		s->getShape().setFillColor(sf::Color::Green);
 		s->getShape().setOrigin(12.5, 12.5);
+	}
+
+	// Draw the UI overlay
+	{
+		// load the sprite
+		Texture mainBanner;
+		mainBanner.loadFromFile("resources/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
+		shared_ptr<Texture> spriteBanner = make_shared<Texture>(mainBanner);
+		Texture healthBar;
+		healthBar.loadFromFile("resources/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
+		shared_ptr<Texture> spriteHealth = make_shared<Texture>(healthBar);
+
+		// set the position, add a tag, add the sprite component with the texture
+		auto banner = makeEntity();
+		banner->addTag("mainBanner");
+		banner->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		auto bannerSprite = banner->addComponent<SpriteComponent>();
+		bannerSprite->setTexure(spriteBanner);
+		bannerSprite->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
+
+		auto healthBanner = makeEntity();
+		healthBanner->addTag("healthUIBar");
+		healthBanner->setPosition(Vector2f(256, 49));
+		auto healthSprite = healthBanner->addComponent<SpriteComponent>();
+		healthSprite->setTexure(spriteHealth);
 	}
 
 	//Simulate long loading times
@@ -175,6 +222,33 @@ void TutorialMain::Update(const double& dt) {
 
 		Engine::ChangeScene(&combat);
 	}
+
+	static sf::Clock bedCooldown;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+		// triggertime for a cool down on pressing the key, so it doesn't trigger several times in a second.
+		if (bedCooldown.getElapsedTime().asSeconds() > 10)
+		{
+			// get the inventory, create the weapon, add it and set it to using.
+			auto bed = this->ents.find("bed")[0];
+			if (length(player->getPosition() - bed->getPosition()) < 50)
+			{
+				auto ins = Data::getInstance();
+				auto player = ins->getPlayer();
+				auto health = player->GetCompatibleComponent<HealthComponent>()[0];
+				health->setHealth(health->getMaxHealth());
+				bedCooldown.restart();
+			}
+		}
+		cout << bedCooldown.getElapsedTime().asSeconds() << endl;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
+		auto ins = Data::getInstance();
+		auto player = ins->getPlayer();
+		auto health = player->GetCompatibleComponent<HealthComponent>()[0];
+		health->setHealth(5);
+	}
+
 
 	if (!changingScenes)
 	{
@@ -268,8 +342,21 @@ void TutorialMain::Update(const double& dt) {
 		}
 
 		s->getSprite().setTextureRect(playerRect);
+		updateHealthBars(dt);
 		Scene::Update(dt);
 	}
+}
+
+void TutorialMain::updateHealthBars(const double& dt) {
+	auto ins = Data::getInstance();
+	auto player = ins->getPlayer();
+	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
+	float barWidth;
+
+	auto uiBar = this->ents.find("healthUIBar")[0];
+	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
+	barWidth = max((playerHealth->getHealth() / playerHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
+	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
 }
 
 void TutorialMain::Render() {
@@ -284,7 +371,7 @@ void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vect
 	worldSpriteSheet.loadFromFile(path, bounds);
 
 	shared_ptr<Texture> worldSheet = make_shared<Texture>(worldSpriteSheet);
-	for (auto t : tiles) {		
+	for (auto t : tiles) {
 		auto pos = ls::getTilePosition(t);
 		auto e = makeEntity();
 		e->setPosition(pos);
