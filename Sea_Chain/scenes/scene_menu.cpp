@@ -14,7 +14,7 @@ using namespace std;
 using namespace sf;
 
 static sf::Music music;
-static int volumeMusic = 100;
+static int volumeMusic = 50;
 
 std::shared_ptr<ButtonComponent> btnStart;
 std::shared_ptr<ButtonComponent> btnEnd;
