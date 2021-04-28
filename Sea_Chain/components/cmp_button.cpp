@@ -88,3 +88,77 @@ const bool ButtonComponent::isPressed() const {
 		return false;
 }
 
+void CheckboxComponent::update(double dt) {
+
+	// Get the mouse position based off of game window
+	//sf::Vector2i mousePos = sf::Mouse::getPosition(Engine::GetWindow()); // this does not get position relative to scale
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(Engine::GetWindow());
+	sf::Vector2f worldPos = Engine::GetWindow().mapPixelToCoords(pixelPos); // this gets world pos which is mouse position relative to scale
+	// get top left of the checkbox (This is presuming origin is always middle. Could do with rework)
+	sf::Vector2f topLeft = sf::Vector2f(_pos.x - (_size.x / 2), _pos.y - (_size.y / 2));
+
+	// Cool down on pressing
+	static float triggertime = 0.0f;
+	triggertime -= dt;
+
+	if (triggertime <= 0) {
+		// Check mouse is within the checkbox
+		if (_allowInteraction)
+		{
+			if (worldPos.x > topLeft.x && worldPos.x < (topLeft.x + _size.x) &&
+				worldPos.y > topLeft.y && worldPos.y < (topLeft.y + _size.y)) {
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					// Set button to active
+					_state = !_state;
+
+					triggertime = 1.2f;
+				}
+			}
+		}
+	}
+}
+
+void CheckboxComponent::render() { }
+
+// Function for setting the position of the checkbox and size of the checkbox (Or just Checkbox, doesn't require shape)
+// Origin position must be the centre.
+void CheckboxComponent::setBounds(sf::Vector2f position, sf::Vector2f size)
+{
+	_pos = position;
+	_size = size;
+}
+
+// Origin position must be the centre.
+void CheckboxComponent::setBounds(sf::Vector2f position)
+{
+	_pos = position;
+}
+
+CheckboxComponent::CheckboxComponent(Entity* const p)
+	: Component(p), _allowInteraction(true), _state(false) {
+}
+
+// For getting ID
+const std::string& CheckboxComponent::getID() const {
+	return _id;
+}
+
+// For setting ID
+void CheckboxComponent::setID(std::string id) {
+	_id = id;
+}
+
+void CheckboxComponent::setInteraction(bool interaction) {
+	_allowInteraction = interaction;
+}
+
+// Check if checkbox is checked
+const bool CheckboxComponent::isChecked() const {
+	// if the state is active return true
+
+	// if there is a read access violation
+	// The checkbox does not exist or not defined properly.
+	return _state;
+}
