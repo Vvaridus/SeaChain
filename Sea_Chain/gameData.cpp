@@ -15,6 +15,8 @@ std::string Data::fileFolder;
 // the current log file of the session
 std::string Data::currentLogFile = "";
 bool Data::debugMode;
+int Data::soundVolume;
+sf::Music Data::music;
 
 // method to get the current instance or create one
 std::shared_ptr<Data> Data::getInstance() {
@@ -54,6 +56,40 @@ bool Data::getDebug() {
 	return debugMode;
 }
 
+void Data::setMusicFile(std::string path) {
+	music.openFromFile(path);
+}
+
+void Data::setMusicLoop(bool loop) {
+	music.setLoop(loop);
+}
+
+void Data::playMusic(bool play)
+{
+	if (play)
+		music.play();
+	else if (!play)
+		music.stop();
+}
+
+void Data::setMusicVolume(float volume) {
+	music.setVolume((volume * 10.f));
+}
+
+float Data::getMusicVolume() {
+	return (music.getVolume() / 10);
+}
+
+void Data::setSoundVolume(float volume) {
+	soundVolume = (volume * 10.f);
+}
+
+float Data::getSoundVolume() {
+	return (soundVolume / 10);
+}
+
+
+
 Data::Data() {
 	// to hold the address of a pointer that SHGetKnownFolderPath returns for the known Folder.
 	PWSTR path_tmp; 
@@ -67,4 +103,6 @@ Data::Data() {
 	player = nullptr;
 	fileFolder = ".seachain";
 	debugMode = true;
+	soundVolume = 50.f;
+	music.setVolume(50.f);
 }

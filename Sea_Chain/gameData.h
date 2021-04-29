@@ -4,6 +4,7 @@
 #include "engine.h"
 #include <filesystem>
 #include <fstream>
+#include <SFML/Audio/Music.hpp>
 
 class Data
 {
@@ -14,6 +15,9 @@ private:
 	static std::string fileFolder;
 	static std::string currentLogFile;
 	static bool debugMode;
+	static int soundVolume;
+	static int musicVolume;
+	static sf::Music music;
 
 public:
 	Data();
@@ -25,4 +29,11 @@ public:
 	static void setLogFile(std::string logFile);
 	static void setPlayer(std::shared_ptr<Entity> p);
 	static bool getDebug();
+	static void setMusicFile(std::string path);
+	static void setMusicLoop(bool loop);
+	static void playMusic(bool play); // High lights as function definition not found
+	static void setSoundVolume(float volume); // High lights as function definition not found
+	static float getSoundVolume();
+	static void setMusicVolume(float volume);
+	static float getMusicVolume();
 };

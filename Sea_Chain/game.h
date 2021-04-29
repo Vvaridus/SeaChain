@@ -3,9 +3,9 @@
 #include "scenes/scene_tutorial_main.h"
 #include "scenes/scene_menu.h"
 #include "scenes/scene_combat.h"
+#include "scenes/scene_options.h"
 
 extern MenuScene menu;
 extern TutorialMain tutorialMain;
 extern CombatScene combat;
-
-static std::vector<std::shared_ptr<Entity>> passingEnts;
+extern OptionScene options;

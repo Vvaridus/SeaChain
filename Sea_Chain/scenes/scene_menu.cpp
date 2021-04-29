@@ -13,110 +13,127 @@
 using namespace std;
 using namespace sf;
 
-static sf::Music music;
-static int volumeMusic = 50;
-
 std::shared_ptr<ButtonComponent> btnStart;
+std::shared_ptr<ButtonComponent> btnOptions;
 std::shared_ptr<ButtonComponent> btnEnd;
 
 void MenuScene::Load() {
-    //Engine::GetWindow().setFramerateLimit(60);
-    Engine::GetWindow().setVerticalSyncEnabled(true);
-    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
-    sf::Vector2f btnDimentions = Vector2f(500, 150);
+	sf::Vector2f btnDimentions = Vector2f(500, 150);
 
-    auto ins = Data::getInstance();
-    auto debug = ins->getDebug();
+	auto ins = Data::getInstance();
+	auto debug = ins->getDebug();
+	ins->setMusicFile("resources/sound/Pirate_1.wav");
+	ins->playMusic(true);
+	ins->setMusicLoop(true);
 
-    
-    music.openFromFile("resources/sound/Pirate_1.wav");
-    music.setVolume(volumeMusic);
-    music.play();
-    music.setLoop(true);
 
-    // Display background
-    {
-        Texture spritesheet;
-        spritesheet.loadFromFile("resources/textures/mainMenu.png", IntRect(0, 0, 1920, 1080));
+	// Display background
+	{
+		Texture spritesheet;
+		spritesheet.loadFromFile("resources/textures/mainMenu.png", IntRect(0, 0, 1920, 1080));
 
-        shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
+		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
 
-        auto windowSize = Engine::getWindowSize();
+		auto windowSize = Engine::getWindowSize();
 
-        auto background = makeEntity();
-        background->addTag("backgroundImage");
-        background->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
-        auto spriteComp = background->addComponent<SpriteComponent>();
-        spriteComp->setTexure(sprite);
-        spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
-    }
-     //Draw first button (START BUTTON)
-    {
-        auto button = makeEntity();
-        button->addTag("btnStart");
-        button->setPosition(Vector2f(709, 180));
-        auto buttonShape = button->addComponent<ShapeComponent>();
-        buttonShape->setShape<RectangleShape>(btnDimentions);
-        buttonShape->getShape().setFillColor(Color::Transparent);
-        buttonShape->getShape().setOutlineThickness(2);
-        buttonShape->getShape().setOutlineColor(Color::White);
-        button->setVisible(debug);
-    
-        auto bounds = buttonShape->getBounds();
-    
-         btnStart = button->addComponent<ButtonComponent>();
-         Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
-         btnStart->setBounds(xy, Vector2f(bounds->width, bounds->height));
-    }
-    //Draw second button (end BUTTON)
-    {
-        auto button = makeEntity();
-        button->addTag("btnEnd");
-        button->setPosition(Vector2f(709, 800));
-        auto buttonShape = button->addComponent<ShapeComponent>();
-        buttonShape->setShape<RectangleShape>(btnDimentions);
-        buttonShape->getShape().setFillColor(Color::Transparent);
-        buttonShape->getShape().setOutlineThickness(2);
-        buttonShape->getShape().setOutlineColor(Color::White);
-        button->setVisible(debug);
+		auto background = makeEntity();
+		background->addTag("backgroundImage");
+		background->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		auto spriteComp = background->addComponent<SpriteComponent>();
+		spriteComp->setTexure(sprite);
+		spriteComp->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
+	}
+	//Draw first button (START BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnStart");
+		button->setPosition(Vector2f(709, 180));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
 
-        auto bounds = buttonShape->getBounds();
+		auto bounds = buttonShape->getBounds();
 
-        btnEnd = button->addComponent<ButtonComponent>();
-        Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
-        btnEnd->setBounds(xy, Vector2f(bounds->width, bounds->height));
-    }
+		btnStart = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnStart->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw third button (OPTIONS BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnOptions");
+		button->setPosition(Vector2f(709, 600));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
-    setLoaded(true);    
+		auto bounds = buttonShape->getBounds();
+
+		btnOptions = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnOptions->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw fouth button (end BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnEnd");
+		button->setPosition(Vector2f(709, 800));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnEnd = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnEnd->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
+	setLoaded(true);
 }
 
 void MenuScene::Update(const double& dt) {
-    if (btnStart->isPressed()) {      
-        Nullify();
-        Engine::ChangeScene(&tutorialMain);
-    }
-    else if (btnEnd->isPressed()) {
-        Nullify();
-        Engine::GetWindow().close();
-        std::exit(EXIT_SUCCESS);
-    }
+	if (btnStart->isPressed()) {
+		Nullify();
+		Engine::ChangeScene(&tutorialMain);
+	}
+	else if (btnOptions->isPressed()) {
+		Nullify();
+		Engine::ChangeScene(&options);
+	}
+	else if (btnEnd->isPressed()) {
+		Nullify();
+		Engine::GetWindow().close();
+		std::exit(EXIT_SUCCESS);
+	}
 
-    Scene::Update(dt);
+	Scene::Update(dt);
 }
 
 void MenuScene::UnLoad() {
-    Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
-    Nullify();
-    Scene::UnLoad();
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	Nullify();
+	Scene::UnLoad();
 }
 
 // Nullify all buttons with a shared_ptr
 // Otherwise, engine can't delete the components
 // and throws exceptions.
 void MenuScene::Nullify() {
-    btnStart = nullptr;
-    btnEnd = nullptr;
+	btnStart = nullptr;
+	btnOptions = nullptr;
+	btnEnd = nullptr;
 }
