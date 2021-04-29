@@ -3,20 +3,23 @@
 #include <engine.h>
 #include <maths.h>
 #include <LevelSystem.h>
+#include "../gameData.h"
 
 void BasicMovementComponent::update(double dt) {
+	auto ins = Data::getInstance();
+	auto keybinds = ins->getKeybinds();
 	sf::Vector2f direction(0.0f, 0.0f);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second)) {
 		direction.x -= 1.0f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("MOVE_RIGHT")->second)) {
 		direction.x += 1.0f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("MOVE_UP")->second)) {
 		direction.y -= 1.0f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("MOVE_DOWN")->second)) {
 		direction.y += 1.0f;
 	}
 

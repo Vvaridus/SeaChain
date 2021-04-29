@@ -212,18 +212,14 @@ void TutorialMain::UnLoad() {
 
 void TutorialMain::Update(const double& dt) {
 	bool changingScenes = false;
-	if (length(player->getPosition() - enemy->getPosition()) < 50) {
-		auto ins = Data::getInstance();
+	auto ins = Data::getInstance();
+	auto keybinds = ins->getKeybinds();
+	if (length(player->getPosition() - enemy->getPosition()) < 50) {		
 		ins->setPlayer(player);
 		changingScenes = true;
 		enemy->setForDelete();
 		Engine::ChangeScene(&combat);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-	{
-		changingScenes = true;
-		Engine::ChangeScene(&menu);
-	}
+	}	
 
 	if (!changingScenes)
 	{
@@ -234,7 +230,7 @@ void TutorialMain::Update(const double& dt) {
 			float elapsed = clock.getElapsedTime().asSeconds();
 
 			//PLAYER ANIMATION FOR UP
-			if (Keyboard::isKeyPressed(sf::Keyboard::W))
+			if (Keyboard::isKeyPressed(keybinds->find("MOVE_UP")->second))
 			{
 				if (elapsed > 0.2f)
 				{
@@ -255,7 +251,7 @@ void TutorialMain::Update(const double& dt) {
 				}
 			}
 			//PLAYER ANIMATION FOR DOWN
-			else if (Keyboard::isKeyPressed(sf::Keyboard::S))
+			else if (Keyboard::isKeyPressed(keybinds->find("MOVE_DOWN")->second))
 			{
 				if (elapsed > 0.2f)
 				{
@@ -276,7 +272,7 @@ void TutorialMain::Update(const double& dt) {
 				}
 			}
 			//PLAYER ANIMATION FOR LEFT
-			else if (Keyboard::isKeyPressed(sf::Keyboard::A))
+			else if (Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second))
 			{
 				if (elapsed > 0.15f)
 				{
@@ -297,7 +293,7 @@ void TutorialMain::Update(const double& dt) {
 				}
 			}
 			//PLAYER ANIMATION FOR RIGHT
-			else if (Keyboard::isKeyPressed(sf::Keyboard::D))
+			else if (Keyboard::isKeyPressed(keybinds->find("MOVE_RIGHT")->second))
 			{
 				if (elapsed > 0.15f)
 				{
@@ -329,8 +325,10 @@ void TutorialMain::Update(const double& dt) {
 
 void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 	static sf::Clock bedCooldown;
+	auto ins = Data::getInstance();
+	auto keybinds = ins->getKeybinds();
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("INTERACT")->second)) {
 		auto bed = this->ents.find("bed")[0];
 		auto skeleton = this->ents.find("skeleton");
 
@@ -341,7 +339,6 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 			if (bedCooldown.getElapsedTime().asSeconds() > 5)
 			{
 				// get player health component and set the health to max health.
-				auto ins = Data::getInstance();
 				auto player = ins->getPlayer();
 				auto health = player->GetCompatibleComponent<HealthComponent>()[0];
 				health->setHealth(health->getMaxHealth());
@@ -366,11 +363,10 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 			}
 		}
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
-		auto ins = Data::getInstance();
-		auto player = ins->getPlayer();
-		auto health = player->GetCompatibleComponent<HealthComponent>()[0];
-		health->setHealth(5);
+	if (sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second))
+	{
+		changingScenes = true;
+		Engine::ChangeScene(&menu);
 	}
 }
 

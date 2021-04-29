@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <fstream>
 #include <SFML/Audio/Music.hpp>
+#include <map>
+#include <SFML/Window/Keyboard.hpp>
 
 class Data
 {
@@ -18,6 +20,7 @@ private:
 	static int soundVolume;
 	static int musicVolume;
 	static sf::Music music;
+	static std::unordered_map<std::string, sf::Keyboard::Key> keybinds;
 
 public:
 	Data();
@@ -36,4 +39,5 @@ public:
 	static float getSoundVolume();
 	static void setMusicVolume(float volume);
 	static float getMusicVolume();
+	static std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> getKeybinds();
 };

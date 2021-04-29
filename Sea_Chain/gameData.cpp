@@ -17,6 +17,14 @@ std::string Data::currentLogFile = "";
 bool Data::debugMode;
 int Data::soundVolume;
 sf::Music Data::music;
+std::unordered_map<std::string, sf::Keyboard::Key> Data::keybinds {
+	{"MOVE_UP", sf::Keyboard::W},
+	{"MOVE_LEFT", sf::Keyboard::A},
+	{"MOVE_RIGHT", sf::Keyboard::D},
+	{"MOVE_DOWN", sf::Keyboard::S},
+	{"INTERACT", sf::Keyboard::E},
+	{"GO_BACK", sf::Keyboard::Tab}
+};
 
 // method to get the current instance or create one
 std::shared_ptr<Data> Data::getInstance() {
@@ -86,6 +94,11 @@ void Data::setSoundVolume(float volume) {
 
 float Data::getSoundVolume() {
 	return (soundVolume / 10);
+}
+
+std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> Data::getKeybinds()
+{
+	return std::make_shared<std::unordered_map<std::string, sf::Keyboard::Key>>(keybinds);
 }
 
 
