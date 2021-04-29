@@ -25,6 +25,7 @@ void OptionScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	sf::Vector2f btnDimentions = Vector2f(32, 32);
+	sf::Vector2f chkDimentions = Vector2f(64, 64);
 
 	auto ins = Data::getInstance();
 	auto debug = ins->getDebug();
@@ -171,6 +172,56 @@ void OptionScene::Load() {
 		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
 		btnSoundIncrease->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
+	// Draw first checkbox (FULL SCREEN CHECKBOX)
+	{
+		Texture spritesheet;
+		spritesheet.loadFromFile("resources/textures/TickMarker.png", IntRect(0, 0, 61, 47));
+
+		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
+
+		auto checkbox = makeEntity();
+		checkbox->addTag("chkFullscreen");
+		checkbox->setPosition(Vector2f(696, 555));
+		auto chkShape = checkbox->addComponent<ShapeComponent>();
+		chkShape->setShape<RectangleShape>(chkDimentions);
+		chkShape->getShape().setFillColor(Color::Transparent);
+		chkShape->getShape().setOutlineThickness(2);
+		chkShape->getShape().setOutlineColor(Color::White);
+		auto spriteComp = checkbox->addComponent<SpriteComponent>();
+		spriteComp->setTexure(sprite);
+		checkbox->setVisible(debug);
+
+		auto bounds = chkShape->getBounds();
+
+		chkFullscreen = checkbox->addComponent<CheckboxComponent>();
+		Vector2f xy = Vector2f(checkbox->getPosition().x + (bounds->width / 2), (checkbox->getPosition().y + (bounds->height / 2)));
+		chkFullscreen->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	// Draw first checkbox (FULL SCREEN CHECKBOX)
+	{
+		Texture spritesheet;
+		spritesheet.loadFromFile("resources/textures/TickMarker.png", IntRect(0, 0, 61, 47));
+
+		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
+
+		auto checkbox = makeEntity();
+		checkbox->addTag("chkVsync");
+		checkbox->setPosition(Vector2f(831, 555));
+		auto chkShape = checkbox->addComponent<ShapeComponent>();
+		chkShape->setShape<RectangleShape>(chkDimentions);
+		chkShape->getShape().setFillColor(Color::Transparent);
+		chkShape->getShape().setOutlineThickness(2);
+		chkShape->getShape().setOutlineColor(Color::White);
+		auto spriteComp = checkbox->addComponent<SpriteComponent>();
+		spriteComp->setTexure(sprite);
+		checkbox->setVisible(debug);
+
+		auto bounds = chkShape->getBounds();
+
+		chkVsync = checkbox->addComponent<CheckboxComponent>();
+		Vector2f xy = Vector2f(checkbox->getPosition().x + (bounds->width / 2), (checkbox->getPosition().y + (bounds->height / 2)));
+		chkVsync->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
 
 	updateMusicIndicator();
 	updateSoundIndicator();
@@ -213,8 +264,9 @@ void OptionScene::Update(const double& dt) {
 			
 		updateSoundIndicator();
 	}
+	else if (chkFullscreen->isChecked()) {
 
-
+	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
 		Engine::ChangeScene(&menu);
 	}

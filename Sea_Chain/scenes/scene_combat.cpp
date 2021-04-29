@@ -45,6 +45,7 @@ static sf::SoundBuffer sfxNormalAttack;
 static sf::SoundBuffer sfxHeavyAttack;
 static sf::SoundBuffer sfxParryAttack;
 static sf::Sound sound;
+static float volume;
 
 void CombatScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
@@ -56,6 +57,9 @@ void CombatScene::Load() {
 	sfxNormalAttack.loadFromFile("resources/sound/SeaChainNormalAttack.wav");
 	sfxHeavyAttack.loadFromFile("resources/sound/SeaChainHeavyAttack.wav");
 	sfxParryAttack.loadFromFile("resources/sound/SeaChainParry.wav");
+
+	auto ins = Data::getInstance();
+	volume = ins->getSoundVolume();
 
 	auto windowSize = Engine::getWindowSize();
 
@@ -236,7 +240,7 @@ void CombatScene::Update(const double& dt) {
 		if (btnQuickAttack->isPressed()) {
 			//play attack sound
 			sound.setBuffer(sfxQuickAttack);
-			sound.setVolume(100);
+			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
 			parry = false;
@@ -248,7 +252,7 @@ void CombatScene::Update(const double& dt) {
 		else if (btnNormalAttack->isPressed()) {
 			//play attack sound
 			sound.setBuffer(sfxNormalAttack);
-			sound.setVolume(100);
+			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
 			parry = false;
@@ -259,7 +263,7 @@ void CombatScene::Update(const double& dt) {
 		else if (btnHeavyAttack->isPressed()) {
 			//play attack sound
 			sound.setBuffer(sfxHeavyAttack);
-			sound.setVolume(100);
+			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
 			parry = false;
@@ -270,7 +274,7 @@ void CombatScene::Update(const double& dt) {
 		else if (btnParry->isPressed()) {
 			//play attack sound
 			sound.setBuffer(sfxParryAttack);
-			sound.setVolume(100);
+			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
 			parry = false;
