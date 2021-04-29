@@ -101,6 +101,10 @@ std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> Data::getKey
 	return std::make_shared<std::unordered_map<std::string, sf::Keyboard::Key>>(keybinds);
 }
 
+void Data::setKeybind(std::string keybind, sf::Keyboard::Key key) {
+	keybinds.find(keybind)->second = key;
+}
+
 
 
 Data::Data() {

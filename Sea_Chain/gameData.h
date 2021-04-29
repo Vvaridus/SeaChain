@@ -40,4 +40,5 @@ public:
 	static void setMusicVolume(float volume);
 	static float getMusicVolume();
 	static std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> getKeybinds();
+	static void setKeybind(std::string keybind, sf::Keyboard::Key key);
 };
