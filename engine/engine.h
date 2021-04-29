@@ -38,11 +38,13 @@ public:
   static sf::Vector2u getWindowSize();
   static void setVsync(bool b);
   static bool getVsync();
+  static sf::Uint32 getPressedKey();
   static void setFramerate(int fps);
   static bool getFullscreen();
   static void setFullscreen(bool fullscreen);
 
 private:
+    static sf::Uint32 keyPressed;
   static Scene* _activeScene;
   static bool _vsync;
   static bool _fullscreen;

@@ -15,6 +15,7 @@ Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
 bool Engine::_fullscreen = false;
 bool Engine::_vsync = false;
+sf::Uint32 Engine::keyPressed;
 
 static bool loading = false;
 static float loadingspinner = 0.f;
@@ -27,6 +28,7 @@ static Texture _shipSprite;
 static Texture _textSprite;
 // whether or not the loading textures have been loaded.
 static bool _loadTextures;
+
 
 void loadTextures() {
 	// load ship texture
@@ -139,6 +141,9 @@ void Engine::Start(unsigned int width, unsigned int height,
 			if (event.type == Event::Closed) {
 				window.close();
 			}
+			if (event.TextEntered) {
+				keyPressed = event.text.unicode;
+			}
 		}
 		//if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		//	window.close();
@@ -168,6 +173,8 @@ void Engine::setVsync(bool b) {
 	_window->setVerticalSyncEnabled(b); 
 	_vsync = b;
 }
+
+sf::Uint32 Engine::getPressedKey() { return keyPressed; }
 
 bool Engine::getVsync() { return _vsync; }
 
