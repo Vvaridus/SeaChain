@@ -13,11 +13,15 @@ using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
+int Engine::_fps = 60;
+bool Engine::_fullscreen = false;
+bool Engine::_vsync = false;
 
 static bool loading = false;
 static float loadingspinner = 0.f;
 static float loadingTime;
 static RenderWindow* _window;
+
 static Vector2f pos = Vector2f(-500, 540); // position of loading sprites
 // loading sprite
 static Texture _shipSprite; 
@@ -161,7 +165,29 @@ std::shared_ptr<Entity> Scene::makeEntity() {
 	return std::move(e);
 }
 
-void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
+void Engine::setVsync(bool b) { 
+	_window->setVerticalSyncEnabled(b); 
+	_vsync = b;
+}
+
+bool Engine::getVsync() { return _vsync; }
+
+void Engine::lockFps(bool f) { _window->setFramerateLimit(60); }
+
+void Engine::setFramerate(int fps) { _fps = fps; }
+
+bool Engine::getFullscreen() { return _fullscreen; }
+
+void Engine::setFullscreen(bool fullscreen) {
+	if (fullscreen)
+	{
+		_fullscreen = true;
+	}
+	else
+	{
+		_fullscreen = false;
+	}
+}
 
 void Engine::ChangeScene(Scene* s) {
 	Logger::addEvent(Logger::EventType::Engine, Logger::Action::Scene_Change, "");

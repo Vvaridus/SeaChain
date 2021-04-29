@@ -37,9 +37,17 @@ public:
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
   static void setVsync(bool b);
+  static bool getVsync();
+  static void lockFps(bool f);
+  static void setFramerate(int fps);
+  static bool getFullscreen();
+  static void setFullscreen(bool fullscreen);
 
 private:
   static Scene* _activeScene;
+  static int _fps;
+  static bool _vsync;
+  static bool _fullscreen;
   static std::string _gameName;
   static void Update();
   static void Render(sf::RenderWindow& window);
