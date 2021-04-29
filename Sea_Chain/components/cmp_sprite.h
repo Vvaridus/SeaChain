@@ -8,6 +8,7 @@ class SpriteComponent : public Component {
 protected:
   std::shared_ptr<sf::Sprite> _sprite;
   std::shared_ptr<sf::Texture> _texture;
+  bool _visible;
 public:
   SpriteComponent() = delete;
 
@@ -17,7 +18,9 @@ public:
 
   sf::Sprite& getSprite() const;
   std::unique_ptr<sf::FloatRect> getBounds();
+  bool getVisibility();
 
+  void setVisibility(bool visible);
   void setOrigin(sf::Vector2f orig);
   void setTexure(std::shared_ptr<sf::Texture> tex);
   void setScaling(sf::Vector2f scale);

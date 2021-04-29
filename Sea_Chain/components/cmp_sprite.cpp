@@ -11,6 +11,8 @@ void SpriteComponent::setTexure(std::shared_ptr<sf::Texture> tex)
   _sprite->setTexture(*_texture);
 }
 
+
+
 void SpriteComponent::setOrigin(sf::Vector2f orig) {
     _sprite->setOrigin(orig);    
 }
@@ -26,15 +28,26 @@ std::unique_ptr<sf::FloatRect> SpriteComponent::getBounds() {
 
 sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }
 
+bool SpriteComponent::getVisibility() {
+    return _visible;
+}
+
+void SpriteComponent::setVisibility(bool visible) {
+    _visible = visible;
+}
+
 SpriteComponent::SpriteComponent(Entity* p)
-    : Component(p), _sprite(make_shared<sf::Sprite>()) {}
+    : Component(p), _sprite(make_shared<sf::Sprite>()), _visible(true) {}
 
 void SpriteComponent::update(double dt) {
   _sprite->setPosition(_parent->getPosition());
   _sprite->setRotation(_parent->getRotation());
 }
 
-void SpriteComponent::render() { Renderer::queue(_sprite.get()); }
+void SpriteComponent::render() { 
+    if(_visible)
+        Renderer::queue(_sprite.get()); 
+}
 
 void ShapeComponent::update(double dt) {
   _shape->setPosition(_parent->getPosition());
