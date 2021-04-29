@@ -14,6 +14,7 @@ public:
   ~TextComponent() override = default;
 
   void SetText(const std::string& str);
+  std::string getText();
   void setCharSize(int s);
   void setOrigin(sf::Vector2f o);
   void setPosition(sf::Vector2f p);

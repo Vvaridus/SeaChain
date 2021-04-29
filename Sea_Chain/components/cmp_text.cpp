@@ -18,6 +18,10 @@ void TextComponent::SetText(const std::string& str) {
   _text.setString(_string);
 }
 
+std::string TextComponent::getText() {
+    return _string;
+}
+
 void TextComponent::setCharSize(int s)
 {
     _text.setCharacterSize(s);
