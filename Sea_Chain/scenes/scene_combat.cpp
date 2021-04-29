@@ -378,7 +378,7 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 
 	if (ad.attack == attackType::Parry)
 	{
-		// if move if parry, 20% chance you will retailate with quick attack and make enemy miss a turn.
+		// if move if parry, 3% chance you will retailate with quick attack and make enemy miss a turn.
 		int chance = randomNumber(0, 100);
 		if (chance <= 3) {
 			attack(getAttackStats(attackType::Quick, "player"), "enemy");

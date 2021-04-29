@@ -9,6 +9,7 @@
 #include "../components/cmp_button.h"
 #include "../gameData.h"
 #include <SFML/Audio/Music.hpp>
+#include "../helpers/convert.h"
 
 using namespace std;
 using namespace sf;
@@ -19,10 +20,16 @@ std::shared_ptr<ButtonComponent> btnSoundIncrease;
 std::shared_ptr<ButtonComponent> btnSoundDecrease;
 std::shared_ptr<ButtonComponent> btnFpsIncrease;
 std::shared_ptr<ButtonComponent> btnFpsDecrease;
+std::shared_ptr<ButtonComponent> btnUpKeybind;
+std::shared_ptr<ButtonComponent> btnDownKeybind;
+std::shared_ptr<ButtonComponent> btnLeftKeybind;
+std::shared_ptr<ButtonComponent> btnRightKeybind;
+std::shared_ptr<ButtonComponent> btnUseKeybind;
+std::shared_ptr<ButtonComponent> btnBackKeybind;
 std::shared_ptr<CheckboxComponent> chkFullscreen;
 std::shared_ptr<CheckboxComponent> chkVsync;
-std::vector<std::shared_ptr<Entity>> soundIndicator;
 
+static bool recordKey = false;
 static bool lockFpsSetting = false;
 
 void OptionScene::Load() {
@@ -30,10 +37,12 @@ void OptionScene::Load() {
 
 	sf::Vector2f btnDimentions = Vector2f(32, 32);
 	sf::Vector2f chkDimentions = Vector2f(64, 64);
+	sf::Vector2f btnKeybindDimentions = Vector2f(64, 64);
 
 	auto windowSize = Engine::getWindowSize();
 
 	auto ins = Data::getInstance();
+	auto keybinds = ins->getKeybinds();
 	auto debug = ins->getDebug();
 
 	// Display background main menu
@@ -277,6 +286,138 @@ void OptionScene::Load() {
 		textBox->setPosition(text->getPosition());
 		//textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
 	}
+	//Draw seventh button (CONTROL UP KEYBIND BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnUpKeybind");
+		button->setPosition(Vector2f(985, 792));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnKeybindDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
+		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("MOVE_UP")->second));
+		txt->setFillColor(Color::White);
+		txt->setCharSize(32);
+		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
+		auto bounds = buttonShape->getBounds();
+
+		btnUpKeybind = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnUpKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw eighth button (CONTROL DOWN KEYBIND BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnDownKeybind");
+		button->setPosition(Vector2f(985, 875));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnKeybindDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("MOVE_DOWN")->second));
+		txt->setFillColor(Color::White);
+		txt->setCharSize(32);
+		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnDownKeybind = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnDownKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw ninth button (CONTROL LEFT KEYBIND BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnLeftKeybind");
+		button->setPosition(Vector2f(901, 875));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnKeybindDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("MOVE_LEFT")->second));
+		txt->setFillColor(Color::White);
+		txt->setCharSize(32);
+		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnLeftKeybind = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnLeftKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw tenth button (CONTROL RIGHT KEYBIND BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnRightKeybind");
+		button->setPosition(Vector2f(1069, 875));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnKeybindDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("MOVE_RIGHT")->second));
+		txt->setFillColor(Color::White);
+		txt->setCharSize(32);
+		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnRightKeybind = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnRightKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw eleventh button (CONTROL USE KEYBIND BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnUseKeybind");
+		button->setPosition(Vector2f(1106, 744));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnKeybindDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("INTERACT")->second));
+		txt->setFillColor(Color::White);
+		txt->setCharSize(32);
+		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnUseKeybind = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnUseKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw Twelfth button (CONTROL BACK KEYBIND BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnBackKeybind");
+		button->setPosition(Vector2f(696, 858));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnKeybindDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("GO_BACK")->second));
+		txt->setFillColor(Color::White);
+		txt->setCharSize(32);
+		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnBackKeybind = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnBackKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+
 
 	updateMusicIndicator();
 	updateSoundIndicator();
@@ -287,7 +428,10 @@ void OptionScene::Load() {
 }
 
 void OptionScene::Update(const double& dt) {
-	if (btnMusicIncrease->isPressed()) {      
+	auto ins = Data::getInstance();
+	auto keybinds = ins->getKeybinds();
+
+	if (btnMusicIncrease->isPressed()) {
 		auto ins = Data::getInstance();
 		// if current volume is greater than 9 set it to 10
 		// sfml returns weird floats at times
@@ -311,10 +455,10 @@ void OptionScene::Update(const double& dt) {
 			ins->setMusicVolume(0);
 		else
 			ins->setMusicVolume(--currentVol);
-			
+
 		updateMusicIndicator();
 	}
-	else if (btnSoundIncrease->isPressed()) {      
+	else if (btnSoundIncrease->isPressed()) {
 		auto ins = Data::getInstance();
 		// if current volume is greater than 9 set it to 10
 		// sfml returns weird floats at times
@@ -338,7 +482,7 @@ void OptionScene::Update(const double& dt) {
 			ins->setSoundVolume(0);
 		else
 			ins->setSoundVolume(--currentVol);
-			
+
 		updateSoundIndicator();
 	}
 	else if (chkFullscreen->isChecked()) {
@@ -360,7 +504,7 @@ void OptionScene::Update(const double& dt) {
 		Engine::setFramerate(fps);
 	}
 	else if (btnFpsDecrease->isPressed() && lockFpsSetting == false) {
-	// get the text entity and text component
+		// get the text entity and text component
 		auto txt = this->ents.find("fpsText")[0];
 		auto txtbox = txt->GetCompatibleComponent<TextComponent>()[0];
 		// get the current fps in the textbox
@@ -371,8 +515,80 @@ void OptionScene::Update(const double& dt) {
 		txtbox->SetText(std::to_string(fps));
 		Engine::setFramerate(fps);
 	}
+	else if (btnUpKeybind->isPressed()) {
+		if (recordKey) {
+			auto btn = this->ents.find("btnUpKeybind")[0];
+			auto txt = btn->GetCompatibleComponent<TextComponent>()[0];
+			sf::Keyboard::Key key = Converter::UInt32ToSFKey(Engine::getPressedKey());
+			txt->SetText(Converter::SFKeyToString(key));
+			ins->setKeybind("MOVE_UP", key);
+			recordKey = false;
+		}
+		else
+			recordKey = true;
+	}
+	else if (btnDownKeybind->isPressed()) {
+		if (recordKey) {
+			auto btn = this->ents.find("btnDownKeybind")[0];
+			auto txt = btn->GetCompatibleComponent<TextComponent>()[0];
+			sf::Keyboard::Key key = Converter::UInt32ToSFKey(Engine::getPressedKey());
+			txt->SetText(Converter::SFKeyToString(key));
+			ins->setKeybind("MOVE_DOWN", key);
+			recordKey = false;
+		}
+		else
+			recordKey = true;
+	}
+	else if (btnLeftKeybind->isPressed()) {
+		if (recordKey) {
+			auto btn = this->ents.find("btnLeftKeybind")[0];
+			auto txt = btn->GetCompatibleComponent<TextComponent>()[0];
+			sf::Keyboard::Key key = Converter::UInt32ToSFKey(Engine::getPressedKey());
+			txt->SetText(Converter::SFKeyToString(key));
+			ins->setKeybind("MOVE_LEFT", key);
+			recordKey = false;
+		}
+		else
+			recordKey = true;
+	}
+	else if (btnRightKeybind->isPressed()) {
+		if (recordKey) {
+			auto btn = this->ents.find("btnRightKeybind")[0];
+			auto txt = btn->GetCompatibleComponent<TextComponent>()[0];
+			sf::Keyboard::Key key = Converter::UInt32ToSFKey(Engine::getPressedKey());
+			txt->SetText(Converter::SFKeyToString(key));
+			ins->setKeybind("MOVE_RIGHT", key);
+			recordKey = false;
+		}
+		else
+			recordKey = true;
+	}
+	else if (btnUseKeybind->isPressed()) {
+		if (recordKey) {
+			auto btn = this->ents.find("btnUseKeybind")[0];
+			auto txt = btn->GetCompatibleComponent<TextComponent>()[0];
+			sf::Keyboard::Key key = Converter::UInt32ToSFKey(Engine::getPressedKey());
+			txt->SetText(Converter::SFKeyToString(key));
+			ins->setKeybind("INTERACT", key);
+			recordKey = false;
+		}
+		else
+			recordKey = true;
+	}
+	else if (btnBackKeybind->isPressed()) {
+		if (recordKey) {
+			auto btn = this->ents.find("btnBackKeybind")[0];
+			auto txt = btn->GetCompatibleComponent<TextComponent>()[0];
+			sf::Keyboard::Key key = Converter::UInt32ToSFKey(Engine::getPressedKey());
+			txt->SetText(Converter::SFKeyToString(key));
+			ins->setKeybind("GO_BACK", key);
+			recordKey = false;
+		}
+		else
+			recordKey = true;
+	}
 
-	if (chkVsync->isChecked()) { 
+	if (chkVsync->isChecked()) {
 		// if the checkbox IS checked
 		// Make the check mark visible
 		auto chk = this->ents.find("chkVsync")[0];
@@ -389,7 +605,7 @@ void OptionScene::Update(const double& dt) {
 			lockFpsSetting = true;
 		}
 	}
-	else if (!chkVsync->isChecked()) { 
+	else if (!chkVsync->isChecked()) {
 		// if the checkbox IS NOT checked
 		// hide the check mark
 		auto chk = this->ents.find("chkVsync")[0];
@@ -405,7 +621,7 @@ void OptionScene::Update(const double& dt) {
 	}
 
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second)) {
 		Engine::ChangeScene(&menu);
 	}
 	Scene::Update(dt);
@@ -415,14 +631,13 @@ void OptionScene::updateMusicIndicator() {
 	auto ins = Data::getInstance();
 	float currentVol = ins->getMusicVolume(); // Get the current volume
 	auto musicIndicators = this->ents.find("musicIndicator"); // get all music indicator entities
-	cout << currentVol << endl;
 
 	for (auto i : musicIndicators) { // set them all to visible to make next part easier.
 		i->setVisible(true);
 	}
 	// loop through the list backwards setting visibility to false till you reach the current volume
 	// then stop setting them to 
-	for (int i = musicIndicators.size()-1; i >= currentVol; i--) {
+	for (int i = musicIndicators.size() - 1; i >= currentVol; i--) {
 		musicIndicators[i]->setVisible(false);
 	}
 }
@@ -433,7 +648,6 @@ void OptionScene::updateSoundIndicator() {
 	float currentVol = ins->getSoundVolume();
 	// get all music indicator entities
 	auto soundIndicators = this->ents.find("soundIndicator");
-	cout << currentVol << endl;
 
 	// set them all to visible to make next part easier.
 	for (auto i : soundIndicators) {
@@ -460,4 +674,14 @@ void OptionScene::Nullify() {
 	btnMusicDecrease = nullptr;
 	btnSoundIncrease = nullptr;
 	btnSoundDecrease = nullptr;
+	btnFpsIncrease = nullptr;
+	btnFpsDecrease = nullptr;
+	chkFullscreen = nullptr;
+	chkVsync = nullptr;
+	btnUpKeybind = nullptr;
+	btnDownKeybind = nullptr;
+	btnLeftKeybind = nullptr;
+	btnRightKeybind = nullptr;
+	btnBackKeybind = nullptr;
+	btnUseKeybind = nullptr;
 }

@@ -141,7 +141,8 @@ void Engine::Start(unsigned int width, unsigned int height,
 			if (event.type == Event::Closed) {
 				window.close();
 			}
-			if (event.TextEntered) {
+
+			if (event.TextEntered && event.text.unicode >= 30 && event.text.unicode <= 150) {
 				keyPressed = event.text.unicode;
 			}
 		}
