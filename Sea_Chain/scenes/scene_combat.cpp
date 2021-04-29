@@ -239,6 +239,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(100);
 			sound.play();
 			// Get the attack stats with the quick move
+			parry = false;
 			at = getAttackStats(attackType::Quick, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
@@ -250,6 +251,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(100);
 			sound.play();
 			// Get the attack stats with the quick move
+			parry = false;
 			at = getAttackStats(attackType::Normal, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
@@ -260,6 +262,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(100);
 			sound.play();
 			// Get the attack stats with the quick move
+			parry = false;
 			at = getAttackStats(attackType::Heavy, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
@@ -270,6 +273,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(100);
 			sound.play();
 			// Get the attack stats with the quick move
+			parry = false;
 			at = getAttackStats(attackType::Parry, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
@@ -277,6 +281,7 @@ void CombatScene::Update(const double& dt) {
 		// handle enemy turn.
 		if (!playerTurn) {
 			// get the attack stats and decide the move to make
+			parry = false;
 			at = getAttackStats(attackType::None, "enemy");
 			// Attack the player with the attack stats
 			attack(at, "player");
@@ -316,12 +321,6 @@ AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
 		}
 		else
 			critSuccess = false;
-		// This may get stuck in parry loop
-		if (randomNumber(0, 100) <= 75) {
-			parry = true;
-		}
-		else
-			parry = false;
 		break;
 	case attackType::Normal:
 		if (randomNumber(0, 100) <= 20) {
@@ -330,12 +329,6 @@ AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
 		}
 		else
 			critSuccess = false;
-		// This may get stuck in parry loop
-		if (randomNumber(0, 100) <= 45) {
-			parry = true;
-		}
-		else
-			parry = false;
 		break;
 	case attackType::Heavy:
 		if (randomNumber(0, 100) <= 75) {
@@ -344,14 +337,13 @@ AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
 		}
 		else
 			critSuccess = false;
-		// This may get stuck in parry loop
-		if (randomNumber(0, 100) <= 60) {
-			parry = true;
-		}
-		else
-			parry = false;
+		break;
+	case attackType::Parry:
+		parry = true;
+		damage = 0;
 		break;
 	}
+
 
 	// Return the attack data gathered
 	return AttackData(type, damage, parry, critSuccess);
@@ -367,21 +359,33 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 	if (beingAttacked == "enemy") {
 		auto enemyHealth = enemy->GetCompatibleComponent<HealthComponent>()[0];
 		enemyHealth->setHealth(enemyHealth->getHealth() - ad.damage);
-		cout << "PLAYER ATTACKING ENEMY: " << ad.attack << " : " << enemyHealth->getHealth() << " : " << ad.damage << " : " << ad.critSuccess << endl;
 		enemyAttack->setHumanAttack(ad.attack);
 		updateLog("Player", "Enemy", ad);
 	}
 	// Enemy AI attacking the Player
 	else if (beingAttacked == "player") {
 		playerHealth->setHealth(playerHealth->getHealth() - ad.damage);
-		cout << "ENEMY ATTACKING PLAYER: " << ad.attack << " : " << playerHealth->getHealth() << " : " << ad.damage << " : " << ad.critSuccess << endl;
 		enemyAttack->setEnemyAttack(ad.attack);
 		updateLog("Enemy", "Player", ad);
 	}
 
 	enemyAttack->setHumanHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getHealth());
 	enemyAttack->setHumanMaxHealth(player->GetCompatibleComponent<HealthComponent>()[0]->getMaxHealth());
-	playerTurn = !playerTurn;
+
+	if (ad.attack == attackType::Parry)
+	{
+		// if move if parry, 20% chance you will retailate with quick attack and make enemy miss a turn.
+		int chance = randomNumber(0, 100);
+		if (chance <= 3) {
+			attack(getAttackStats(attackType::Quick, "player"), "enemy");
+			parry = true;
+		}
+		cout << chance << endl;
+	}
+
+	if(!parry)
+		playerTurn = !playerTurn;
+
 }
 
 void CombatScene::updateLog(string attacking, string defending, AttackData ad) {
