@@ -130,4 +130,91 @@ std::string Converter::SFKeyToString(sf::Keyboard::Key key) {
     case sf::Keyboard::Key::Quote:
         out = std::string("Quote"); break;
     }
+
+    return out;
+}
+
+sf::Keyboard::Key Converter::UInt32ToSFKey(sf::Uint32 key) {
+    sf::Keyboard::Key out = sf::Keyboard::A;
+
+    switch (key) {
+    case 44:
+        out = sf::Keyboard::Comma; break;
+    case 42:
+        out = sf::Keyboard::Multiply; break;
+    case 48:
+        out = sf::Keyboard::Num0; break;
+    case 49:
+        out = sf::Keyboard::Num1; break;
+    case 50:                
+        out = sf::Keyboard::Num2; break;
+    case 51:                
+        out = sf::Keyboard::Num3; break;
+    case 52:                
+        out = sf::Keyboard::Num4; break;
+    case 53:                
+        out = sf::Keyboard::Num5; break;
+    case 54:                
+        out = sf::Keyboard::Num6; break;
+    case 55:                
+        out = sf::Keyboard::Num7; break;
+    case 56:                
+        out = sf::Keyboard::Num8; break;
+    case 57:                
+        out = sf::Keyboard::Num9; break;
+    case 97:
+        out = sf::Keyboard::A; break;
+    case 98:
+        out = sf::Keyboard::B; break;
+    case 99:
+        out = sf::Keyboard::C; break;
+    case 100:
+        out = sf::Keyboard::D; break;
+    case 101:
+        out = sf::Keyboard::E; break;
+    case 102:
+        out = sf::Keyboard::F; break;
+    case 103:
+        out = sf::Keyboard::G; break;
+    case 104:
+        out = sf::Keyboard::H; break;
+    case 105:
+        out = sf::Keyboard::I; break;
+    case 106:
+        out = sf::Keyboard::J; break;
+    case 107:
+        out = sf::Keyboard::K; break;
+    case 108:
+        out = sf::Keyboard::L; break;
+    case 109:
+        out = sf::Keyboard::M; break;
+    case 110:
+        out = sf::Keyboard::N; break;
+    case 111:
+        out = sf::Keyboard::O; break;
+    case 112:
+        out = sf::Keyboard::P; break;
+    case 113:
+        out = sf::Keyboard::Q; break;
+    case 114:
+        out = sf::Keyboard::R; break;
+    case 115:
+        out = sf::Keyboard::S; break;
+    case 116:
+        out = sf::Keyboard::T; break;
+    case 117:
+        out = sf::Keyboard::U; break;
+    case 118:
+        out = sf::Keyboard::V; break;
+    case 119:
+        out = sf::Keyboard::W; break;
+    case 120:
+        out = sf::Keyboard::X; break;
+    case 121:
+        out = sf::Keyboard::Y; break;
+    case 122:
+        out = sf::Keyboard::Z; break;
+    }
+    
+    return out;
 }
