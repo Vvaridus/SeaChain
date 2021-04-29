@@ -214,6 +214,11 @@ void OptionScene::Update(const double& dt) {
 		updateSoundIndicator();
 	}
 
+
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
+		Engine::ChangeScene(&menu);
+	}
+
 	Scene::Update(dt);
 }
 
