@@ -13,7 +13,6 @@ using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
-int Engine::_fps = 60;
 bool Engine::_fullscreen = false;
 bool Engine::_vsync = false;
 
@@ -172,9 +171,7 @@ void Engine::setVsync(bool b) {
 
 bool Engine::getVsync() { return _vsync; }
 
-void Engine::lockFps(bool f) { _window->setFramerateLimit(60); }
-
-void Engine::setFramerate(int fps) { _fps = fps; }
+void Engine::setFramerate(int fps) { _window->setFramerateLimit(fps); }
 
 bool Engine::getFullscreen() { return _fullscreen; }
 
