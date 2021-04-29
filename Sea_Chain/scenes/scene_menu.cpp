@@ -38,7 +38,7 @@ void MenuScene::Load() {
     // Display background
     {
         Texture spritesheet;
-        spritesheet.loadFromFile("resources/mainMenu.png", IntRect(0, 0, 1920, 1080));
+        spritesheet.loadFromFile("resources/textures/mainMenu.png", IntRect(0, 0, 1920, 1080));
 
         shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
 

@@ -32,9 +32,9 @@ void TutorialMain::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 	ls::loadLevelFile("resources/map.txt", 64);
 
-	playerImage.loadFromFile("resources/SeaChainPlayer.png");
+	playerImage.loadFromFile("resources/textures/SeaChainPlayer.png");
 	playerTexture.loadFromImage(playerImage);
-	enemyImage.loadFromFile("resources/SeaChainEnemy.png");
+	enemyImage.loadFromFile("resources/textures/SeaChainEnemy.png");
 	enemyTexture.loadFromImage(enemyImage);
 
 	
@@ -49,11 +49,11 @@ void TutorialMain::Load() {
 
 	// create basic world textures
 	{
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::findTiles(ls::GRASS), "grass");
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::findTiles(ls::SAND), "sand");
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::findTiles(ls::DIRT), "dirt");
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE), "stone");
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER), "water");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::findTiles(ls::GRASS), "grass");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::findTiles(ls::SAND), "sand");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::findTiles(ls::DIRT), "dirt");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE), "stone");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER), "water");
 	}
 
 	// add extra entities rocks, skeletons, trees
@@ -72,7 +72,7 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), randomTiles, "tree");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), randomTiles, "tree");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -89,7 +89,7 @@ void TutorialMain::Load() {
 		}
 
 
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles, "rock");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles, "rock");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -105,7 +105,7 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), randomTiles, "skeleton");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), randomTiles, "skeleton");
 		randomTiles.clear();
 		tileList.clear();
 	}
@@ -117,7 +117,7 @@ void TutorialMain::Load() {
 		std::vector<sf::Vector2ul> randomTiles;
 
 		Texture bedSheet;
-		bedSheet.loadFromFile("resources/Bed.png", IntRect(0, 0, 64, 64));
+		bedSheet.loadFromFile("resources/textures/Bed.png", IntRect(0, 0, 64, 64));
 
 		shared_ptr<Texture> bedSprite = make_shared<Texture>(bedSheet);
 
@@ -175,10 +175,10 @@ void TutorialMain::Load() {
 	{
 		// load the sprite
 		Texture mainBanner;
-		mainBanner.loadFromFile("resources/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
+		mainBanner.loadFromFile("resources/textures/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
 		shared_ptr<Texture> spriteBanner = make_shared<Texture>(mainBanner);
 		Texture healthBar;
-		healthBar.loadFromFile("resources/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
+		healthBar.loadFromFile("resources/textures/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
 		shared_ptr<Texture> spriteHealth = make_shared<Texture>(healthBar);
 
 		// set the position, add a tag, add the sprite component with the texture

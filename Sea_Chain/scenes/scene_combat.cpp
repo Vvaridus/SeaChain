@@ -63,7 +63,7 @@ void CombatScene::Load() {
 	{
 		// load the sprite
 		Texture spritesheet;
-		spritesheet.loadFromFile("resources/SeaChainCombatOverlayANDBG.png", IntRect(0, 0, 1920, 1080));
+		spritesheet.loadFromFile("resources/textures/SeaChainCombatOverlayANDBG.png", IntRect(0, 0, 1920, 1080));
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
 
 		// set the position, add a tag, add the sprite component with the texture
@@ -79,7 +79,7 @@ void CombatScene::Load() {
 	{
 		// load the sprite
 		Texture spritesheet;
-		spritesheet.loadFromFile("resources/SeaChainCombatOverlay.png", IntRect(0, 0, 1920, 1080));
+		spritesheet.loadFromFile("resources/textures/SeaChainCombatOverlay.png", IntRect(0, 0, 1920, 1080));
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
 
 		// set the position, add a tag, add the sprite component with the texture
@@ -95,10 +95,10 @@ void CombatScene::Load() {
 	{
 		// load the sprite
 		Texture mainBanner;
-		mainBanner.loadFromFile("resources/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
+		mainBanner.loadFromFile("resources/textures/SeaChainMainBanner.png", IntRect(0, 0, 1920, 1080));
 		shared_ptr<Texture> spriteBanner = make_shared<Texture>(mainBanner);
 		Texture healthBar;
-		healthBar.loadFromFile("resources/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
+		healthBar.loadFromFile("resources/textures/SeaChainHealthBar.png", IntRect(0, 0, 224, 33));
 		shared_ptr<Texture> spriteHealth = make_shared<Texture>(healthBar);
 
 		// set the position, add a tag, add the sprite component with the texture
@@ -126,15 +126,15 @@ void CombatScene::Load() {
 
 		// load the sprite
 		Texture enemySpriteSheet;
-		enemySpriteSheet.loadFromFile("resources/SeaChainEnemy.png", IntRect(0, 64, 64, 64));
+		enemySpriteSheet.loadFromFile("resources/textures/SeaChainEnemy.png", IntRect(0, 64, 64, 64));
 		shared_ptr<Texture> spriteCharacter = make_shared<Texture>(enemySpriteSheet);
 
 		Texture healthBarOverlaySpriteSheet;
-		healthBarOverlaySpriteSheet.loadFromFile("resources/HealthBarRed.png", IntRect(0, 0, 256, 64));
+		healthBarOverlaySpriteSheet.loadFromFile("resources/textures/HealthBarRed.png", IntRect(0, 0, 256, 64));
 		shared_ptr<Texture> spriteHealthBarOverlay = make_shared<Texture>(healthBarOverlaySpriteSheet);
 
 		Texture healthbarSpriteSheet;
-		healthbarSpriteSheet.loadFromFile("resources/HealthBarOutline.png", IntRect(0, 0, 256, 64));
+		healthbarSpriteSheet.loadFromFile("resources/textures/HealthBarOutline.png", IntRect(0, 0, 256, 64));
 		shared_ptr<Texture> spriteHealthBarBackground = make_shared<Texture>(healthbarSpriteSheet);
 
 		// set the position, add a tag, add the sprite component with the texture
@@ -166,7 +166,7 @@ void CombatScene::Load() {
 		playerMain = makeEntity();
 		// load the sprite
 		Texture spritesheet;
-		spritesheet.loadFromFile("resources/SeaChainPlayer.png", IntRect(0, 128, 64, 64));
+		spritesheet.loadFromFile("resources/textures/SeaChainPlayer.png", IntRect(0, 128, 64, 64));
 		shared_ptr<Texture> sprite = make_shared<Texture>(spritesheet);
 
 		// set the position, add a tag, add the sprite component with the texture

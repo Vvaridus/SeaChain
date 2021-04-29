@@ -28,12 +28,12 @@ static bool _loadTextures;
 void loadTextures() {
 	// load ship texture
 	Texture ship;
-	ship.loadFromFile("resources/SeaChainLoadingShip.png", IntRect(0, 0, 1920, 1080));
+	ship.loadFromFile("resources/textures/SeaChainLoadingShip.png", IntRect(0, 0, 1920, 1080));
 	_shipSprite = ship;
 
 	// load text texture
 	Texture text;
-	text.loadFromFile("resources/SeaChainLoadingText.png", IntRect(0, 0, 1920, 1080));
+	text.loadFromFile("resources/textures/SeaChainLoadingText.png", IntRect(0, 0, 1920, 1080));
 	_textSprite = text;
 
 	// set the textures to loaded

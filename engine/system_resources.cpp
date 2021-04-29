@@ -15,7 +15,7 @@ namespace Resources {
   template <> // explicit specialization for T = texture
   std::shared_ptr<sf::Texture> load(const std::string& name) {
     auto tex = std::make_shared<sf::Texture>();
-    if (!tex->loadFromFile("resources/img/" + name)) {
+    if (!tex->loadFromFile("resources/textures/" + name)) {
       throw("not found: " + name);
     };
     return tex;
