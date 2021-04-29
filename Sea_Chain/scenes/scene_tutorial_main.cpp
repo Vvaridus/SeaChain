@@ -219,6 +219,11 @@ void TutorialMain::Update(const double& dt) {
 		enemy->setForDelete();
 		Engine::ChangeScene(&combat);
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+	{
+		changingScenes = true;
+		Engine::ChangeScene(&menu);
+	}
 
 	if (!changingScenes)
 	{
