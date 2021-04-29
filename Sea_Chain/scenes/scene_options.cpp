@@ -17,15 +17,21 @@ std::shared_ptr<ButtonComponent> btnMusicIncrease;
 std::shared_ptr<ButtonComponent> btnMusicDecrease;
 std::shared_ptr<ButtonComponent> btnSoundIncrease;
 std::shared_ptr<ButtonComponent> btnSoundDecrease;
+std::shared_ptr<ButtonComponent> btnFpsIncrease;
+std::shared_ptr<ButtonComponent> btnFpsDecrease;
 std::shared_ptr<CheckboxComponent> chkFullscreen;
 std::shared_ptr<CheckboxComponent> chkVsync;
 std::vector<std::shared_ptr<Entity>> soundIndicator;
+
+static bool lockFpsSetting = false;
 
 void OptionScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	sf::Vector2f btnDimentions = Vector2f(32, 32);
 	sf::Vector2f chkDimentions = Vector2f(64, 64);
+
+	auto windowSize = Engine::getWindowSize();
 
 	auto ins = Data::getInstance();
 	auto debug = ins->getDebug();
@@ -154,7 +160,7 @@ void OptionScene::Load() {
 		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
 		btnSoundDecrease->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
-	//Draw third button (INCREASE VOLUME BUTTON)
+	//Draw fourth button (INCREASE VOLUME BUTTON)
 	{
 		auto button = makeEntity();
 		button->addTag("btnSoundIncrease");
@@ -189,6 +195,7 @@ void OptionScene::Load() {
 		chkShape->getShape().setOutlineColor(Color::White);
 		auto spriteComp = checkbox->addComponent<SpriteComponent>();
 		spriteComp->setTexure(sprite);
+		spriteComp->setVisibility(false);
 		checkbox->setVisible(debug);
 
 		auto bounds = chkShape->getBounds();
@@ -197,7 +204,7 @@ void OptionScene::Load() {
 		Vector2f xy = Vector2f(checkbox->getPosition().x + (bounds->width / 2), (checkbox->getPosition().y + (bounds->height / 2)));
 		chkFullscreen->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
-	// Draw first checkbox (FULL SCREEN CHECKBOX)
+	// Draw first checkbox (VSYNC CHECKBOX)
 	{
 		Texture spritesheet;
 		spritesheet.loadFromFile("resources/textures/TickMarker.png", IntRect(0, 0, 61, 47));
@@ -214,6 +221,7 @@ void OptionScene::Load() {
 		chkShape->getShape().setOutlineColor(Color::White);
 		auto spriteComp = checkbox->addComponent<SpriteComponent>();
 		spriteComp->setTexure(sprite);
+		spriteComp->setVisibility(false);
 		checkbox->setVisible(debug);
 
 		auto bounds = chkShape->getBounds();
@@ -221,6 +229,53 @@ void OptionScene::Load() {
 		chkVsync = checkbox->addComponent<CheckboxComponent>();
 		Vector2f xy = Vector2f(checkbox->getPosition().x + (bounds->width / 2), (checkbox->getPosition().y + (bounds->height / 2)));
 		chkVsync->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw fifth button (DECREASE FPS BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnFpsDecrease");
+		button->setPosition(Vector2f(927, 570));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnFpsDecrease = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnFpsDecrease->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw sixth button (INCREASE FPS BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnFpsIncrease");
+		button->setPosition(Vector2f(1211, 570));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnFpsIncrease = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnFpsIncrease->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	// Draw textbox for the FPS
+	{
+		auto text = makeEntity();
+		text->addTag("fpsText");
+		text->setPosition(Vector2f(1065, 555));
+		auto textBox = text->addComponent<TextComponent>("0");
+		textBox->setFillColor(Color::White);
+		textBox->setCharSize(32);
+		textBox->setPosition(text->getPosition());
+		//textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
 	}
 
 	updateMusicIndicator();
@@ -234,12 +289,23 @@ void OptionScene::Load() {
 void OptionScene::Update(const double& dt) {
 	if (btnMusicIncrease->isPressed()) {      
 		auto ins = Data::getInstance();
+		// if current volume is greater than 9 set it to 10
+		// sfml returns weird floats at times
+		// Set the volume to the current volume take away 1.
+		// Then update the volume bar
 		float currentVol = ins->getMusicVolume();
-		ins->setMusicVolume(currentVol += 1);
+		if (currentVol > 9)
+			ins->setMusicVolume(10);
+		else
+			ins->setMusicVolume(++currentVol);
 		updateMusicIndicator();
 	}
 	else if (btnMusicDecrease->isPressed()) {
 		auto ins = Data::getInstance();
+		// if current volume is less than 1 set it to 0
+		// sfml returns weird floats at times
+		// Set the volume to the current volume plus 1.
+		// Then update the volume bar
 		float currentVol = ins->getMusicVolume();
 		if (currentVol < 1)
 			ins->setMusicVolume(0);
@@ -248,14 +314,25 @@ void OptionScene::Update(const double& dt) {
 			
 		updateMusicIndicator();
 	}
-	if (btnSoundIncrease->isPressed()) {      
+	else if (btnSoundIncrease->isPressed()) {      
 		auto ins = Data::getInstance();
+		// if current volume is greater than 9 set it to 10
+		// sfml returns weird floats at times
+		// Set the volume to the current volume take away 1.
+		// Then update the volume bar
 		float currentVol = ins->getSoundVolume();
-		ins->setSoundVolume(currentVol += 1);
+		if (currentVol > 9)
+			ins->setSoundVolume(10);
+		else
+			ins->setSoundVolume(++currentVol);
 		updateSoundIndicator();
 	}
 	else if (btnSoundDecrease->isPressed()) {
 		auto ins = Data::getInstance();
+		// if current volume is less than 1 set it to 0
+		// sfml returns weird floats at times
+		// Set the volume to the current volume plus 1.
+		// Then update the volume bar
 		float currentVol = ins->getSoundVolume();
 		if (currentVol < 1)
 			ins->setSoundVolume(0);
@@ -265,30 +342,86 @@ void OptionScene::Update(const double& dt) {
 		updateSoundIndicator();
 	}
 	else if (chkFullscreen->isChecked()) {
+		auto chk = this->ents.find("chkFullscreen")[0];
+		auto chkSprite = chk->GetCompatibleComponent<SpriteComponent>()[0];
+		chkSprite->setVisibility(true);
 
 	}
+	else if (btnFpsIncrease->isPressed() && lockFpsSetting == false) {
+		// get the text entity and text component
+		auto txt = this->ents.find("fpsText")[0];
+		auto txtbox = txt->GetCompatibleComponent<TextComponent>()[0];
+		// get the current fps in the textbox
+		// add 5 to the current fps then set the text and framerate
+		// to the new fps.
+		int fps = std::stoi(txtbox->getText());
+		fps += 15;
+		txtbox->SetText(std::to_string(fps));
+		Engine::setFramerate(fps);
+	}
+	else if (btnFpsDecrease->isPressed() && lockFpsSetting == false) {
+	// get the text entity and text component
+		auto txt = this->ents.find("fpsText")[0];
+		auto txtbox = txt->GetCompatibleComponent<TextComponent>()[0];
+		// get the current fps in the textbox
+		// add 5 to the current fps then set the text and framerate
+		// to the new fps.
+		int fps = std::stoi(txtbox->getText());
+		fps -= 15;
+		txtbox->SetText(std::to_string(fps));
+		Engine::setFramerate(fps);
+	}
+
+	if (chkVsync->isChecked()) { 
+		// if the checkbox IS checked
+		// Make the check mark visible
+		auto chk = this->ents.find("chkVsync")[0];
+		auto chkSprite = chk->GetCompatibleComponent<SpriteComponent>()[0];
+		chkSprite->setVisibility(true);
+
+		// if vsync is not currently set, set it.
+		if (!Engine::getVsync())
+		{
+			Engine::setVsync(true);
+			// Also disable framerate limit, SFML suggests doing this.
+			// set bool to lock it from being changed
+			Engine::setFramerate(0);
+			lockFpsSetting = true;
+		}
+	}
+	else if (!chkVsync->isChecked()) { 
+		// if the checkbox IS NOT checked
+		// hide the check mark
+		auto chk = this->ents.find("chkVsync")[0];
+		auto chkSprite = chk->GetCompatibleComponent<SpriteComponent>()[0];
+		chkSprite->setVisibility(false);
+		// if vsync is enabled set it to not enabled.
+		if (Engine::getVsync())
+		{
+			Engine::setVsync(false);
+			// allow fps to be changed.
+			lockFpsSetting = false;
+		}
+	}
+
+
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {
 		Engine::ChangeScene(&menu);
 	}
-
 	Scene::Update(dt);
 }
 
 void OptionScene::updateMusicIndicator() {
 	auto ins = Data::getInstance();
-	float currentVol = ins->getMusicVolume();
-	auto musicIndicators = this->ents.find("musicIndicator");
+	float currentVol = ins->getMusicVolume(); // Get the current volume
+	auto musicIndicators = this->ents.find("musicIndicator"); // get all music indicator entities
 	cout << currentVol << endl;
 
-	// if you set music volume to 7 then get the music volume.
-	// SFML returns 6.9999964 or something similar which when
-	// casting to an int it rounds down, so add 1 to fix this.
-	//currentVol++;
-
-	for (auto i : musicIndicators) {
+	for (auto i : musicIndicators) { // set them all to visible to make next part easier.
 		i->setVisible(true);
 	}
-
+	// loop through the list backwards setting visibility to false till you reach the current volume
+	// then stop setting them to 
 	for (int i = musicIndicators.size()-1; i >= currentVol; i--) {
 		musicIndicators[i]->setVisible(false);
 	}
@@ -296,19 +429,18 @@ void OptionScene::updateMusicIndicator() {
 
 void OptionScene::updateSoundIndicator() {
 	auto ins = Data::getInstance();
+	// Get the current volume
 	float currentVol = ins->getSoundVolume();
+	// get all music indicator entities
 	auto soundIndicators = this->ents.find("soundIndicator");
 	cout << currentVol << endl;
 
-	// if you set music volume to 7 then get the music volume.
-	// SFML returns 6.9999964 or something similar which when
-	// casting to an int it rounds down, so add 1 to fix this.
-	//currentVol++;
-
+	// set them all to visible to make next part easier.
 	for (auto i : soundIndicators) {
 		i->setVisible(true);
 	}
-
+	// loop through the list backwards setting visibility to false till you reach the current volume
+	// then stop setting them to 
 	for (int i = soundIndicators.size() - 1; i >= currentVol; i--) {
 		soundIndicators[i]->setVisible(false);
 	}
