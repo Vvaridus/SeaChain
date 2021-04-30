@@ -3,6 +3,27 @@
 #include <engine.h>
 #include <maths.h>
 
+//SEEK
+SteeringOutput Seek::getSteering() const noexcept {
+	SteeringOutput steering;
+	steering.direction = _target->getPosition() - _character->getPosition();
+	steering.direction = normalize(steering.direction);
+	steering.direction *= _maxSpeed;
+	steering.rotation = 0.0f;
+	return steering;
+}
+
+SteeringOutput Chase::getSteering() const noexcept {
+	SteeringOutput steering;
+	steering.direction = _character->getPosition() - _target->getPosition();
+	steering.direction = normalize(steering.direction);
+	steering.direction *= _maxSpeed;
+	steering.rotation = 0.0f;
+	return steering;
+}
+
+
+
 void SteeringComponent::update(double dt) {
 	if (length(_parent->getPosition() - _player->getPosition()) > 100.0f) {
 		auto output = _seek.getSteering();
@@ -10,12 +31,12 @@ void SteeringComponent::update(double dt) {
 	}
 
 	else if (length(_parent->getPosition() - _player->getPosition()) < 50.0f) {
-		auto output = _flee.getSteering();
+		auto output = _chase.getSteering();
 		move(output.direction * (float)dt);
 	}
 }
 
-SteeringComponent::SteeringComponent(Entity* p, Entity* player) : _player(player), _seek(Seek(p, player, 100.0f)), _flee(Flee(p, player, 100.0f)), Component(p) { }
+SteeringComponent::SteeringComponent(Entity* p, Entity* player) : _player(player), _seek(Seek(p, player, 100.0f)), _chase(Chase(p, player, 100.0f)), Component(p) { }
 
 bool SteeringComponent::validMove(const sf::Vector2f& pos) const {
 	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y) {
