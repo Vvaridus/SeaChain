@@ -258,7 +258,7 @@ void CombatScene::Update(const double& dt) {
 			// Easter Egg?!?!?!
 			{
 				int chance = randomNumber(0, 100);
-				if (chance <= 20)
+				if (chance <= 25)
 					// Biscuit mode!
 					ins->setBiscuit(true);
 			}
