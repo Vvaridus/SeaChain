@@ -4,6 +4,7 @@
 using namespace std;
 
 MenuScene menu;
+HelpScene help;
 TutorialMain tutorialMain;
 CombatScene combat;
 OptionScene options;

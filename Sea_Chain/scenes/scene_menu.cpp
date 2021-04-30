@@ -14,6 +14,7 @@ using namespace std;
 using namespace sf;
 
 std::shared_ptr<ButtonComponent> btnStart;
+std::shared_ptr<ButtonComponent> btnHelp;
 std::shared_ptr<ButtonComponent> btnOptions;
 std::shared_ptr<ButtonComponent> btnEnd;
 
@@ -66,6 +67,24 @@ void MenuScene::Load() {
 	//Draw third button (OPTIONS BUTTON)
 	{
 		auto button = makeEntity();
+		button->addTag("btnHelp");
+		button->setPosition(Vector2f(709, 400));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(btnDimentions);
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnHelp = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnHelp->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
+	//Draw third button (OPTIONS BUTTON)
+	{
+		auto button = makeEntity();
 		button->addTag("btnOptions");
 		button->setPosition(Vector2f(709, 600));
 		auto buttonShape = button->addComponent<ShapeComponent>();
@@ -110,6 +129,10 @@ void MenuScene::Update(const double& dt) {
 		Nullify();
 		Engine::ChangeScene(&tutorialMain);
 	}
+	else if (btnHelp->isPressed()) {
+		Nullify();
+		Engine::ChangeScene(&help);
+	}
 	else if (btnOptions->isPressed()) {
 		Nullify();
 		Engine::ChangeScene(&options);
@@ -134,6 +157,7 @@ void MenuScene::UnLoad() {
 // and throws exceptions.
 void MenuScene::Nullify() {
 	btnStart = nullptr;
+	btnHelp = nullptr;
 	btnOptions = nullptr;
 	btnEnd = nullptr;
 }
