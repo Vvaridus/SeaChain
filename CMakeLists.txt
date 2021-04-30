@@ -81,7 +81,7 @@ set(EXECUTABLES ${EXECUTABLES} Sea_Chain)
 if(APPLE)
   add_custom_target(copy_resources ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/resources" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/lib/sfml/extlibs/libs-osx/Frameworks" ${CMAKE_BINARY_DIR}/lib/sfml/Frameworks
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/libaries/sfml/extlibs/libs-osx/Frameworks" ${CMAKE_BINARY_DIR}/libaries/sfml/Frameworks
   )
 else()
   add_custom_target(copy_resources ALL
@@ -123,7 +123,7 @@ set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE) #stop this happening on non-rel
 INCLUDE(InstallRequiredSystemLibraries)
 install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION "bin/" CONFIGURATIONS Release COMPONENT System )
 #Install component for resources
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/res" DESTINATION "bin/" CONFIGURATIONS Release COMPONENT resources_cmpt)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources" DESTINATION "bin/" CONFIGURATIONS Release COMPONENT resources_cmpt)
 #We disabled SFML's INSTALL component as it brings along junk, so we gotta make one ourselves
 install(DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/" DESTINATION "bin" CONFIGURATIONS Release COMPONENT libs_cmpt FILES_MATCHING PATTERN "*.dll" )
 
@@ -132,6 +132,7 @@ set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} resources_cmpt libs_cmpt)
 #CPACK_INSTALL_CMAKE_PROJECTS IS only necessary if not using CPACK_COMPONENTS_ALL
 #set(CPACK_INSTALL_CMAKE_PROJECTS ${CPACK_INSTALL_CMAKE_PROJECTS};${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};resources_cmpt;/)
 #set(CPACK_INSTALL_CMAKE_PROJECTS ${CPACK_INSTALL_CMAKE_PROJECTS};${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};libs_cmpt;/)
+
 
 #Install component for all labs, also tell CPack about them
 foreach (exe ${EXECUTABLES})
