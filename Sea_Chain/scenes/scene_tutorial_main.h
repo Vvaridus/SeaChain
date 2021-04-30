@@ -19,6 +19,8 @@ public:
 
   void createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles, std::string tag);
 
+  void createWaterBlend();
+
   int randomNumber(int min, int max);
 
   void Nullify();

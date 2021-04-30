@@ -137,6 +137,8 @@ void TutorialMain::Load() {
 		bedSpriteComp->setTexure(bedSprite);
 	}
 
+	createWaterBlend();
+
 	// Create player
 	{
 		auto ins = Data::getInstance();
@@ -527,6 +529,69 @@ void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vect
 		auto t = e->addComponent<SpriteComponent>();
 		t->setTexure(worldSheet);
 	}
+}
+
+void TutorialMain::createWaterBlend() {
+	Texture edgeDown;
+	Texture edgeLeft;
+	Texture edgeRight;
+	Texture edgeUp;
+	edgeDown.loadFromFile("resources/textures/WaterEdgeDOWN.png", IntRect(0, 0, 64, 64));
+	edgeLeft.loadFromFile("resources/textures/WaterEdgeLEFT.png", IntRect(0, 0, 64, 64));
+	edgeRight.loadFromFile("resources/textures/WaterEdgeRIGHT.png", IntRect(0, 0, 64, 64));
+	edgeUp.loadFromFile("resources/textures/WaterEdgeUP.png", IntRect(0, 0, 64, 64));
+	shared_ptr<Texture> waterDown = make_shared<Texture>(edgeDown);
+	shared_ptr<Texture> waterLeft = make_shared<Texture>(edgeLeft);
+	shared_ptr<Texture> waterRight = make_shared<Texture>(edgeRight);
+	shared_ptr<Texture> waterUp = make_shared<Texture>(edgeUp);
+	auto windowSize = Engine::getWindowSize();
+
+	auto waterTiles = ls::findTiles(ls::WATER);
+	// loop through all possible water tiles.
+	for (auto w : waterTiles) {
+		// avoid word 'else' as we have to check multiple directions of some tiles.
+
+		// check below the tile isn't water
+		// prepare for any index out of range and integer overflow
+		if ((w.y + 1) >= 0 && (w.y + 1) <= ls::getHeight() && ls::getTile(Vector2ul(w.x, w.y + 1)) != ls::WATER) {
+			// if it's not water, make a entity and assign the waterUp texture.
+			auto banner = makeEntity();
+			banner->addTag("waterUP");
+			banner->setPosition(ls::getTilePosition(Vector2ul(w.x, w.y + 1)));
+			auto bannerSprite = banner->addComponent<SpriteComponent>();
+			bannerSprite->setTexure(waterUp);
+		}
+		// check above the tile isn't water
+		// prepare for index out of range and integer overflow
+		if ((w.y - 1) >= 0 && (w.y - 1) <= ls::getHeight() && ls::getTile(Vector2ul(w.x, w.y - 1)) != ls::WATER) {
+			// if it's not water, make a entity and assign the waterDown texture.
+			auto banner = makeEntity();
+			banner->addTag("waterDOWN");
+			banner->setPosition(ls::getTilePosition(Vector2ul(w.x, w.y - 1)));
+			auto bannerSprite = banner->addComponent<SpriteComponent>();
+			bannerSprite->setTexure(waterDown);
+		}
+		// check left of the tile isn't water
+		// prepare for index out of range and integer overflow
+		if ((w.x - 1) >= 0 && (w.x - 1) <= ls::getWidth() && ls::getTile(Vector2ul(w.x - 1, w.y)) != ls::WATER) {
+			// if it's not water, make a entity and assign the waterRight texture.
+			auto banner = makeEntity();
+			banner->addTag("waterRIGHT");
+			banner->setPosition(ls::getTilePosition(Vector2ul(w.x - 1, w.y)));
+			auto bannerSprite = banner->addComponent<SpriteComponent>();
+			bannerSprite->setTexure(waterRight);
+		}
+		// check right of the tile isn't water
+		// prepare for index out of range and integer overflow
+		if ((w.x + 1) >= 0 && (w.x + 1) <= ls::getWidth() && ls::getTile(Vector2ul(w.x + 1, w.y)) != ls::WATER) {
+			// if it's not water, make a entity and assign the WaterLeft texture.
+			auto banner = makeEntity();
+			banner->addTag("waterLEFT");
+			banner->setPosition(ls::getTilePosition(Vector2ul(w.x + 1, w.y)));
+			auto bannerSprite = banner->addComponent<SpriteComponent>();
+			bannerSprite->setTexure(waterLeft);
+		}
+ 	}
 }
 
 int TutorialMain::randomNumber(int min, int max) {
