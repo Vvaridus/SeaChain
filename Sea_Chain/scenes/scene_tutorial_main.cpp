@@ -14,6 +14,9 @@
 #include <SFML/Audio/Music.hpp>
 #include <random>
 #include "../components/cmp_button.h"
+#include "../components/cmp_ai_steering.h"
+#include "../components/cmp_path_follow.h"
+#include "../helpers/astar.h"
 
 using namespace std;
 using namespace sf;
@@ -191,6 +194,7 @@ void TutorialMain::Load() {
 
 	// Create enemies
 	{
+		enemy = nullptr;
 		enemy = makeEntity();
 		enemy->addTag("enemy");
 		enemy->setPosition(Vector2f(432, 250));
@@ -280,6 +284,27 @@ void TutorialMain::Load() {
 			btnQuit->setInteraction(false);
 		}
 	}
+
+	random_device dev;
+	default_random_engine engine(dev());
+	uniform_real_distribution<float> x_dist(0.0f, Engine::GetWindow().getSize().x);
+	uniform_real_distribution<float> y_dist(0.0f, Engine::GetWindow().getSize().y);
+
+	for (size_t n = 0; n < 5; n++)
+	{
+		auto enemy = makeEntity();
+		enemy->setPosition(Vector2f(x_dist(engine), y_dist(engine)));
+		enemy->addTag("enemy");
+		auto s = enemy->addComponent<SpriteComponent>();
+		s->getSprite().setTexture(enemyTexture);
+		s->getSprite().setTextureRect(enemyRect);
+		s->getSprite().setOrigin(32.f, 32.f);
+		enemy->addComponent<SteeringComponent>(player.get());
+	}
+
+	auto path = pathFind(Vector2i((enemy->getPosition().x / 64), (enemy->getPosition().y / 64)), Vector2i(ls::getWidth() - 10, ls::getHeight() - 6));
+	auto ai = enemy->addComponent<PathfindingComponent>();
+	ai->setPath(path);
 
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
@@ -405,6 +430,29 @@ void TutorialMain::Update(const double& dt) {
 
 					s->getSprite().setTextureRect(playerRect);
 				}
+			}
+
+			static bool mouse_down = false;
+			if (Mouse::isButtonPressed(Mouse::Left) && !mouse_down)
+			{
+				auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
+				mouse_down = true;
+				if (ls::isOnGrid(Vector2f(mouse_pos)))
+				{
+					auto relative_pos = mouse_pos - Vector2i(ls::getOffset());
+					auto tile_coord = relative_pos / (int)ls::getTileSize();
+
+					auto char_relative = enemy->getPosition() - ls::getOffset();
+					auto char_tile = Vector2i(char_relative / ls::getTileSize());
+					auto path = pathFind(char_tile, tile_coord);
+					auto ai = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
+					ai->setPath(path);
+
+				}
+			}
+			if (mouse_down && !Mouse::isButtonPressed(Mouse::Left))
+			{
+				mouse_down = false;
 			}
 
 			updateHealthBars(dt, changingScenes);
