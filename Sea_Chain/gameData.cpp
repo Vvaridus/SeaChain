@@ -25,6 +25,7 @@ std::unordered_map<std::string, sf::Keyboard::Key> Data::keybinds {
 	{"INTERACT", sf::Keyboard::E},
 	{"GO_BACK", sf::Keyboard::Tab}
 };
+bool Data::biscuitMode;
 
 // method to get the current instance or create one
 std::shared_ptr<Data> Data::getInstance() {
@@ -103,6 +104,13 @@ std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> Data::getKey
 
 void Data::setKeybind(std::string keybind, sf::Keyboard::Key key) {
 	keybinds.find(keybind)->second = key;
+}
+
+void Data::setBiscuit(bool b) {
+	biscuitMode = b;
+}
+bool Data::getBiscuit() {
+	return biscuitMode;
 }
 
 

@@ -166,6 +166,25 @@ void TutorialMain::Load() {
 			// Add the entity back to the list to be rendered, it was removed earlier.
 			tutorialMain.ents.list.push_back(player);
 		}
+		// Ohhh whats this?
+		{
+			if (ins->getBiscuit()) {
+				Texture spritesheet;
+				spritesheet.loadFromFile("resources/textures/ShipBiscuit.png", IntRect(0, 0, 64, 64));
+				shared_ptr<Texture> spriteBiscuit = make_shared<Texture>(spritesheet);				
+
+				auto p = ins->getPlayer();
+				auto sprite = p->GetCompatibleComponent<SpriteComponent>()[0];
+				sprite->setTexure(spriteBiscuit);
+				sprite->getSprite().setTextureRect(IntRect(0, 0, 64, 64));
+			}
+			else {
+				auto p = ins->getPlayer();
+				auto sprite = p->GetCompatibleComponent<SpriteComponent>()[0];
+				sprite->getSprite().setTexture(playerTexture);
+				sprite->getSprite().setTextureRect(playerRect);
+			}
+		}
 	}
 
 	// Create enemies
@@ -292,96 +311,98 @@ void TutorialMain::Update(const double& dt) {
 		if (pause == false) {
 			// Movement annimation
 			{
-				auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
-				static sf::Clock clock;
-				float elapsed = clock.getElapsedTime().asSeconds();
+				if (ins->getBiscuit() == false) {
+					auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
+					static sf::Clock clock;
+					float elapsed = clock.getElapsedTime().asSeconds();
 
-				//PLAYER ANIMATION FOR UP
-				if (Keyboard::isKeyPressed(keybinds->find("MOVE_UP")->second))
-				{
-					if (elapsed > 0.2f)
+					//PLAYER ANIMATION FOR UP
+					if (Keyboard::isKeyPressed(keybinds->find("MOVE_UP")->second))
 					{
-						if (playerRect.left == 128)
+						if (elapsed > 0.2f)
 						{
-							playerRect.top = 192;
-							playerRect.left = 64;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
-						}
-						else
-						{
-							playerRect.top = 192;
-							playerRect.left += 64;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 192;
+								playerRect.left = 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 192;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
 						}
 					}
-				}
-				//PLAYER ANIMATION FOR DOWN
-				else if (Keyboard::isKeyPressed(keybinds->find("MOVE_DOWN")->second))
-				{
-					if (elapsed > 0.2f)
+					//PLAYER ANIMATION FOR DOWN
+					else if (Keyboard::isKeyPressed(keybinds->find("MOVE_DOWN")->second))
 					{
-						if (playerRect.left == 128)
+						if (elapsed > 0.2f)
 						{
-							playerRect.top = 0;
-							playerRect.left = 64;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
-						}
-						else
-						{
-							playerRect.top = 0;
-							playerRect.left += 64;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 0;
+								playerRect.left = 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 0;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
 						}
 					}
-				}
-				//PLAYER ANIMATION FOR LEFT
-				else if (Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second))
-				{
-					if (elapsed > 0.15f)
+					//PLAYER ANIMATION FOR LEFT
+					else if (Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second))
 					{
-						if (playerRect.left == 128)
+						if (elapsed > 0.15f)
 						{
-							playerRect.top = 128;
-							playerRect.left = 0;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
-						}
-						else
-						{
-							playerRect.top = 128;
-							playerRect.left += 64;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 128;
+								playerRect.left = 0;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 128;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
 						}
 					}
-				}
-				//PLAYER ANIMATION FOR RIGHT
-				else if (Keyboard::isKeyPressed(keybinds->find("MOVE_RIGHT")->second))
-				{
-					if (elapsed > 0.15f)
+					//PLAYER ANIMATION FOR RIGHT
+					else if (Keyboard::isKeyPressed(keybinds->find("MOVE_RIGHT")->second))
 					{
-						if (playerRect.left == 128)
+						if (elapsed > 0.15f)
 						{
-							playerRect.top = 64;
-							playerRect.left = 0;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
-						}
-						else
-						{
-							playerRect.top = 64;
-							playerRect.left += 64;
-							s->getSprite().setTextureRect(playerRect);
-							clock.restart();
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 64;
+								playerRect.left = 0;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 64;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
 						}
 					}
-				}
 
-				s->getSprite().setTextureRect(playerRect);
+					s->getSprite().setTextureRect(playerRect);
+				}
 			}
 
 			updateHealthBars(dt, changingScenes);
@@ -414,6 +435,7 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 			{
 				// get player health component and set the health to max health.
 				auto player = ins->getPlayer();
+				ins->setBiscuit(false);
 				auto health = player->GetCompatibleComponent<HealthComponent>()[0];
 				health->setHealth(health->getMaxHealth());
 				// reset the cooldown clock.
@@ -457,15 +479,17 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 
 		triggertime = 0.8f;
 	}
-	if (btnMenu->isPressed() && changingScenes == false) {
-		changingScenes = true;
-		Engine::ChangeScene(&menu);
-	}
-	else if (btnQuit->isPressed() && changingScenes == false) {
-		changingScenes = true;
-		Nullify();
-		Engine::GetWindow().close();
-		std::exit(EXIT_SUCCESS);
+	if (changingScenes == false) {
+		if (btnMenu->isPressed()) {
+			changingScenes = true;
+			Engine::ChangeScene(&menu);
+		}
+		else if (btnQuit->isPressed()) {
+			changingScenes = true;
+			Nullify();
+			Engine::GetWindow().close();
+			std::exit(EXIT_SUCCESS);
+		}
 	}
 }
 

@@ -46,13 +46,14 @@ static sf::SoundBuffer sfxHeavyAttack;
 static sf::SoundBuffer sfxParryAttack;
 static sf::Sound sound;
 static float volume;
+static sf::Clock timer;
 
 void CombatScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 
 	playerTurn = true;
 	dead = false;
-	
+
 	sfxQuickAttack.loadFromFile("resources/sound/SeaChainQuickSlash.wav");
 	sfxNormalAttack.loadFromFile("resources/sound/SeaChainNormalAttack.wav");
 	sfxHeavyAttack.loadFromFile("resources/sound/SeaChainHeavyAttack.wav");
@@ -197,6 +198,24 @@ void CombatScene::Load() {
 		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
 	}
 
+	// Error for entering without weapon
+	{
+		auto text = makeEntity();
+		text->addTag("errorText");
+		text->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		//auto textShape = text->addComponent<ShapeComponent>();
+		//textShape->setShape<CircleShape>(15.f);
+		//textShape->getShape().setFillColor(Color::White);
+		//textShape->getShape().setOrigin(Vector2f(7.5, 7.5));
+		auto textBox = text->addComponent<TextComponent>("What you going to fight with? Huh? \n\t\tHopes and dreams?");
+		textBox->setFillColor(Color::Red);
+		textBox->setCharSize(64);
+		textBox->setPosition(text->getPosition());
+		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
+		text->setVisible(false);
+	}
+
+
 	cout << enemy->getPosition() << "\n" << playerMain->getPosition() << endl;
 
 	createButtons();
@@ -204,6 +223,7 @@ void CombatScene::Load() {
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
+	timer.restart();
 
 	setLoaded(true);
 }
@@ -231,8 +251,26 @@ void CombatScene::Update(const double& dt) {
 	}
 	// if user has no weapon go back to main island
 	if (ic->getUsing() < 0) {
-		changingScene = true;
-		Engine::ChangeScene(&tutorialMain);
+		auto text = this->ents.find("errorText")[0];
+		text->setVisible(true);
+
+		if (timer.getElapsedTime().asSeconds() > 6) {
+			// Easter Egg?!?!?!
+			{
+				int chance = randomNumber(0, 100);
+				if (chance <= 20)
+					// Biscuit mode!
+					ins->setBiscuit(true);
+			}
+
+			changingScene = true;
+			Engine::ChangeScene(&tutorialMain);
+		}
+		else if (timer.getElapsedTime().asSeconds() > 3) {
+			auto txt = text->GetCompatibleComponent<TextComponent>()[0];
+			txt->SetText("Scatter! ya biscuit eater!");
+			txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
+		}
 	}
 
 	if (!changingScene)
@@ -247,7 +285,7 @@ void CombatScene::Update(const double& dt) {
 			at = getAttackStats(attackType::Quick, "player");
 			// Attack the enemy with the attack stats
 			attack(at, "enemy");
-			
+
 		}
 		else if (btnNormalAttack->isPressed()) {
 			//play attack sound
@@ -387,7 +425,7 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 		cout << chance << endl;
 	}
 
-	if(!parry)
+	if (!parry)
 		playerTurn = !playerTurn;
 
 }

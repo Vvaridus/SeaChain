@@ -17,6 +17,7 @@ private:
 	static std::string fileFolder;
 	static std::string currentLogFile;
 	static bool debugMode;
+	static bool biscuitMode;
 	static int soundVolume;
 	static int musicVolume;
 	static sf::Music music;
@@ -41,4 +42,6 @@ public:
 	static float getMusicVolume();
 	static std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> getKeybinds();
 	static void setKeybind(std::string keybind, sf::Keyboard::Key key);
+	static void setBiscuit(bool b);
+	static bool getBiscuit();
 };
