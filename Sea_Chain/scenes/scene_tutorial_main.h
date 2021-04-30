@@ -20,4 +20,6 @@ public:
   void createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles, std::string tag);
 
   int randomNumber(int min, int max);
+
+  void Nullify();
 };

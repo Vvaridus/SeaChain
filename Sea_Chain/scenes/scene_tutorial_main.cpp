@@ -13,6 +13,7 @@
 #include "../components/cmp_health.h"
 #include <SFML/Audio/Music.hpp>
 #include <random>
+#include "../components/cmp_button.h"
 
 using namespace std;
 using namespace sf;
@@ -27,6 +28,11 @@ static Image enemyImage;
 static Texture enemyTexture;
 static IntRect enemyRect = IntRect(0, 0, 64, 64);
 
+static bool pause = false;
+
+std::shared_ptr<ButtonComponent> btnMenu;
+std::shared_ptr<ButtonComponent> btnQuit;
+
 
 void TutorialMain::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
@@ -37,7 +43,10 @@ void TutorialMain::Load() {
 	enemyImage.loadFromFile("resources/textures/SeaChainEnemy.png");
 	enemyTexture.loadFromImage(enemyImage);
 
-	
+	auto ins = Data::getInstance();
+	auto debug = ins->getDebug();
+
+	pause = false;
 
 	auto windowSize = Engine::getWindowSize();
 	auto ho = windowSize.y - (ls::getHeight() * 64.f);
@@ -157,6 +166,25 @@ void TutorialMain::Load() {
 			// Add the entity back to the list to be rendered, it was removed earlier.
 			tutorialMain.ents.list.push_back(player);
 		}
+		// Ohhh whats this?
+		{
+			if (ins->getBiscuit()) {
+				Texture spritesheet;
+				spritesheet.loadFromFile("resources/textures/ShipBiscuit.png", IntRect(0, 0, 64, 64));
+				shared_ptr<Texture> spriteBiscuit = make_shared<Texture>(spritesheet);				
+
+				auto p = ins->getPlayer();
+				auto sprite = p->GetCompatibleComponent<SpriteComponent>()[0];
+				sprite->setTexure(spriteBiscuit);
+				sprite->getSprite().setTextureRect(IntRect(0, 0, 64, 64));
+			}
+			else {
+				auto p = ins->getPlayer();
+				auto sprite = p->GetCompatibleComponent<SpriteComponent>()[0];
+				sprite->getSprite().setTexture(playerTexture);
+				sprite->getSprite().setTextureRect(playerRect);
+			}
+		}
 	}
 
 	// Create enemies
@@ -196,6 +224,61 @@ void TutorialMain::Load() {
 		healthSprite->setTexure(spriteHealth);
 	}
 
+	// Draw/create the quit confirmation box with its two buttons
+	{
+		// load the sprite
+		Texture box;
+		box.loadFromFile("resources/textures/QuitMenu.png", IntRect(0, 0, 1920, 1080));
+		shared_ptr<Texture> spriteBox = make_shared<Texture>(box);
+
+		// set the position, add a tag, add the sprite component with the texture
+		auto popup = makeEntity();
+		popup->addTag("quitPopup");
+		popup->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		auto popupSprite = popup->addComponent<SpriteComponent>();
+		popupSprite->setTexure(spriteBox);
+		popupSprite->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		popup->setVisible(false);
+		// draw/create the menu button
+		{
+			auto menuButton = makeEntity();
+			menuButton->addTag("btnMenu");
+			menuButton->setPosition(Vector2f(770, 565));
+			auto buttonShape = menuButton->addComponent<ShapeComponent>();
+			buttonShape->setShape<RectangleShape>(Vector2f(150, 43));
+			buttonShape->getShape().setFillColor(Color::Transparent);
+			buttonShape->getShape().setOutlineThickness(2);
+			buttonShape->getShape().setOutlineColor(Color::White);
+			menuButton->setVisible(debug);
+
+			auto bounds = buttonShape->getBounds();
+
+			btnMenu = menuButton->addComponent<ButtonComponent>();
+			Vector2f xy = Vector2f(menuButton->getPosition().x + (bounds->width / 2), (menuButton->getPosition().y + (bounds->height / 2)));
+			btnMenu->setBounds(xy, Vector2f(bounds->width, bounds->height));
+			btnMenu->setInteraction(false);
+		}
+		// draw/create the quit button
+		{
+			auto exitButton = makeEntity();
+			exitButton->addTag("btnQuit");
+			exitButton->setPosition(Vector2f(940, 565));
+			auto buttonShape = exitButton->addComponent<ShapeComponent>();
+			buttonShape->setShape<RectangleShape>(Vector2f(150, 43));
+			buttonShape->getShape().setFillColor(Color::Transparent);
+			buttonShape->getShape().setOutlineThickness(2);
+			buttonShape->getShape().setOutlineColor(Color::White);
+			exitButton->setVisible(debug);
+
+			auto bounds = buttonShape->getBounds();
+
+			btnQuit = exitButton->addComponent<ButtonComponent>();
+			Vector2f xy = Vector2f(exitButton->getPosition().x + (bounds->width / 2), (exitButton->getPosition().y + (bounds->height / 2)));
+			btnQuit->setBounds(xy, Vector2f(bounds->width, bounds->height));
+			btnQuit->setInteraction(false);
+		}
+	}
+
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
@@ -206,6 +289,7 @@ void TutorialMain::Load() {
 void TutorialMain::UnLoad() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
 	player.reset();
+	Nullify();
 	ls::unload();
 	Scene::UnLoad();
 }
@@ -214,121 +298,132 @@ void TutorialMain::Update(const double& dt) {
 	bool changingScenes = false;
 	auto ins = Data::getInstance();
 	auto keybinds = ins->getKeybinds();
-	if (length(player->getPosition() - enemy->getPosition()) < 50) {		
+
+	if (length(player->getPosition() - enemy->getPosition()) < 50 && pause == false) {
 		ins->setPlayer(player);
 		changingScenes = true;
 		enemy->setForDelete();
 		Engine::ChangeScene(&combat);
-	}	
+	}
 
 	if (!changingScenes)
 	{
-		// Movement annimation
-		{
-			auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
-			static sf::Clock clock;
-			float elapsed = clock.getElapsedTime().asSeconds();
+		if (pause == false) {
+			// Movement annimation
+			{
+				if (ins->getBiscuit() == false) {
+					auto s = player->GetCompatibleComponent<SpriteComponent>()[0];
+					static sf::Clock clock;
+					float elapsed = clock.getElapsedTime().asSeconds();
 
-			//PLAYER ANIMATION FOR UP
-			if (Keyboard::isKeyPressed(keybinds->find("MOVE_UP")->second))
-			{
-				if (elapsed > 0.2f)
-				{
-					if (playerRect.left == 128)
+					//PLAYER ANIMATION FOR UP
+					if (Keyboard::isKeyPressed(keybinds->find("MOVE_UP")->second))
 					{
-						playerRect.top = 192;
-						playerRect.left = 64;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
+						if (elapsed > 0.2f)
+						{
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 192;
+								playerRect.left = 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 192;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+						}
 					}
-					else
+					//PLAYER ANIMATION FOR DOWN
+					else if (Keyboard::isKeyPressed(keybinds->find("MOVE_DOWN")->second))
 					{
-						playerRect.top = 192;
-						playerRect.left += 64;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
+						if (elapsed > 0.2f)
+						{
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 0;
+								playerRect.left = 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 0;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+						}
 					}
-				}
-			}
-			//PLAYER ANIMATION FOR DOWN
-			else if (Keyboard::isKeyPressed(keybinds->find("MOVE_DOWN")->second))
-			{
-				if (elapsed > 0.2f)
-				{
-					if (playerRect.left == 128)
+					//PLAYER ANIMATION FOR LEFT
+					else if (Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second))
 					{
-						playerRect.top = 0;
-						playerRect.left = 64;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
+						if (elapsed > 0.15f)
+						{
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 128;
+								playerRect.left = 0;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 128;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+						}
 					}
-					else
+					//PLAYER ANIMATION FOR RIGHT
+					else if (Keyboard::isKeyPressed(keybinds->find("MOVE_RIGHT")->second))
 					{
-						playerRect.top = 0;
-						playerRect.left += 64;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
+						if (elapsed > 0.15f)
+						{
+							if (playerRect.left == 128)
+							{
+								playerRect.top = 64;
+								playerRect.left = 0;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+							else
+							{
+								playerRect.top = 64;
+								playerRect.left += 64;
+								s->getSprite().setTextureRect(playerRect);
+								clock.restart();
+							}
+						}
 					}
-				}
-			}
-			//PLAYER ANIMATION FOR LEFT
-			else if (Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second))
-			{
-				if (elapsed > 0.15f)
-				{
-					if (playerRect.left == 128)
-					{
-						playerRect.top = 128;
-						playerRect.left = 0;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
-					}
-					else
-					{
-						playerRect.top = 128;
-						playerRect.left += 64;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
-					}
-				}
-			}
-			//PLAYER ANIMATION FOR RIGHT
-			else if (Keyboard::isKeyPressed(keybinds->find("MOVE_RIGHT")->second))
-			{
-				if (elapsed > 0.15f)
-				{
-					if (playerRect.left == 128)
-					{
-						playerRect.top = 64;
-						playerRect.left = 0;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
-					}
-					else
-					{
-						playerRect.top = 64;
-						playerRect.left += 64;
-						s->getSprite().setTextureRect(playerRect);
-						clock.restart();
-					}
+
+					s->getSprite().setTextureRect(playerRect);
 				}
 			}
 
-			s->getSprite().setTextureRect(playerRect);
+			updateHealthBars(dt, changingScenes);
+			Scene::Update(dt);
 		}
-
-		updateHealthBars(dt, changingScenes);
+		else {
+			btnMenu->update(dt);
+			btnQuit->update(dt);
+		}
 		checkEventPresses(dt, changingScenes);
-		Scene::Update(dt);
 	}
 }
 
 void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 	static sf::Clock bedCooldown;
+	static float triggertime = 0.0f;
+	triggertime -= dt;
 	auto ins = Data::getInstance();
 	auto keybinds = ins->getKeybinds();
 
-	if (sf::Keyboard::isKeyPressed(keybinds->find("INTERACT")->second)) {
+	if (sf::Keyboard::isKeyPressed(keybinds->find("INTERACT")->second) && pause == false) {
 		auto bed = this->ents.find("bed")[0];
 		auto skeleton = this->ents.find("skeleton");
 
@@ -340,6 +435,7 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 			{
 				// get player health component and set the health to max health.
 				auto player = ins->getPlayer();
+				ins->setBiscuit(false);
 				auto health = player->GetCompatibleComponent<HealthComponent>()[0];
 				health->setHealth(health->getMaxHealth());
 				// reset the cooldown clock.
@@ -349,7 +445,7 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 			}
 		}
 		// loop through all skeleton entities on the map and check if player is within range
-		if(!changingScenes){
+		if (!changingScenes) {
 			for (auto s : skeleton) {
 				if (length(player->getPosition() - s->getPosition()) < ls::getTileSize()) {
 					// get inventory component, create the weapon and add it to the inventory
@@ -363,10 +459,37 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 			}
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second))
+	if (sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second) && triggertime < 0)
 	{
-		changingScenes = true;
-		Engine::ChangeScene(&menu);
+		auto popup = this->ents.find("quitPopup")[0];
+		// if the popup is already displayed.
+		if (popup->isVisible()) {
+			popup->setVisible(false);
+			btnQuit->setInteraction(false);
+			btnMenu->setInteraction(false);
+			pause = false;
+		}
+		else
+		{
+			popup->setVisible(true);
+			btnQuit->setInteraction(true);
+			btnMenu->setInteraction(true);
+			pause = true;
+		}
+
+		triggertime = 0.8f;
+	}
+	if (changingScenes == false) {
+		if (btnMenu->isPressed()) {
+			changingScenes = true;
+			Engine::ChangeScene(&menu);
+		}
+		else if (btnQuit->isPressed()) {
+			changingScenes = true;
+			Nullify();
+			Engine::GetWindow().close();
+			std::exit(EXIT_SUCCESS);
+		}
 	}
 }
 
@@ -413,4 +536,10 @@ int TutorialMain::randomNumber(int min, int max) {
 	std::uniform_int_distribution<int> damage(min, max);
 
 	return damage(engine);
+}
+
+void TutorialMain::Nullify()
+{
+	btnMenu = nullptr;
+	btnQuit = nullptr;
 }
