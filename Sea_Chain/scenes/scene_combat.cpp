@@ -273,7 +273,7 @@ void CombatScene::Update(const double& dt) {
 		}
 	}
 
-	if (btnRun->isPressed())
+	if (!changingScene && btnRun->isPressed())
 		escape(dt, changingScene);
 
 	if (!changingScene)
