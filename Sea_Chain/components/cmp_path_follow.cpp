@@ -7,7 +7,7 @@ using namespace std;
 
 void PathfindingComponent::update(double dt) {
     _elapsed += dt;
-    if (_elapsed >= 0.1) {
+    if (_elapsed >= 0.5) {
         _elapsed = 0.0;
         if (_index < _path.size()) {
             float new_x = ls::getOffset().x + _path[_index].x * ls::getTileSize();

@@ -15,7 +15,7 @@ void SteeringComponent::update(double dt) {
 	}
 }
 
-SteeringComponent::SteeringComponent(Entity* p, Entity* player) : _player(player), _seek(Seek(p, player, 100.0f)), _flee(Flee(p, player, 100.0f)), Component(p) { }
+SteeringComponent::SteeringComponent(Entity* p, Entity* player) : _player(player), _seek(Seek(p, player, 10.0f)), _flee(Flee(p, player, 10.0f)), Component(p) { }
 
 bool SteeringComponent::validMove(const sf::Vector2f& pos) const {
 	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y) {

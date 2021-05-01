@@ -12,7 +12,7 @@ void BasicAiMovementComponent::update(double dt) {
 	move(normalize(direction) * _speed * (float)dt);
 }
 
-BasicAiMovementComponent::BasicAiMovementComponent(Entity* p) : _speed(100.0f), Component(p) { }
+BasicAiMovementComponent::BasicAiMovementComponent(Entity* p) : _speed(10.0f), Component(p) { }
 
 bool BasicAiMovementComponent::validMove(const sf::Vector2f& pos) {
 	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y)

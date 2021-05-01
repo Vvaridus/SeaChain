@@ -17,6 +17,7 @@
 #include "../components/cmp_ai_steering.h"
 #include "../components/cmp_path_follow.h"
 #include "../helpers/astar.h"
+#include "../components/cmp_ai_basic_movement.h"
 
 using namespace std;
 using namespace sf;
@@ -158,7 +159,7 @@ void TutorialMain::Load() {
 			s->getSprite().setTextureRect(playerRect);
 			s->getSprite().setOrigin(32.f, 32.f);
 			auto b = player->addComponent<BasicMovementComponent>();
-			b->setSpeed(600.f);
+			b->setSpeed(120.f);
 			player->addComponent<InventoryComponent>();
 		}
 		else
@@ -197,13 +198,35 @@ void TutorialMain::Load() {
 		enemy = nullptr;
 		enemy = makeEntity();
 		enemy->addTag("enemy");
-		enemy->setPosition(Vector2f(432, 250));
+		enemy->setPosition(Vector2f(384, 376));
+		//THIS MUST COME BEFORE MOVEMENT!
+		enemy->addComponent<PathfindingComponent>();
+		enemy->addComponent<BasicAiMovementComponent>();
 
 		auto s = enemy->addComponent<SpriteComponent>();
 		s->getSprite().setTexture(enemyTexture);
 		s->getSprite().setTextureRect(enemyRect);
-		s->getSprite().setOrigin(32.f, 32.f);
+		s->getSprite().setOrigin(32.f, 32.f);		
 	}
+
+	random_device dev;
+	default_random_engine engine(dev());
+	uniform_real_distribution<float> x_dist(0.0f, Engine::GetWindow().getSize().x);
+	uniform_real_distribution<float> y_dist(0.0f, Engine::GetWindow().getSize().y);
+
+	//Monkey Code
+	for (size_t n = 0; n < 1; n++)
+	{
+		auto enemy = makeEntity();
+		enemy->setPosition(Vector2f(x_dist(engine), y_dist(engine)));
+		enemy->addTag("enemy");
+		auto s = enemy->addComponent<SpriteComponent>();
+		s->getSprite().setTexture(enemyTexture);
+		s->getSprite().setTextureRect(enemyRect);
+		s->getSprite().setOrigin(32.f, 32.f);
+		enemy->addComponent<SteeringComponent>(player.get());
+		enemy->addComponent<BasicAiMovementComponent>();
+	};
 
 	// Draw the UI overlay
 	{
@@ -285,26 +308,12 @@ void TutorialMain::Load() {
 		}
 	}
 
-	random_device dev;
-	default_random_engine engine(dev());
-	uniform_real_distribution<float> x_dist(0.0f, Engine::GetWindow().getSize().x);
-	uniform_real_distribution<float> y_dist(0.0f, Engine::GetWindow().getSize().y);
+	
 
-	for (size_t n = 0; n < 5; n++)
-	{
-		auto enemy = makeEntity();
-		enemy->setPosition(Vector2f(x_dist(engine), y_dist(engine)));
-		enemy->addTag("enemy");
-		auto s = enemy->addComponent<SpriteComponent>();
-		s->getSprite().setTexture(enemyTexture);
-		s->getSprite().setTextureRect(enemyRect);
-		s->getSprite().setOrigin(32.f, 32.f);
-		enemy->addComponent<SteeringComponent>(player.get());
-	}
-
-	auto path = pathFind(Vector2i((enemy->getPosition().x / 64), (enemy->getPosition().y / 64)), Vector2i(ls::getWidth() - 10, ls::getHeight() - 6));
+	/*auto path = pathFind(Vector2i((enemy->getPosition().x / 64), (enemy->getPosition().y / 64)), Vector2i(ls::getWidth() - 10, ls::getHeight() - 6));
 	auto ai = enemy->addComponent<PathfindingComponent>();
-	ai->setPath(path);
+	ai->setPath(path);*/
+	
 
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
@@ -325,6 +334,8 @@ void TutorialMain::Update(const double& dt) {
 	bool changingScenes = false;
 	auto ins = Data::getInstance();
 	auto keybinds = ins->getKeybinds();
+	auto enemy_Path_Node_One = Vector2i(6, 4);
+	auto enemy_Path_Node_Two = Vector2i(7, 11);
 
 	if (length(player->getPosition() - enemy->getPosition()) < 50 && pause == false) {
 		ins->setPlayer(player);
@@ -431,8 +442,8 @@ void TutorialMain::Update(const double& dt) {
 					s->getSprite().setTextureRect(playerRect);
 				}
 			}
-
-			static bool mouse_down = false;
+			//For testing pathfinding on left click
+			/*static bool mouse_down = false;
 			if (Mouse::isButtonPressed(Mouse::Left) && !mouse_down)
 			{
 				auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
@@ -447,12 +458,31 @@ void TutorialMain::Update(const double& dt) {
 					auto path = pathFind(char_tile, tile_coord);
 					auto ai = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
 					ai->setPath(path);
-
 				}
 			}
 			if (mouse_down && !Mouse::isButtonPressed(Mouse::Left))
 			{
 				mouse_down = false;
+			}*/
+
+			auto enemy_current_pos = Vector2i(enemy->getPosition().x / 64, (enemy->getPosition().y - ls::getOffset().y) / 64);
+			cout << enemy_current_pos << endl;
+			static bool test = true;
+			//[6,4]// BOOL TRUE TEST BEFORE REMOVING BOOL Ensure enemy has pathfind component BEFORE move!
+			if (enemy_current_pos == enemy_Path_Node_One )
+			{
+				auto path = pathFind(enemy_current_pos, enemy_Path_Node_Two);
+				auto pathComp = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
+				pathComp->setPath(path);
+				test = false;
+			}
+			//[7,11]
+			else if (enemy_current_pos == enemy_Path_Node_Two )
+			{
+				auto path = pathFind(enemy_current_pos, enemy_Path_Node_One);
+				auto pathComp = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
+				pathComp->setPath(path);
+				test = true;
 			}
 
 			updateHealthBars(dt, changingScenes);
