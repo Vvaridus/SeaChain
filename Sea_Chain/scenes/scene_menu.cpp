@@ -142,6 +142,16 @@ void MenuScene::Update(const double& dt) {
 		Engine::GetWindow().close();
 		std::exit(EXIT_SUCCESS);
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F3)) {
+		static float debugTrigger = 0.f;
+		debugTrigger -= dt;
+		if (debugTrigger < 0) {
+			auto ins = Data::getInstance();
+			ins->setDebug(!ins->getDebug());
+			cout << ins->getDebug() << endl;
+			debugTrigger = .2f;
+		}
+	}
 
 	Scene::Update(dt);
 }

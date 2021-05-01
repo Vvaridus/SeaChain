@@ -65,6 +65,10 @@ bool Data::getDebug() {
 	return debugMode;
 }
 
+void Data::setDebug(bool d) {
+	debugMode = d;
+}
+
 void Data::setMusicFile(std::string path) {
 	music.openFromFile(path);
 }
@@ -127,7 +131,7 @@ Data::Data() {
 	
 	player = nullptr;
 	fileFolder = ".seachain";
-	debugMode = true;
+	debugMode = false;
 	soundVolume = 50.f;
 	music.setVolume(50.f);
 }

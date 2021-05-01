@@ -16,7 +16,6 @@ using namespace sf;
 
 std::shared_ptr<ButtonComponent> btnBack;
 
-
 void HelpScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 

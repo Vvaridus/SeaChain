@@ -33,6 +33,7 @@ public:
 	static void setLogFile(std::string logFile);
 	static void setPlayer(std::shared_ptr<Entity> p);
 	static bool getDebug();
+	static void setDebug(bool d);
 	static void setMusicFile(std::string path);
 	static void setMusicLoop(bool loop);
 	static void playMusic(bool play); // High lights as function definition not found

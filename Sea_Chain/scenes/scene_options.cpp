@@ -26,6 +26,7 @@ std::shared_ptr<ButtonComponent> btnLeftKeybind;
 std::shared_ptr<ButtonComponent> btnRightKeybind;
 std::shared_ptr<ButtonComponent> btnUseKeybind;
 std::shared_ptr<ButtonComponent> btnBackKeybind;
+std::shared_ptr<ButtonComponent> btnGoBack;
 std::shared_ptr<CheckboxComponent> chkFullscreen;
 std::shared_ptr<CheckboxComponent> chkVsync;
 
@@ -417,6 +418,24 @@ void OptionScene::Load() {
 		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
 		btnBackKeybind->setBounds(xy, Vector2f(bounds->width, bounds->height));
 	}
+	//Draw Thirteenth button (BACK BUTTON)
+	{
+		auto button = makeEntity();
+		button->addTag("btnBack");
+		button->setPosition(Vector2f(630, 934));
+		auto buttonShape = button->addComponent<ShapeComponent>();
+		buttonShape->setShape<RectangleShape>(Vector2f(200, 72));
+		buttonShape->getShape().setFillColor(Color::Transparent);
+		buttonShape->getShape().setOutlineThickness(2);
+		buttonShape->getShape().setOutlineColor(Color::White);
+		button->setVisible(debug);
+
+		auto bounds = buttonShape->getBounds();
+
+		btnGoBack = button->addComponent<ButtonComponent>();
+		Vector2f xy = Vector2f(button->getPosition().x + (bounds->width / 2), (button->getPosition().y + (bounds->height / 2)));
+		btnGoBack->setBounds(xy, Vector2f(bounds->width, bounds->height));
+	}
 
 
 	updateMusicIndicator();
@@ -428,6 +447,7 @@ void OptionScene::Load() {
 }
 
 void OptionScene::Update(const double& dt) {
+	bool changingScenes = false;
 	auto ins = Data::getInstance();
 	auto keybinds = ins->getKeybinds();
 
@@ -587,8 +607,16 @@ void OptionScene::Update(const double& dt) {
 		else
 			recordKey = true;
 	}
+	if (btnGoBack->isPressed()) {
+		changingScenes = true;
+		Engine::ChangeScene(&menu);
+	}
+	if (changingScenes == false && sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second)) {
+		Engine::ChangeScene(&menu);
+	}
 
-	if (chkVsync->isChecked()) {
+
+	if (changingScenes == false && chkVsync->isChecked()) {
 		// if the checkbox IS checked
 		// Make the check mark visible
 		auto chk = this->ents.find("chkVsync")[0];
@@ -605,7 +633,7 @@ void OptionScene::Update(const double& dt) {
 			lockFpsSetting = true;
 		}
 	}
-	else if (!chkVsync->isChecked()) {
+	else if (changingScenes == false && !chkVsync->isChecked()) {
 		// if the checkbox IS NOT checked
 		// hide the check mark
 		auto chk = this->ents.find("chkVsync")[0];
@@ -621,10 +649,9 @@ void OptionScene::Update(const double& dt) {
 	}
 
 
-	if (sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second)) {
-		Engine::ChangeScene(&menu);
-	}
-	Scene::Update(dt);
+	
+	if(changingScenes == false)
+		Scene::Update(dt);
 }
 
 void OptionScene::updateMusicIndicator() {
@@ -684,4 +711,5 @@ void OptionScene::Nullify() {
 	btnRightKeybind = nullptr;
 	btnBackKeybind = nullptr;
 	btnUseKeybind = nullptr;
+	btnGoBack = nullptr;
 }

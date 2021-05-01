@@ -273,6 +273,9 @@ void CombatScene::Update(const double& dt) {
 		}
 	}
 
+	if (btnRun->isPressed())
+		escape(dt, changingScene);
+
 	if (!changingScene)
 	{
 		if (btnQuickAttack->isPressed()) {
@@ -472,6 +475,26 @@ void CombatScene::updateHealthBars(const double& dt) {
 	spriteComponent->getSprite().setTextureRect(IntRect(0, 0, static_cast<int>(barWidth), spriteComponent->getBounds()->height));
 	if (barWidth <= 0)
 		dead = true;
+}
+
+void CombatScene::escape(const double& dt, bool &changingScene) {
+	int chance = randomNumber(0, 100);
+	static sf::Clock timer;
+	static bool run;
+	if (chance <= 25) {
+		auto text = this->ents.find("errorText")[0];
+		text->setVisible(true);
+		auto txt = text->GetCompatibleComponent<TextComponent>()[0];
+		txt->SetText("Scatter! ya biscuit eater!");
+		txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
+		run = true;
+		timer.restart();
+	}
+
+	if (run && timer.getElapsedTime().asSeconds() > 5) {
+		Engine::ChangeScene(&tutorialMain);
+		changingScene = true;
+	}
 }
 
 void CombatScene::Render() {
