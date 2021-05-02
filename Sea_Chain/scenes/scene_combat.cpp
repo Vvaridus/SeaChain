@@ -247,18 +247,21 @@ void CombatScene::Update(const double& dt) {
 
 	// if enemy or user dead return to main island
 	if (dead) {
-		auto text = this->ents.find("errorText")[0];
-		text->setVisible(true);
-
-		if (timer.getElapsedTime().asSeconds() > 6) {
+		//auto text = this->ents.find("errorText")[0];
+		//text->setVisible(true);
+		//static bool displayText = false;
+	
+		//if (displayText == false) {
+		//	auto txt = text->GetCompatibleComponent<TextComponent>()[0];
+		//	txt->SetText("Oh biscuits!");
+		//	txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
+		//	timer.restart();
+		//	displayText = true;
+		//}
+		//else if (timer.getElapsedTime().asSeconds() > 6) {
 			changingScene = true;
 			Engine::ChangeScene(&tutorialMain);
-		}
-		else if (timer.getElapsedTime().asSeconds() > 3) {
-			auto txt = text->GetCompatibleComponent<TextComponent>()[0];
-			txt->SetText("Oh biscuits!");
-			txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
-		}
+		//}
 	}
 	// if user has no weapon go back to main island
 	if (ic->getUsing() < 0) {
