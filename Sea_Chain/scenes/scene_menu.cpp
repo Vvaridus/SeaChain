@@ -27,6 +27,7 @@ void MenuScene::Load() {
 
 	auto ins = Data::getInstance();
 	auto debug = ins->getDebug();
+	ins->setPlayer(nullptr);
 	ins->setMusicFile("resources/sound/Pirate_1.wav");
 	ins->playMusic(true);
 	ins->setMusicLoop(true);
