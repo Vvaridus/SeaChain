@@ -12,6 +12,7 @@ InventoryComponent::InventoryComponent(Entity* p)
     : Component(p) {
     itemCount = 0;
     itemUsing = -1;
+    biscuits = 0;
 }
 
 const int& InventoryComponent::size() const {
@@ -69,6 +70,14 @@ const int InventoryComponent::getUsing()
 const void InventoryComponent::setUsing(int item)
 {
     itemUsing = item;
+}
+
+const int InventoryComponent::getBiscuits() {
+    return biscuits;
+}
+
+void InventoryComponent::setBiscuits(int amount) {
+    biscuits = amount;
 }
 
 Weapon& InventoryComponent::findWeapon(std::string id)
