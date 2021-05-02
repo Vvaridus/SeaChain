@@ -10,6 +10,7 @@
 #include "../gameData.h"
 #include <SFML/Audio/Music.hpp>
 #include "../helpers/convert.h"
+#include "../helpers/file_handlers.h"
 
 using namespace std;
 using namespace sf;
@@ -126,7 +127,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -144,7 +145,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -162,7 +163,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -180,7 +181,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -206,7 +207,7 @@ void OptionScene::Load() {
 		auto spriteComp = checkbox->addComponent<SpriteComponent>();
 		spriteComp->setTexure(sprite);
 		spriteComp->setVisibility(false);
-		checkbox->setVisible(debug);
+		chkShape->setVisibility(debug);
 
 		auto bounds = chkShape->getBounds();
 
@@ -232,7 +233,7 @@ void OptionScene::Load() {
 		auto spriteComp = checkbox->addComponent<SpriteComponent>();
 		spriteComp->setTexure(sprite);
 		spriteComp->setVisibility(false);
-		checkbox->setVisible(debug);
+		chkShape->setVisibility(debug);
 
 		auto bounds = chkShape->getBounds();
 
@@ -250,7 +251,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -268,7 +269,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -297,7 +298,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 		auto txt = button->addComponent<TextComponent>(Converter::SFKeyToString(keybinds->find("MOVE_UP")->second));
 		txt->setFillColor(Color::White);
 		txt->setCharSize(32);
@@ -322,7 +323,7 @@ void OptionScene::Load() {
 		txt->setFillColor(Color::White);
 		txt->setCharSize(32);
 		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -344,7 +345,7 @@ void OptionScene::Load() {
 		txt->setFillColor(Color::White);
 		txt->setCharSize(32);
 		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -366,7 +367,7 @@ void OptionScene::Load() {
 		txt->setFillColor(Color::White);
 		txt->setCharSize(32);
 		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -388,7 +389,7 @@ void OptionScene::Load() {
 		txt->setFillColor(Color::White);
 		txt->setCharSize(32);
 		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -410,7 +411,7 @@ void OptionScene::Load() {
 		txt->setFillColor(Color::White);
 		txt->setCharSize(32);
 		txt->setPosition(Vector2f(button->getPosition().x + 20, button->getPosition().y + 20));
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -428,7 +429,7 @@ void OptionScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -609,9 +610,12 @@ void OptionScene::Update(const double& dt) {
 	}
 	if (btnGoBack->isPressed()) {
 		changingScenes = true;
+		fileHandler::saveKeybinds();
 		Engine::ChangeScene(&menu);
 	}
 	if (changingScenes == false && sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second)) {
+		changingScenes = true;
+		fileHandler::saveKeybinds();
 		Engine::ChangeScene(&menu);
 	}
 

@@ -54,7 +54,10 @@ void ShapeComponent::update(double dt) {
   _shape->setRotation(_parent->getRotation());
 }
 
-void ShapeComponent::render() { Renderer::queue(_shape.get()); }
+void ShapeComponent::render() { 
+    if(_visible)
+        Renderer::queue(_shape.get()); 
+}
 
 sf::Shape& ShapeComponent::getShape() const { return *_shape; }
 
@@ -69,4 +72,8 @@ void ShapeComponent::setOrigin(sf::Vector2f orig) {
 
 ShapeComponent::ShapeComponent(Entity* p)
     : Component(p), _shape(make_shared<sf::CircleShape>()) {}
+
+void ShapeComponent::setVisibility(bool visible) {
+    _visible = visible;
+}
 

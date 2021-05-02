@@ -67,7 +67,7 @@ void HelpScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 

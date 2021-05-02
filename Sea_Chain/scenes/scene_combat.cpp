@@ -518,7 +518,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnBribe = button->addComponent<ButtonComponent>();
@@ -536,7 +536,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnRun = button->addComponent<ButtonComponent>();
@@ -554,7 +554,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnWepSwap = button->addComponent<ButtonComponent>();
@@ -572,7 +572,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnConsum = button->addComponent<ButtonComponent>();
@@ -590,7 +590,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -610,7 +610,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnNormalAttack = button->addComponent<ButtonComponent>();
@@ -628,7 +628,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnHeavyAttack = button->addComponent<ButtonComponent>();
@@ -646,7 +646,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnParry = button->addComponent<ButtonComponent>();

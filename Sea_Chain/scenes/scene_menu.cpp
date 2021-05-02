@@ -9,6 +9,7 @@
 #include "../components/cmp_button.h"
 #include "../gameData.h"
 #include <SFML/Audio/Music.hpp>
+#include "../helpers/file_handlers.h"
 
 using namespace std;
 using namespace sf;
@@ -20,6 +21,7 @@ std::shared_ptr<ButtonComponent> btnEnd;
 
 void MenuScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
+	fileHandler::loadKeybinds();
 
 	sf::Vector2f btnDimentions = Vector2f(500, 150);
 
@@ -56,7 +58,7 @@ void MenuScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -74,7 +76,7 @@ void MenuScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -92,7 +94,7 @@ void MenuScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 
@@ -110,7 +112,7 @@ void MenuScene::Load() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		button->setVisible(debug);
+		buttonShape->setVisibility(debug);
 
 		auto bounds = buttonShape->getBounds();
 

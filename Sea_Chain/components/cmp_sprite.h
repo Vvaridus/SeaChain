@@ -29,6 +29,7 @@ public:
 class ShapeComponent : public Component {
 protected:
   std::shared_ptr<sf::Shape> _shape;
+  bool _visible;
   // sf::Shape _shape;
 
 public:
@@ -39,6 +40,7 @@ public:
   void update(double dt) override;
   void render() override;
 
+  void setVisibility(bool visible);
   sf::Shape& getShape() const;
   std::unique_ptr<sf::FloatRect> getBounds();
 
