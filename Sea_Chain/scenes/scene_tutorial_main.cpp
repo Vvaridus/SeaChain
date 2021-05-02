@@ -516,8 +516,7 @@ void TutorialMain::Update(const double& dt) {
 			btnMenu->update(dt);
 			btnQuit->update(dt);
 		}
-		std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
-		cout << ic->getBiscuits() << endl;
+
 		checkEventPresses(dt, changingScenes);
 	}
 }
