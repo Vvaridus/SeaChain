@@ -217,6 +217,8 @@ void CombatScene::Load() {
 		//textShape->getShape().setOrigin(Vector2f(7.5, 7.5));
 		auto textBox = text->addComponent<TextComponent>("What you going to fight with? Huh? \n\t\tHopes and dreams?");
 		textBox->setFillColor(Color::Red);
+		textBox->setOutline(Color(0, 0, 0));
+		textBox->setOutlineThickness(2.f);
 		textBox->setCharSize(64);
 		textBox->setPosition(text->getPosition());
 		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
