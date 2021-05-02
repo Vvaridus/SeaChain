@@ -121,13 +121,17 @@ void fileHandler::loadSettings() {
 		settings.push_back(setting);
 	}
 
-	ins->setMusicVolume(stof(settings[0]));
-	ins->setSoundVolume(stof(settings[1]));
-	Engine::setVsync(stringToBool(settings[2]));
-	Engine::setFramerate(stoi(settings[3]));
+	if (settings.size() > 0)
+		ins->setMusicVolume(stof(settings[0]));
+	if (settings.size() > 1)
+		ins->setSoundVolume(stof(settings[1]));
+	if (settings.size() > 2)
+		Engine::setVsync(stringToBool(settings[2]));
+	if (settings.size() > 3)
+		Engine::setFramerate(stoi(settings[3]));
 }
 
-bool fileHandler::stringToBool(std::string s){
+bool fileHandler::stringToBool(std::string s) {
 	if (s == "1")
 		return true;
 	else
