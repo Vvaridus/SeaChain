@@ -16,6 +16,7 @@ std::string Engine::_gameName;
 bool Engine::_fullscreen = false;
 bool Engine::_vsync = false;
 sf::Uint32 Engine::keyPressed;
+int Engine::_fps = 0;
 
 static bool loading = false;
 static float loadingspinner = 0.f;

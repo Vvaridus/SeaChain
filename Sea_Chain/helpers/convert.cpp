@@ -142,6 +142,10 @@ sf::Keyboard::Key Converter::UInt32ToSFKey(sf::Uint32 key) {
 		out = sf::Keyboard::Comma; break;
 	case 42:
 		out = sf::Keyboard::Multiply; break;
+	case 60:
+		out = sf::Keyboard::Tab; break;
+	case 36:
+		out = sf::Keyboard::Escape; break;
 	case 48:
 		out = sf::Keyboard::Num0; break;
 	case 49:
@@ -226,6 +230,10 @@ sf::Keyboard::Key Converter::StringToSFKey(std::string key) {
 		out = sf::Keyboard::Comma;
 	if (key == "*")
 		out = sf::Keyboard::Multiply;
+	if (key == "TAB")
+		out = sf::Keyboard::Tab;
+	if (key == "Escape")
+		out = sf::Keyboard::Escape;
 	if (key == "0")
 		out = sf::Keyboard::Num0;
 	if (key == "1")

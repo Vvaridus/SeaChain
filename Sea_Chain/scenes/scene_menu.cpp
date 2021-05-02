@@ -22,6 +22,7 @@ std::shared_ptr<ButtonComponent> btnEnd;
 void MenuScene::Load() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
 	fileHandler::loadKeybinds();
+	fileHandler::loadSettings();
 
 	sf::Vector2f btnDimentions = Vector2f(500, 150);
 

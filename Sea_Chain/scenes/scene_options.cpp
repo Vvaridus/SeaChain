@@ -232,7 +232,10 @@ void OptionScene::Load() {
 		chkShape->getShape().setOutlineColor(Color::White);
 		auto spriteComp = checkbox->addComponent<SpriteComponent>();
 		spriteComp->setTexure(sprite);
-		spriteComp->setVisibility(false);
+		if(Engine::getVsync)
+			spriteComp->setVisibility(true);
+		else
+			spriteComp->setVisibility(false);
 		chkShape->setVisibility(debug);
 
 		auto bounds = chkShape->getBounds();
@@ -282,7 +285,7 @@ void OptionScene::Load() {
 		auto text = makeEntity();
 		text->addTag("fpsText");
 		text->setPosition(Vector2f(1065, 555));
-		auto textBox = text->addComponent<TextComponent>("0");
+		auto textBox = text->addComponent<TextComponent>(to_string(Engine::getFramerate()));
 		textBox->setFillColor(Color::White);
 		textBox->setCharSize(32);
 		textBox->setPosition(text->getPosition());
@@ -611,11 +614,13 @@ void OptionScene::Update(const double& dt) {
 	if (btnGoBack->isPressed()) {
 		changingScenes = true;
 		fileHandler::saveKeybinds();
+		fileHandler::saveSettings();
 		Engine::ChangeScene(&menu);
 	}
 	if (changingScenes == false && sf::Keyboard::isKeyPressed(keybinds->find("GO_BACK")->second)) {
 		changingScenes = true;
 		fileHandler::saveKeybinds();
+		fileHandler::saveSettings();
 		Engine::ChangeScene(&menu);
 	}
 
