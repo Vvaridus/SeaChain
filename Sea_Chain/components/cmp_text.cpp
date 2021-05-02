@@ -9,7 +9,7 @@ void TextComponent::render() { Renderer::queue(&_text); }
 TextComponent::TextComponent(Entity* const p, const std::string& str)
     : Component(p), _string(str) {
   _text.setString(_string);
-  _font = Resources::get<sf::Font>("COMIC.TTF");
+  _font = Resources::get<sf::Font>("PAPYRUS.TTF");
   _text.setFont(*_font);
 }
 
@@ -25,6 +25,10 @@ std::string TextComponent::getText() {
 void TextComponent::setCharSize(int s)
 {
     _text.setCharacterSize(s);
+}
+
+void TextComponent::setOutline(sf::Color c) {
+    _text.setOutlineColor(c);
 }
 
 void TextComponent::setOrigin(sf::Vector2f o)
@@ -50,6 +54,10 @@ void TextComponent::setFillColor(sf::Color c)
 void TextComponent::setStyle(sf::Text::Style s)
 {
     _text.setStyle(s);
+}
+
+void TextComponent::setOutlineThickness(float f) {
+    _text.setOutlineThickness(f);
 }
 
 sf::FloatRect TextComponent::getBounds()

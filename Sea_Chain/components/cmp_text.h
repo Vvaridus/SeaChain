@@ -20,6 +20,8 @@ public:
   void setPosition(sf::Vector2f p);
   void setRotation(float r);
   void setFillColor(sf::Color c);
+  void setOutline(sf::Color c);
+  void setOutlineThickness(float f);
   void setStyle(sf::Text::Style s);
   sf::FloatRect getBounds();
 
