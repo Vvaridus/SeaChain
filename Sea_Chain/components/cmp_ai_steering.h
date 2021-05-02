@@ -8,6 +8,7 @@ protected:
     Flee _flee;
     Entity* _player;
     bool validMove(const sf::Vector2f&) const;
+    sf::Vector2f _direction;
 public:
     void update(double) override;
     void move(const sf::Vector2f&);
