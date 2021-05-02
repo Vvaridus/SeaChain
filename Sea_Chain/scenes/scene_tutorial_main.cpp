@@ -230,18 +230,18 @@ void TutorialMain::Load() {
 	uniform_real_distribution<float> y_dist(0.0f, Engine::GetWindow().getSize().y);
 
 	//Monkey Code
-	for (size_t n = 0; n < 1; n++)
-	{
-		auto enemy = makeEntity();
-		enemy->setPosition(Vector2f(x_dist(engine), y_dist(engine)));
-		enemy->addTag("enemy");
-		auto s = enemy->addComponent<SpriteComponent>();
-		s->getSprite().setTexture(enemyTexture);
-		s->getSprite().setTextureRect(enemyRect);
-		s->getSprite().setOrigin(32.f, 32.f);
-		enemy->addComponent<SteeringComponent>(player.get());
-		enemy->addComponent<BasicAiMovementComponent>();
-	};
+	//for (size_t n = 0; n < 1; n++)
+	//{
+	//	auto enemy = makeEntity();
+	//	enemy->setPosition(Vector2f(x_dist(engine), y_dist(engine)));
+	//	enemy->addTag("enemy");
+	//	auto s = enemy->addComponent<SpriteComponent>();
+	//	s->getSprite().setTexture(enemyTexture);
+	//	s->getSprite().setTextureRect(enemyRect);
+	//	s->getSprite().setOrigin(32.f, 32.f);
+	//	enemy->addComponent<SteeringComponent>(player.get());
+	//	enemy->addComponent<BasicAiMovementComponent>();
+	//};
 
 	// Draw the UI overlay
 	{
