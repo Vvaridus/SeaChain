@@ -16,7 +16,8 @@ std::string Data::fileFolder;
 std::string Data::currentLogFile = "";
 bool Data::debugMode;
 int Data::soundVolume;
-sf::Music Data::music;
+sf::Music Data::musicTheme;
+sf::Music Data::musicBattle;
 std::unordered_map<std::string, sf::Keyboard::Key> Data::keybinds {
 	{"MOVE_UP", sf::Keyboard::W},
 	{"MOVE_LEFT", sf::Keyboard::A},
@@ -70,28 +71,54 @@ void Data::setDebug(bool d) {
 }
 
 void Data::setMusicFile(std::string path) {
-	music.openFromFile(path);
+	musicTheme.openFromFile(path);
 }
 
 void Data::setMusicLoop(bool loop) {
-	music.setLoop(loop);
+	musicTheme.setLoop(loop);
 }
 
 void Data::playMusic(bool play)
 {
 	if (play)
-		music.play();
+		musicTheme.play();
 	else if (!play)
-		music.stop();
+		musicTheme.stop();
 }
 
 void Data::setMusicVolume(float volume) {
-	music.setVolume((volume * 10.f));
+	musicTheme.setVolume((volume * 10.f));
 }
 
 float Data::getMusicVolume() {
-	return (music.getVolume() / 10);
+	return (musicTheme.getVolume() / 10);
 }
+
+void Data::setMusicFileBattle(std::string path) {
+	musicBattle.openFromFile(path);
+}
+
+void Data::setMusicLoopBattle(bool loop) {
+	musicBattle.setLoop(loop);
+}
+
+void Data::playMusicBattle(bool play)
+{
+	if (play)
+		musicBattle.play();
+	else if (!play)
+		musicBattle.stop();
+}
+
+void Data::setMusicVolumeBattle(float volume) {
+	musicBattle.setVolume((volume * 10.f));
+}
+
+float Data::getMusicVolumeBattle() {
+	return (musicBattle.getVolume() / 10);
+}
+
+
 
 void Data::setSoundVolume(float volume) {
 	soundVolume = (volume * 10.f);
@@ -133,5 +160,6 @@ Data::Data() {
 	fileFolder = ".seachain";
 	debugMode = false;
 	soundVolume = 50.f;
-	music.setVolume(50.f);
+	musicTheme.setVolume(50.f);
+	musicBattle.setVolume(50.f);
 }

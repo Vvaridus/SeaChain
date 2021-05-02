@@ -20,7 +20,8 @@ private:
 	static bool biscuitMode;
 	static int soundVolume;
 	static int musicVolume;
-	static sf::Music music;
+	static sf::Music musicTheme;
+	static sf::Music musicBattle;
 	static std::unordered_map<std::string, sf::Keyboard::Key> keybinds;
 
 public:
@@ -37,10 +38,15 @@ public:
 	static void setMusicFile(std::string path);
 	static void setMusicLoop(bool loop);
 	static void playMusic(bool play); // High lights as function definition not found
+	static void setMusicFileBattle(std::string path);
+	static void setMusicLoopBattle(bool loop);
+	static void playMusicBattle(bool play);
 	static void setSoundVolume(float volume); // High lights as function definition not found
 	static float getSoundVolume();
 	static void setMusicVolume(float volume);
 	static float getMusicVolume();
+	static void setMusicVolumeBattle(float volume);
+	static float getMusicVolumeBattle();
 	static std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> getKeybinds();
 	static void setKeybind(std::string keybind, sf::Keyboard::Key key);
 	static void setBiscuit(bool b);
