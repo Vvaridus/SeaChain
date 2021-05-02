@@ -17,6 +17,7 @@
 #include "../components/cmp_ai_steering.h"
 #include "../components/cmp_path_follow.h"
 #include "../helpers/astar.h"
+#include "../components/cmp_text.h"
 
 using namespace std;
 using namespace sf;
@@ -266,6 +267,14 @@ void TutorialMain::Load() {
 		bannerSprite->setTexure(spriteBanner);
 		bannerSprite->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 
+		auto textBox = banner->addComponent<TextComponent>(to_string(ins->getPlayer()->GetCompatibleComponent<InventoryComponent>()[0]->getBiscuits()));
+		textBox->setFillColor(Color(255, 255, 255));
+		textBox->setOutline(Color(0, 0, 0));
+		textBox->setOutlineThickness(2.f);
+		textBox->setCharSize(36);
+		textBox->setPosition(Vector2f(728, 50));
+		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
+
 		auto healthBanner = makeEntity();
 		healthBanner->addTag("healthUIBar");
 		healthBanner->setPosition(Vector2f(256, 49));
@@ -327,12 +336,6 @@ void TutorialMain::Load() {
 			btnQuit->setInteraction(false);
 		}
 	}
-
-	
-
-	/*auto path = pathFind(Vector2i((enemy->getPosition().x / 64), (enemy->getPosition().y / 64)), Vector2i(ls::getWidth() - 10, ls::getHeight() - 6));
-	auto ai = enemy->addComponent<PathfindingComponent>();
-	ai->setPath(path);*/
 	
 
 	//Simulate long loading times
@@ -467,28 +470,6 @@ void TutorialMain::Update(const double& dt) {
 					s->getSprite().setTextureRect(playerRect);
 				}
 			}
-			//For testing pathfinding on left click
-			/*static bool mouse_down = false;
-			if (Mouse::isButtonPressed(Mouse::Left) && !mouse_down)
-			{
-				auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
-				mouse_down = true;
-				if (ls::isOnGrid(Vector2f(mouse_pos)))
-				{
-					auto relative_pos = mouse_pos - Vector2i(ls::getOffset());
-					auto tile_coord = relative_pos / (int)ls::getTileSize();
-
-					auto char_relative = enemy->getPosition() - ls::getOffset();
-					auto char_tile = Vector2i(char_relative / ls::getTileSize());
-					auto path = pathFind(char_tile, tile_coord);
-					auto ai = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
-					ai->setPath(path);
-				}
-			}
-			if (mouse_down && !Mouse::isButtonPressed(Mouse::Left))
-			{
-				mouse_down = false;
-			}*/
 
 			auto enemy_current_pos = Vector2i(enemy->getPosition().x / 64, (enemy->getPosition().y - ls::getOffset().y) / 64);
 			static bool test = true;
@@ -507,6 +488,13 @@ void TutorialMain::Update(const double& dt) {
 				auto pathComp = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
 				pathComp->setPath(path);
 				test = true;
+			}
+
+			// update biscuit count
+			{
+				auto text = this->ents.find("mainBanner")[0]->GetCompatibleComponent<TextComponent>()[0];
+				text->SetText(to_string(ins->getPlayer()->GetCompatibleComponent<InventoryComponent>()[0]->getBiscuits()));
+				text->setOrigin(Vector2f(text->getBounds().width / 2, text->getBounds().height / 2));
 			}
 
 			updateHealthBars(dt, changingScenes);
