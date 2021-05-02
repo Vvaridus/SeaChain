@@ -359,6 +359,11 @@ void TutorialMain::Update(const double& dt) {
 		Engine::ChangeScene(&combat);
 	}
 
+	if (!ins->getPlayer()->isAlive()) {
+		Engine::ChangeScene(&menu);
+		changingScenes = true;
+	}
+
 	if (!changingScenes)
 	{
 		if (pause == false) {
