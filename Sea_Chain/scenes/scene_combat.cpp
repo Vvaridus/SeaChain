@@ -485,7 +485,7 @@ void CombatScene::bribe(const double& dt, bool& changingScene) {
 		run = true;
 	}
 
-	if (countdown.getElapsedTime().asSeconds() > 5) {
+	if (countdown.getElapsedTime().asSeconds() > 5 && run) {
 		Engine::ChangeScene(&tutorialMain);
 		changingScene = true;
 	}
