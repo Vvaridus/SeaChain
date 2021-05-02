@@ -61,7 +61,13 @@ void CombatScene::Load() {
 	sfxHeavyAttack.loadFromFile("resources/sound/SeaChainHeavyAttack.wav");
 	sfxParryAttack.loadFromFile("resources/sound/SeaChainParry.wav");
 
+	
+
 	auto ins = Data::getInstance();
+	ins->playMusic(false);
+	ins->setMusicLoop(false);
+	ins->playMusicBattle(true);
+	ins->setMusicLoopBattle(true);
 	volume = ins->getSoundVolume();
 
 	auto windowSize = Engine::getWindowSize();
@@ -232,6 +238,11 @@ void CombatScene::Load() {
 
 void CombatScene::UnLoad() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	auto ins = Data::getInstance();
+	ins->playMusicBattle(false);
+	ins->setMusicLoopBattle(false);
+	ins->playMusic(true);
+	ins->setMusicLoop(true);
 	nullify();
 	Scene::UnLoad();
 }
