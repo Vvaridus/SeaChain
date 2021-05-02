@@ -67,12 +67,19 @@ void TutorialMain::Load() {
 
 	// create basic world textures
 	{
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(0, 0, 64, 64), ls::findTiles(ls::GRASS), "grass");
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(64, 0, 64, 64), ls::findTiles(ls::SAND), "sand");
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(128, 0, 64, 64), ls::findTiles(ls::DIRT), "dirt");
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(192, 0, 64, 64), ls::findTiles(ls::STONE), "stone");
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(256, 0, 64, 64), ls::findTiles(ls::WATER), "water");
+		vector<IntRect> bounds = { IntRect(0, 0, 64, 64) };
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, ls::findTiles(ls::GRASS), "grass");
+		bounds = { IntRect(64, 0, 64, 64) };
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, ls::findTiles(ls::SAND), "sand");
+		bounds = { IntRect(128, 0, 64, 64) };
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, ls::findTiles(ls::DIRT), "dirt");
+		bounds = { IntRect(192, 0, 64, 64) };
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, ls::findTiles(ls::STONE), "stone");
+		bounds = { IntRect(256, 0, 64, 64) };
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, ls::findTiles(ls::WATER), "water");
 	}
+
+	createWaterBlend();
 
 	// add extra entities rocks, skeletons, trees
 	{
@@ -90,7 +97,9 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(192, 64, 64, 64), randomTiles, "tree");
+		std::vector<sf::IntRect> bounds = { sf::IntRect(192, 64, 64, 64), sf::IntRect(256, 64, 64, 64), sf::IntRect(320, 64, 64, 64) };
+
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, randomTiles, "tree");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -106,8 +115,9 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
+		bounds = { sf::IntRect(64, 64, 64, 64), sf::IntRect(128, 64, 64, 64) };
 
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(64, 64, 64, 64), randomTiles, "rock");
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, randomTiles, "rock");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -123,7 +133,9 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/textures/SeaChainWorldTilesv.png", IntRect(0, 64, 64, 64), randomTiles, "skeleton");
+		bounds = { sf::IntRect(0, 64, 64, 64) };
+
+		createTexture("resources/textures/SeaChainWorldTilesv.png", bounds, randomTiles, "skeleton");
 		randomTiles.clear();
 		tileList.clear();
 
@@ -139,7 +151,27 @@ void TutorialMain::Load() {
 			randomTiles.push_back(tileList[rand]);
 		}
 
-		createTexture("resources/textures/redx.png", IntRect(0, 0, 64, 64), randomTiles, "xspot");
+		bounds = { sf::IntRect(0, 0, 64, 64) };
+
+		createTexture("resources/textures/redx.png", bounds, randomTiles, "xspot");
+		randomTiles.clear();
+		tileList.clear();
+
+		// This will draw a tree over GRASS tiles
+		// Get a list of all grass tiles and then shuffle the vector
+		// get a random numberOfTiles of 0-80% of the vector size
+		// then get a random tile from the list and add that to a vector to be set to a tree.
+		tileList = ls::findTiles(ls::WATER);
+		std::shuffle(std::begin(tileList), std::end(tileList), rng);
+		numberOfTiles = randomNumber(0, 0.01 * (tileList.size()));
+		for (int i = 0; i < numberOfTiles; i++) {
+			int rand = randomNumber(0, tileList.size() - 1);
+			randomTiles.push_back(tileList[rand]);
+		}
+
+		bounds = { sf::IntRect(0, 0, 128, 128) };
+
+		createTexture("resources/textures/shipWreck.png", bounds, randomTiles, "shipWreck");
 		randomTiles.clear();
 		tileList.clear();
 	}
@@ -162,7 +194,7 @@ void TutorialMain::Load() {
 		bedSpriteComp->setTexure(bedSprite);
 	}
 
-	createWaterBlend();
+	
 
 	// Create player
 	{
@@ -198,7 +230,7 @@ void TutorialMain::Load() {
 			if (ins->getBiscuit()) {
 				Texture spritesheet;
 				spritesheet.loadFromFile("resources/textures/ShipBiscuit.png", IntRect(0, 0, 64, 64));
-				shared_ptr<Texture> spriteBiscuit = make_shared<Texture>(spritesheet);				
+				shared_ptr<Texture> spriteBiscuit = make_shared<Texture>(spritesheet);
 
 				auto p = ins->getPlayer();
 				auto sprite = p->GetCompatibleComponent<SpriteComponent>()[0];
@@ -227,7 +259,7 @@ void TutorialMain::Load() {
 		auto s = enemy->addComponent<SpriteComponent>();
 		s->getSprite().setTexture(enemyTexture);
 		s->getSprite().setTextureRect(enemyRect);
-		s->getSprite().setOrigin(32.f, 32.f);		
+		s->getSprite().setOrigin(32.f, 32.f);
 	}
 
 	random_device dev;
@@ -336,7 +368,7 @@ void TutorialMain::Load() {
 			btnQuit->setInteraction(false);
 		}
 	}
-	
+
 
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
@@ -474,7 +506,7 @@ void TutorialMain::Update(const double& dt) {
 			auto enemy_current_pos = Vector2i(enemy->getPosition().x / 64, (enemy->getPosition().y - ls::getOffset().y) / 64);
 			static bool test = true;
 			//[6,4]// BOOL TRUE TEST BEFORE REMOVING BOOL Ensure enemy has pathfind component BEFORE move!
-			if (enemy_current_pos == enemy_Path_Node_One )
+			if (enemy_current_pos == enemy_Path_Node_One)
 			{
 				auto path = pathFind(enemy_current_pos, enemy_Path_Node_Two);
 				auto pathComp = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
@@ -482,7 +514,7 @@ void TutorialMain::Update(const double& dt) {
 				test = false;
 			}
 			//[7,11]
-			else if (enemy_current_pos == enemy_Path_Node_Two )
+			else if (enemy_current_pos == enemy_Path_Node_Two)
 			{
 				auto path = pathFind(enemy_current_pos, enemy_Path_Node_One);
 				auto pathComp = enemy->GetCompatibleComponent<PathfindingComponent>()[0];
@@ -616,20 +648,23 @@ void TutorialMain::Render() {
 	Scene::Render();
 }
 
-void TutorialMain::createTexture(std::string path, sf::IntRect bounds, std::vector<sf::Vector2ul> tiles, std::string tag)
+void TutorialMain::createTexture(std::string path, std::vector<sf::IntRect> bounds, std::vector<sf::Vector2ul> tiles, std::string tag)
 {
+
 	//Tile Texture
 	Texture worldSpriteSheet;
-	worldSpriteSheet.loadFromFile(path, bounds);
+	worldSpriteSheet.loadFromFile(path);
 
 	shared_ptr<Texture> worldSheet = make_shared<Texture>(worldSpriteSheet);
 	for (auto t : tiles) {
+		sf::IntRect bound = bounds[randomNumber(0, bounds.size() - 1)];
 		auto pos = ls::getTilePosition(t);
 		auto e = makeEntity();
 		e->setPosition(pos);
 		e->addTag(tag);
 		auto t = e->addComponent<SpriteComponent>();
 		t->setTexure(worldSheet);
+		t->getSprite().setTextureRect(bound);
 	}
 }
 
@@ -693,7 +728,7 @@ void TutorialMain::createWaterBlend() {
 			auto bannerSprite = banner->addComponent<SpriteComponent>();
 			bannerSprite->setTexure(waterLeft);
 		}
- 	}
+	}
 }
 
 int TutorialMain::randomNumber(int min, int max) {
