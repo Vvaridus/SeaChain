@@ -30,6 +30,9 @@ static IntRect playerRect = IntRect(64, 0, 64, 64);
 static Image enemyImage;
 static Texture enemyTexture;
 static IntRect enemyRect = IntRect(0, 0, 64, 64);
+static Image monkeyImage;
+static Texture monkeyTexture;
+static IntRect monkeyRect = IntRect(0, 0, 64, 64);
 
 static bool pause = false;
 
@@ -45,6 +48,8 @@ void TutorialMain::Load() {
 	playerTexture.loadFromImage(playerImage);
 	enemyImage.loadFromFile("resources/textures/SeaChainEnemy.png");
 	enemyTexture.loadFromImage(enemyImage);
+	monkeyImage.loadFromFile("resources/textures/SeaChainMonkey.png");
+	monkeyTexture.loadFromImage(monkeyImage);
 
 	auto ins = Data::getInstance();
 	auto debug = ins->getDebug();
@@ -230,18 +235,18 @@ void TutorialMain::Load() {
 	uniform_real_distribution<float> y_dist(0.0f, Engine::GetWindow().getSize().y);
 
 	//Monkey Code
-	//for (size_t n = 0; n < 1; n++)
-	//{
-	//	auto enemy = makeEntity();
-	//	enemy->setPosition(Vector2f(x_dist(engine), y_dist(engine)));
-	//	enemy->addTag("enemy");
-	//	auto s = enemy->addComponent<SpriteComponent>();
-	//	s->getSprite().setTexture(enemyTexture);
-	//	s->getSprite().setTextureRect(enemyRect);
-	//	s->getSprite().setOrigin(32.f, 32.f);
-	//	enemy->addComponent<SteeringComponent>(player.get());
-	//	enemy->addComponent<BasicAiMovementComponent>();
-	//};
+	for (size_t n = 0; n < 1; n++)
+	{
+		auto enemy = makeEntity();
+		enemy->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2 + 32));
+		enemy->addTag("enemy");
+		auto s = enemy->addComponent<SpriteComponent>();
+		s->getSprite().setTexture(monkeyTexture);
+		s->getSprite().setTextureRect(monkeyRect);
+		s->getSprite().setOrigin(32.f, 32.f);
+		enemy->addComponent<SteeringComponent>(player.get());
+		//enemy->addComponent<BasicAiMovementComponent>();
+	};
 
 	// Draw the UI overlay
 	{
