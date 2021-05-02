@@ -29,6 +29,7 @@ public:
 
 protected:
 	void escape(const double& dt, bool& changingScene);
+	void bribe(const double& dt, bool& changingScene);
 	void updateHealthBars(const double& dt);
 	void attack(AttackData ad, std::string beingAttacked);
 	AttackData getAttackStats(attackType type, std::string attacker);

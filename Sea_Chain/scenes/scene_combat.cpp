@@ -25,6 +25,7 @@ static shared_ptr<Entity> enemy;
 static bool playerTurn = false;
 static bool dead = false;
 static bool parry = false;
+static bool run = false;
 static shared_ptr<ButtonComponent> btnBribe;
 static shared_ptr<ButtonComponent> btnRun;
 static shared_ptr<ButtonComponent> btnWepSwap;
@@ -276,6 +277,13 @@ void CombatScene::Update(const double& dt) {
 	if (!changingScene && btnRun->isPressed())
 		escape(dt, changingScene);
 
+	if (!changingScene && btnBribe->isPressed())
+		bribe(dt, changingScene);
+
+	if (!changingScene && run)
+		bribe(dt, changingScene);
+
+
 	if (!changingScene)
 	{
 		if (btnQuickAttack->isPressed()) {
@@ -433,6 +441,30 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 
 }
 
+void CombatScene::bribe(const double& dt, bool& changingScene) {
+	auto ins = Data::getInstance();
+	auto player = ins->getPlayer();
+	std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
+	static sf::Clock countdown;
+	if (ic->getBiscuits() >= 3 && !run) {
+		ic->setBiscuits(ic->getBiscuits() - 3);
+
+
+		auto text = this->ents.find("errorText")[0];
+		text->setVisible(true);
+		auto txt = text->GetCompatibleComponent<TextComponent>()[0];
+		txt->SetText("Always choose the lesser of two weevils!");
+		txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
+		countdown.restart();
+		run = true;
+	}
+
+	if (countdown.getElapsedTime().asSeconds() > 5) {
+		Engine::ChangeScene(&tutorialMain);
+		changingScene = true;
+	}
+}
+
 void CombatScene::updateLog(string attacking, string defending, AttackData ad) {
 	auto textBox = this->ents.find("textLog")[0];
 	auto text = textBox->GetCompatibleComponent<TextComponent>()[0];
@@ -477,7 +509,7 @@ void CombatScene::updateHealthBars(const double& dt) {
 		dead = true;
 }
 
-void CombatScene::escape(const double& dt, bool &changingScene) {
+void CombatScene::escape(const double& dt, bool& changingScene) {
 	int chance = randomNumber(0, 100);
 	static sf::Clock timer;
 	static bool run;
@@ -554,7 +586,7 @@ void CombatScene::createButtons() {
 		buttonShape->getShape().setFillColor(Color::Transparent);
 		buttonShape->getShape().setOutlineThickness(2);
 		buttonShape->getShape().setOutlineColor(Color::White);
-		buttonShape->setVisibility(debug);(debug);
+		buttonShape->setVisibility(debug); (debug);
 
 		auto bounds = buttonShape->getBounds();
 		btnWepSwap = button->addComponent<ButtonComponent>();

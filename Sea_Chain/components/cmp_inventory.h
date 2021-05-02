@@ -10,6 +10,7 @@ private:
 	int itemCount;
 	int capacity = 16; // default capacity
 	int itemUsing;
+	int biscuits;
 
 public:
 	void update(double dt) override;
@@ -28,6 +29,9 @@ public:
 
 	const int getUsing();
 	const void setUsing(int item);
+
+	const int getBiscuits();
+	void setBiscuits(int amount);
 
 	Weapon& findWeapon(std::string id);
 	Weapon& findWeapon(int index);
