@@ -179,7 +179,14 @@ sf::Uint32 Engine::getPressedKey() { return keyPressed; }
 
 bool Engine::getVsync() { return _vsync; }
 
-void Engine::setFramerate(int fps) { _window->setFramerateLimit(fps); }
+void Engine::setFramerate(int fps) { 
+	_window->setFramerateLimit(fps); 
+	_fps = fps;
+}
+
+int Engine::getFramerate() {
+	return _fps;
+}
 
 bool Engine::getFullscreen() { return _fullscreen; }
 

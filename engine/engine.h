@@ -40,10 +40,12 @@ public:
   static bool getVsync();
   static sf::Uint32 getPressedKey();
   static void setFramerate(int fps);
+  static int getFramerate();
   static bool getFullscreen();
   static void setFullscreen(bool fullscreen);
 
 private:
+    static int _fps;
     static sf::Uint32 keyPressed;
   static Scene* _activeScene;
   static bool _vsync;
