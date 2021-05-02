@@ -2,6 +2,7 @@
 #include "../helpers/astar.h"
 #include <LevelSystem.h>
 #include <maths.h>
+#include "cmp_sprite.h"
 
 using namespace sf;
 using namespace std;
@@ -63,7 +64,100 @@ void BasicAiMovementComponent::setDirection(sf::Vector2f direction) {
 
 void BasicAiMovementComponent::update(double dt) {
 	move(normalize(_direction) * _speed * (float)dt);
+
+	auto s = _parent->GetCompatibleComponent<SpriteComponent>()[0];
+	static IntRect enemyRect = IntRect(0, 0, 64, 64);
+	static sf::Clock clock;
+	float elapsed = clock.getElapsedTime().asSeconds();
+
+	//Enemy ANIMATION FOR UP
+	if (_direction == Vector2f(0.f, -1.f))
+	{
+		if (elapsed > 0.2f)
+		{
+			if (enemyRect.left == 128)
+			{
+				enemyRect.top = 192;
+				enemyRect.left = 64;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+			else
+			{
+				enemyRect.top = 192;
+				enemyRect.left += 64;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+		}
+	}
+	//Enemy ANIMATION FOR DOWN
+	else if (_direction == Vector2f(0.f, 1.f))
+	{
+		if (elapsed > 0.2f)
+		{
+			if (enemyRect.left == 128)
+			{
+				enemyRect.top = 0;
+				enemyRect.left = 64;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+			else
+			{
+				enemyRect.top = 0;
+				enemyRect.left += 64;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+		}
+	}
+	//Enemy ANIMATION FOR LEFT
+	else if (_direction == Vector2f(-1.f, 0.f))
+	{
+		if (elapsed > 0.15f)
+		{
+			if (enemyRect.left == 128)
+			{
+				enemyRect.top = 128;
+				enemyRect.left = 0;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+			else
+			{
+				enemyRect.top = 128;
+				enemyRect.left += 64;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+		}
+	}
+	//Enemy ANIMATION FOR RIGHT
+	else if (_direction == Vector2f(+1.f, -0.f))
+	{
+		if (elapsed > 0.15f)
+		{
+			if (enemyRect.left == 128)
+			{
+				enemyRect.top = 64;
+				enemyRect.left = 0;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+			else
+			{
+				enemyRect.top = 64;
+				enemyRect.left += 64;
+				s->getSprite().setTextureRect(enemyRect);
+				clock.restart();
+			}
+		}
+	}
+
+	s->getSprite().setTextureRect(enemyRect);
 }
+
 
 BasicAiMovementComponent::BasicAiMovementComponent(Entity* p) : _direction(Vector2f(0.f, 0.f)), _speed(100.f), Component(p) { }
 
