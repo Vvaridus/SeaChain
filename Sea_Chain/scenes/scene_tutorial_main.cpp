@@ -17,7 +17,6 @@
 #include "../components/cmp_ai_steering.h"
 #include "../components/cmp_path_follow.h"
 #include "../helpers/astar.h"
-#include "../components/cmp_ai_basic_movement.h"
 
 using namespace std;
 using namespace sf;
@@ -278,7 +277,7 @@ void TutorialMain::Load() {
 			buttonShape->getShape().setFillColor(Color::Transparent);
 			buttonShape->getShape().setOutlineThickness(2);
 			buttonShape->getShape().setOutlineColor(Color::White);
-			menuButton->setVisible(debug);
+			buttonShape->setVisibility(debug);
 
 			auto bounds = buttonShape->getBounds();
 
@@ -297,7 +296,7 @@ void TutorialMain::Load() {
 			buttonShape->getShape().setFillColor(Color::Transparent);
 			buttonShape->getShape().setOutlineThickness(2);
 			buttonShape->getShape().setOutlineColor(Color::White);
-			exitButton->setVisible(debug);
+			buttonShape->setVisibility(debug);
 
 			auto bounds = buttonShape->getBounds();
 

@@ -14,3 +14,21 @@ public:
   explicit PathfindingComponent(Entity* p);
   PathfindingComponent() = delete;
 };
+
+class BasicAiMovementComponent : public Component {
+protected:
+	float _speed;
+	sf::Vector2f _direction;
+	bool validMove(const sf::Vector2f&);
+
+public:
+	void setSpeed(float speed);
+	void setDirection(sf::Vector2f direction);
+	float getSpeed();
+	void update(double) override;
+	void move(const sf::Vector2f&);
+	void move(float x, float y);
+	void render() override {};
+	explicit BasicAiMovementComponent(Entity* p);
+	BasicAiMovementComponent() = delete;
+};
