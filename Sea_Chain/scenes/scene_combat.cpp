@@ -54,6 +54,7 @@ void CombatScene::Load() {
 
 	playerTurn = true;
 	dead = false;
+	run = false;
 
 	sfxQuickAttack.loadFromFile("resources/sound/SeaChainQuickSlash.wav");
 	sfxNormalAttack.loadFromFile("resources/sound/SeaChainNormalAttack.wav");
