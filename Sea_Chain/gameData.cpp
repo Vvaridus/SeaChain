@@ -191,5 +191,5 @@ Data::Data() {
 	debugMode = false;
 	soundVolume = 50.f;
 	musicTheme.setVolume(50.f);
-	musicBattle.setVolume(40.f);
+	musicBattle.setVolume(20.f);
 }
