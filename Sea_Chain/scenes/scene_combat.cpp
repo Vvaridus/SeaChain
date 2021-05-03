@@ -122,6 +122,14 @@ void CombatScene::Load() {
 		bannerSprite->setTexure(spriteBanner);
 		bannerSprite->setOrigin(Vector2f(windowSize.x / 2, windowSize.y / 2));
 
+		auto textBox = banner->addComponent<TextComponent>(to_string(ins->getPlayer()->GetCompatibleComponent<InventoryComponent>()[0]->getBiscuits()));
+		textBox->setFillColor(Color(255, 255, 255));
+		textBox->setOutline(Color(0, 0, 0));
+		textBox->setOutlineThickness(2.f);
+		textBox->setCharSize(36);
+		textBox->setPosition(Vector2f(728, 50));
+		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
+
 		auto healthBanner = makeEntity();
 		healthBanner->addTag("healthUIBar");
 		healthBanner->setPosition(Vector2f(256, 49));
@@ -366,6 +374,12 @@ void CombatScene::Update(const double& dt) {
 			attack(at, "player");
 		}
 
+		// update biscuit count
+		{
+			auto text = this->ents.find("mainBanner")[0]->GetCompatibleComponent<TextComponent>()[0];
+			text->SetText(to_string(ins->getPlayer()->GetCompatibleComponent<InventoryComponent>()[0]->getBiscuits()));
+			text->setOrigin(Vector2f(text->getBounds().width / 2, text->getBounds().height / 2));
+		}
 
 		updateHealthBars(dt);
 		Scene::Update(dt);
