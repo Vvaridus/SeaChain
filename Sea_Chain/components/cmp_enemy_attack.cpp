@@ -55,25 +55,21 @@ CombatScene::attackType EnemyAttackComponent::decideAttack() {
 	// if the player just parried, 80% chance the enemy will parry too as long as the AI didn't parry before
 	if (_humanPreviousAttack == CombatScene::attackType::Parry && chance(engine) <= 80 && _enemyPreviousAttack != CombatScene::attackType::Parry)
 	{
-		cout << "Parry" << endl;
 		return CombatScene::attackType::Parry;
 	}
 	// if the player is less than 10% health quick attack.
 	else if (_humanHP <= (0.1 * _humanMaxHP) && chance(engine) <= 80)
 	{
-		cout << "Quick" << endl;
 		return CombatScene::attackType::Quick;
 	}
 	// if the player is between 60% and 100% heavy attack.
 	else if (_humanHP >= (0.6 * _humanMaxHP) && _humanHP <= (0.8 * _humanMaxHP) && chance(engine) <= 80)
 	{
-		cout << "Heavy" << endl;
 		return CombatScene::attackType::Heavy;
 	}
 	// if none of these attacks trigger just normal attack
 	else
 	{
-		cout << "Normal" << endl;
 		return CombatScene::attackType::Normal;
 	}
 }

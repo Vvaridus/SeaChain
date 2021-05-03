@@ -1,5 +1,6 @@
 #include "cmp_inventory.h"
 #include <engine.h>
+#include <logger.h>
 
 using namespace std;
 using namespace sf;
@@ -42,6 +43,7 @@ const bool InventoryComponent::addWeapon(Weapon item) {
         weaponItem.push_back(item);
         ++itemCount;
 
+        Logger::addEvent(Logger::EventType::Inventory, Logger::Action::ItemAdded, "");
         return true;
     }
 
@@ -56,6 +58,7 @@ const bool InventoryComponent::removeWeapon(const unsigned index) {
         weaponItem.erase(weaponItem.begin() + index);
         --itemCount;
 
+        Logger::addEvent(Logger::EventType::Inventory, Logger::Action::ItemRemoved, "");
         return true;
     }
 
@@ -77,6 +80,7 @@ const int InventoryComponent::getBiscuits() {
 }
 
 void InventoryComponent::setBiscuits(int amount) {
+    Logger::addEvent(Logger::EventType::Inventory, Logger::Action::BiscuitsChanged, "");
     biscuits = amount;
 }
 

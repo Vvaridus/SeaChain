@@ -13,24 +13,39 @@ public:
 		Scene,
 		Entity,
 		Inventory,
-		Logging
+		Logging,
+		System,
+		FileHandler,
+		Audio,
+		Keybind,
+		Attack
 	};
 	static enum class Action {
 		Loaded,
 		Unloaded,
 		Loading,
 		Updated,
-		Scene_Change,
-		Entering_Loading_Screen,
-		Leaving_Loading_Screen,
+		SceneChange,
+		EnteringLoadingScreen,
+		LeavingLoadingScreen,
 		Interaction,
-		Entity_Created,
-		Entity_Deleted,
-		Item_Added,
-		Item_Removed,
-		Item_Changed,
+		EntityCreated,
+		EntityDeleted,
+		AddedComponent,
+		RemovedComponent,
+		ItemAdded,
+		ItemRemoved,
+		ItemChanged,
+		BiscuitsChanged,
 		CreatingFolder,
-		CreatingLogFile
+		LoadingFile,
+		SavingToFile,
+		Playing,
+		Paused,
+		Quick,
+		Heavy,
+		Normal,
+		Parry
 	};
 
 	static void addEvent(const Logger::EventType type, const Logger::Action action, const std::string message);

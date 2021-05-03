@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <shlobj.h>
+#include <logger.h>
 
 // Store the singleton instance
 std::shared_ptr<Data> Data::instance;
@@ -71,7 +72,9 @@ void Data::setDebug(bool d) {
 }
 
 void Data::setMusicFile(std::string path) {
+	Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loading, "Game Theme");
 	musicTheme.openFromFile(path);
+	Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loaded, "Game Theme");
 }
 
 void Data::setMusicLoop(bool loop) {
@@ -81,9 +84,14 @@ void Data::setMusicLoop(bool loop) {
 void Data::playMusic(bool play)
 {
 	if (play)
+	{
+		Logger::addEvent(Logger::EventType::Audio, Logger::Action::Playing, "Game Theme");
 		musicTheme.play();
-	else if (!play)
+	}
+	else if (!play) {
+		Logger::addEvent(Logger::EventType::Audio, Logger::Action::Paused, "Game Theme");
 		musicTheme.stop();
+	}
 }
 
 void Data::setMusicVolume(float volume) {
@@ -95,7 +103,9 @@ float Data::getMusicVolume() {
 }
 
 void Data::setMusicFileBattle(std::string path) {
+	Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loading, "Battle Theme");
 	musicBattle.openFromFile(path);
+	Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loaded, "Battle Theme");
 }
 
 void Data::setMusicLoopBattle(bool loop) {
@@ -104,10 +114,14 @@ void Data::setMusicLoopBattle(bool loop) {
 
 void Data::playMusicBattle(bool play)
 {
-	if (play)
+	if (play) {
+		Logger::addEvent(Logger::EventType::Audio, Logger::Action::Playing, "Battle Theme");
 		musicBattle.play();
-	else if (!play)
+	}
+	else if (!play) {
+		Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loading, "Battle Theme");
 		musicBattle.stop();
+	}
 }
 
 void Data::setMusicVolumeBattle(float volume) {
@@ -134,6 +148,7 @@ std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> Data::getKey
 }
 
 void Data::setKeybind(std::string keybind, sf::Keyboard::Key key) {
+	Logger::addEvent(Logger::EventType::Keybind, Logger::Action::Updated, "");
 	keybinds.find(keybind)->second = key;
 }
 

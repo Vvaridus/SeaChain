@@ -48,7 +48,7 @@ void loadTextures() {
 
 void Loading_update(float dt, const Scene* const scn) {
 	if (scn->isLoaded()) {
-		Logger::addEvent(Logger::EventType::Engine, Logger::Action::Leaving_Loading_Screen, "");
+		Logger::addEvent(Logger::EventType::Engine, Logger::Action::LeavingLoadingScreen, "");
 		loading = false;
 	}
 	else {
@@ -166,6 +166,7 @@ void Engine::Start(unsigned int width, unsigned int height,
 }
 
 std::shared_ptr<Entity> Scene::makeEntity() {
+	Logger::addEvent(Logger::EventType::Entity, Logger::Action::EntityCreated, "");
 	auto e = make_shared<Entity>(this);
 	ents.list.push_back(e);
 	return std::move(e);
@@ -203,7 +204,7 @@ void Engine::setFullscreen(bool fullscreen) {
 }
 
 void Engine::ChangeScene(Scene* s) {
-	Logger::addEvent(Logger::EventType::Engine, Logger::Action::Scene_Change, "");
+	Logger::addEvent(Logger::EventType::Engine, Logger::Action::SceneChange, "");
 	auto old = _activeScene;
 	_activeScene = s;
 
@@ -212,7 +213,7 @@ void Engine::ChangeScene(Scene* s) {
 	}
 
 	if (!s->isLoaded()) {
-		Logger::addEvent(Logger::EventType::Engine, Logger::Action::Entering_Loading_Screen, "");
+		Logger::addEvent(Logger::EventType::Engine, Logger::Action::EnteringLoadingScreen, "");
 		loadingTime = 0;
 		_activeScene->LoadAsync();
 		loading = true;

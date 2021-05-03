@@ -35,7 +35,7 @@ static bool recordKey = false;
 static bool lockFpsSetting = false;
 
 void OptionScene::Load() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "Settings");
 
 	sf::Vector2f btnDimentions = Vector2f(32, 32);
 	sf::Vector2f chkDimentions = Vector2f(64, 64);
@@ -446,7 +446,7 @@ void OptionScene::Load() {
 	updateSoundIndicator();
 
 	//std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "Settings");
 	setLoaded(true);
 }
 
@@ -697,7 +697,7 @@ void OptionScene::updateSoundIndicator() {
 }
 
 void OptionScene::UnLoad() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "Settings");
 	Nullify();
 	Scene::UnLoad();
 }

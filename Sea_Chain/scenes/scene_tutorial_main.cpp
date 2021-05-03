@@ -42,7 +42,7 @@ std::shared_ptr<ButtonComponent> btnQuit;
 
 
 void TutorialMain::Load() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "Main Island");
 	ls::loadLevelFile("resources/map.txt", 64);
 
 	playerImage.loadFromFile("resources/textures/SeaChainPlayer.png");
@@ -220,8 +220,6 @@ void TutorialMain::Load() {
 			player = ins->getPlayer();
 			player->setPosition(Vector2f((Engine::getWindowSize().x / 2), Engine::getWindowSize().y / 2));
 
-			cout << player->getPosition() << endl;
-
 			// Add the entity back to the list to be rendered, it was removed earlier.
 			tutorialMain.ents.list.push_back(player);
 		}
@@ -372,13 +370,13 @@ void TutorialMain::Load() {
 
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "Main Island");
 
 	setLoaded(true);
 }
 
 void TutorialMain::UnLoad() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "Main Island");
 	player.reset();
 	Nullify();
 	ls::unload();

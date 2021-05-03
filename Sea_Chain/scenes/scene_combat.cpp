@@ -50,7 +50,7 @@ static float volume;
 static sf::Clock timer;
 
 void CombatScene::Load() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "Combat");
 
 	playerTurn = true;
 	dead = false;
@@ -233,21 +233,18 @@ void CombatScene::Load() {
 		text->setVisible(false);
 	}
 
-
-	cout << enemy->getPosition() << "\n" << playerMain->getPosition() << endl;
-
 	createButtons();
 
 	//Simulate long loading times
 	//std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "Combat");
 	timer.restart();
 
 	setLoaded(true);
 }
 
 void CombatScene::UnLoad() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "Combat");
 	auto ins = Data::getInstance();
 	ins->playMusicBattle(false);
 	ins->setMusicLoopBattle(false);
@@ -325,7 +322,8 @@ void CombatScene::Update(const double& dt) {
 			sound.setBuffer(sfxQuickAttack);
 			sound.setVolume(volume);
 			sound.play();
-			// Get the attack stats with the quick move
+			// Get the attack stats with the quick move		
+			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Quick, "");
 			parry = false;
 			at = getAttackStats(attackType::Quick, "player");
 			// Attack the enemy with the attack stats
@@ -338,6 +336,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
+			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Normal, "");
 			parry = false;
 			at = getAttackStats(attackType::Normal, "player");
 			// Attack the enemy with the attack stats
@@ -349,6 +348,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
+			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Heavy, "");
 			parry = false;
 			at = getAttackStats(attackType::Heavy, "player");
 			// Attack the enemy with the attack stats
@@ -360,6 +360,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setVolume(volume);
 			sound.play();
 			// Get the attack stats with the quick move
+			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Parry, "");
 			parry = false;
 			at = getAttackStats(attackType::Parry, "player");
 			// Attack the enemy with the attack stats
@@ -473,7 +474,6 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 			attack(getAttackStats(attackType::Quick, "player"), "enemy");
 			parry = true;
 		}
-		cout << chance << endl;
 	}
 
 	if (!parry)

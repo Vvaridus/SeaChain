@@ -6,8 +6,10 @@
 #include "file_handlers.h"
 #include "../gameData.h"
 #include "convert.h"
+#include <logger.h>
 
 void fileHandler::saveKeybinds() {
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::LoadingFile, "");
 	// get all the require data
 	auto ins = Data::getInstance();
 	auto keyBinds = ins->getKeybinds();
@@ -35,9 +37,11 @@ void fileHandler::saveKeybinds() {
 	controls.open(seachainpath.append("controls.txt"));
 	controls << output << std::endl;
 	controls.close();
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Loaded, "");
 }
 
 void fileHandler::loadKeybinds() {
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::SavingToFile, "");
 	// get the required data
 	auto ins = Data::getInstance();
 	auto path = ins->getFilePath();
@@ -70,6 +74,7 @@ void fileHandler::loadKeybinds() {
 }
 
 void fileHandler::saveSettings() {
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::LoadingFile, "");
 	// get all the require data
 	auto ins = Data::getInstance();
 	auto path = ins->getFilePath();
@@ -96,9 +101,11 @@ void fileHandler::saveSettings() {
 	controls.open(seachainpath.append("settings.txt"));
 	controls << output << std::endl;
 	controls.close();
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Loaded, "");
 }
 
 void fileHandler::loadSettings() {
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::SavingToFile, "");
 	// get the required data
 	auto ins = Data::getInstance();
 	auto path = ins->getFilePath();

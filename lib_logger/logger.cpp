@@ -43,6 +43,11 @@ void Logger::addEvent(const EventType type, const Action action, const std::stri
 		case EventType::Entity: stringType = "Entity"; break;
 		case EventType::Inventory: stringType = "Inventory"; break;
 		case EventType::Logging: stringType = "Logging"; break;
+		case EventType::System: stringType = "System"; break;
+		case EventType::FileHandler: stringType = "File Handler"; break;
+		case EventType::Audio: stringType = "Audio"; break;
+		case EventType::Keybind: stringType = "Keybind"; break;
+		case EventType::Attack: stringType = "Keybind"; break;
 	}
 
 	switch (action) {
@@ -50,17 +55,27 @@ void Logger::addEvent(const EventType type, const Action action, const std::stri
 		case Action::Unloaded: stringAction = "Unloaded"; break;
 		case Action::Loading: stringAction = "Loading"; break;
 		case Action::Updated: stringAction = "Updated"; break;
-		case Action::Scene_Change: stringAction = "Scene Change"; break;
-		case Action::Entering_Loading_Screen: stringAction = "Entering Loading Screen"; break;
-		case Action::Leaving_Loading_Screen: stringAction = "Leaving Loading Screen"; break;
+		case Action::SceneChange: stringAction = "Scene Change"; break;
+		case Action::EnteringLoadingScreen: stringAction = "Entering Loading Screen"; break;
+		case Action::LeavingLoadingScreen: stringAction = "Leaving Loading Screen"; break;
 		case Action::Interaction: stringAction = "Interaction"; break;
-		case Action::Entity_Created: stringAction = "Entity reated"; break;
-		case Action::Entity_Deleted: stringAction = "Entity Deleted"; break;
-		case Action::Item_Added: stringAction = "Item Added"; break;
-		case Action::Item_Removed: stringAction = "Item Removed"; break;
-		case Action::Item_Changed: stringAction = "Item Changed"; break;
-		case Action::CreatingFolder: stringAction = "Item Changed"; break;
-		case Action::CreatingLogFile: stringAction = "Item Changed"; break;
+		case Action::EntityCreated: stringAction = "Entity created"; break;
+		case Action::EntityDeleted: stringAction = "Entity Deleted"; break;
+		case Action::AddedComponent: stringAction = "Added Component"; break;
+		case Action::RemovedComponent: stringAction = "Removed Component"; break;
+		case Action::ItemAdded: stringAction = "Item Added"; break;
+		case Action::ItemRemoved: stringAction = "Item Removed"; break;
+		case Action::ItemChanged: stringAction = "Item Changed"; break;
+		case Action::BiscuitsChanged: stringAction = "Biscuits Changed"; break;
+		case Action::CreatingFolder: stringAction = "Creating Folder"; break;
+		case Action::LoadingFile: stringAction = "Loading File"; break;
+		case Action::SavingToFile: stringAction = "Loading File"; break;
+		case Action::Playing: stringAction = "Playing"; break;
+		case Action::Paused: stringAction = "Paused"; break;
+		case Action::Quick: stringAction = "Quick Attack"; break;
+		case Action::Heavy: stringAction = "Heavy Attack"; break;
+		case Action::Normal: stringAction = "Normal Attack"; break;
+		case Action::Parry: stringAction = "Parry Attack"; break;
 	}
 
 	// Output the time, EventType and action to the console.

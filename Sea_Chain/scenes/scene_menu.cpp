@@ -20,7 +20,7 @@ std::shared_ptr<ButtonComponent> btnOptions;
 std::shared_ptr<ButtonComponent> btnEnd;
 
 void MenuScene::Load() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loading, "Main Menu");
 	fileHandler::loadKeybinds();
 	fileHandler::loadSettings();
 
@@ -125,7 +125,7 @@ void MenuScene::Load() {
 	}
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Loaded, "Main Menu");
 	setLoaded(true);
 }
 
@@ -162,7 +162,7 @@ void MenuScene::Update(const double& dt) {
 }
 
 void MenuScene::UnLoad() {
-	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "");
+	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "Main Menu");
 	Nullify();
 	Scene::UnLoad();
 }
