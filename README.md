@@ -8,6 +8,8 @@
 Extract the .exe file from the .zip, any location works fine. We suggest the desktop\
 Run the install wizard, install the game, choose if you want a desktop shortcut and play!
 
+If you would like to leave feedback please fill out our very small questionaire: [Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSfgNFtBcxNW501ONr-t210fJfsMGdLPAr0Fm1Cf7C_yoilYAg/viewform)
+
 ## Controls: 
 All controls can be rebound from the Options menu. To do this you must first press the key you want to bind TO ie: 'Y' then click the action you want to bind it to ie: UP
    
