@@ -13,15 +13,19 @@ void SteeringComponent::update(double dt) {
 	if (length(_parent->getPosition() - _player->getPosition()) > 100.0f) {
 		auto output = _seek.getSteering();
 		_direction = output.direction;
+		//get the difference angle from two different vecotrs only does this check when player moves as constantly geting angle would be expensive.
 		float angle = atan2f(_parent->getPosition().y - _player->getPosition().y, _parent->getPosition().x - _player->getPosition().x);
+		//multiply angle by 360 then divie by PI
 		angle = angle * 360 / PI;
 		move(output.direction * (float)dt);
 
 		auto s = _parent->GetCompatibleComponent<SpriteComponent>()[0];
+		//Set the initial IntRect
 		static IntRect enemyRect = IntRect(0, 0, 64, 64);
 		static sf::Clock clock;
 		float elapsed = clock.getElapsedTime().asSeconds();
 		
+		//ALL Animations use the angle to check where it is relative to the player.
 		//Enemy ANIMATION FOR UP
 		if (angle > 50 && angle < 250)
 		{
@@ -106,7 +110,7 @@ void SteeringComponent::update(double dt) {
 				}
 			}
 		}
-
+		//set animation rectangle from sprite sheet to animate
 		s->getSprite().setTextureRect(enemyRect);
 	}
 
@@ -125,7 +129,7 @@ void SteeringComponent::update(double dt) {
 		static sf::Clock clock;
 		float elapsed = clock.getElapsedTime().asSeconds();
 
-
+		//ALL Animations use the angle to check where it is relative to the player.
 		//Enemy ANIMATION FOR UP
 		if (angle > 50 && angle < 250)
 		{
@@ -210,7 +214,7 @@ void SteeringComponent::update(double dt) {
 				}
 			}
 		}
-
+		//set animation rectangle from sprite sheet to animate
 		s->getSprite().setTextureRect(enemyRect);
 	}
 	
