@@ -19,7 +19,7 @@ All controls can be rebound from the Options menu. To do this you must first pre
  Your settings will also be saved for when you next play.
   
   
-   When in combat use Left Mouse Click to choose your attack!
+   When in combat use Left Mouse Click to choose your attack!!
    Or you could try and Flee or if you have enough Biscuits Bribe the Enemy to leave.   
    You will need a weapon to fight, these can be found on skeltons.
    Sleeping in the tent restores your health and makes the Island change...weird :P
