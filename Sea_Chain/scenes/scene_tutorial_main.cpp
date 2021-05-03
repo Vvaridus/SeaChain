@@ -127,7 +127,7 @@ void TutorialMain::Load() {
 		// then get a random tile from the list and add that to a vector to be set to a skeleton.
 		tileList = ls::findTiles(ls::DIRT);
 		std::shuffle(std::begin(tileList), std::end(tileList), rng);
-		numberOfTiles = randomNumber(0, 0.05 * (tileList.size() - 1));
+		numberOfTiles = randomNumber(1, 0.05 * (tileList.size() - 1));
 		for (int i = 0; i < numberOfTiles; i++) {
 			int rand = randomNumber(0, tileList.size() - 1);
 			randomTiles.push_back(tileList[rand]);
