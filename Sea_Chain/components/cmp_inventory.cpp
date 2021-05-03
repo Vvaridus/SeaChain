@@ -11,33 +11,28 @@ void InventoryComponent::update(double dt) {
 
 InventoryComponent::InventoryComponent(Entity* p)
     : Component(p) {
+    // set the default values
     itemCount = 0;
     itemUsing = -1;
     biscuits = 0;
 }
 
+// Get the amount of current items
 const int& InventoryComponent::size() const {
     return itemCount;
 }
 
+// get the max amount of items
 const int& InventoryComponent::maxSize() const {
     return capacity;
 }
 
+// clear the inventory
 void InventoryComponent::clear() {
     weaponItem.clear();
 }
 
-//const bool InventoryComponent::add(std::unique_ptr<Item> item) {
-//    if (itemCount < capacity) {
-//        itemArray.push_back(move(item));
-//
-//        return true;
-//    }
-//
-//    return false;
-//}
-
+// Add a weapon to the inventory
 const bool InventoryComponent::addWeapon(Weapon item) {
     if (itemCount < capacity) {
         weaponItem.push_back(item);
@@ -50,6 +45,7 @@ const bool InventoryComponent::addWeapon(Weapon item) {
     return false;
 }
 
+// Remove a weapon from the inventory
 const bool InventoryComponent::removeWeapon(const unsigned index) {
     if (this->itemCount > 0) {
         if (index < 0 || index >= capacity)
@@ -65,25 +61,30 @@ const bool InventoryComponent::removeWeapon(const unsigned index) {
     return false;
 }
 
+// get the current index of the item being used
 const int InventoryComponent::getUsing()
 {
     return itemUsing;
 }
 
+// set the index of the current item being used
 const void InventoryComponent::setUsing(int item)
 {
     itemUsing = item;
 }
 
+// get the number of biscuits
 const int InventoryComponent::getBiscuits() {
     return biscuits;
 }
 
+// set the number of biscuits 
 void InventoryComponent::setBiscuits(int amount) {
     Logger::addEvent(Logger::EventType::Inventory, Logger::Action::BiscuitsChanged, "");
     biscuits = amount;
 }
 
+// Find a weapon by id
 Weapon& InventoryComponent::findWeapon(std::string id)
 {
     for (size_t i = 0; i < capacity; i++) {
@@ -92,6 +93,7 @@ Weapon& InventoryComponent::findWeapon(std::string id)
     }
 }
 
+// find a weapon by index
 Weapon& InventoryComponent::findWeapon(int index)
 {
     for (size_t i = 0; i < capacity; i++) {

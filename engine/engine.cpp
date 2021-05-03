@@ -133,6 +133,7 @@ void Engine::Start(unsigned int width, unsigned int height,
 	RenderWindow window(VideoMode(width, height), gameName, sf::Style::Titlebar | sf::Style::Close);
 	_gameName = gameName;
 	_window = &window;
+	//Logger::clearLogs();
 	Renderer::initialise(window);
 	Physics::initialise();
 	ChangeScene(scn);
@@ -143,6 +144,7 @@ void Engine::Start(unsigned int width, unsigned int height,
 				window.close();
 			}
 
+			// Get the last key pressed and store it.
 			if (event.TextEntered && event.text.unicode >= 30 && event.text.unicode <= 150) {
 				keyPressed = event.text.unicode;
 			}
@@ -166,26 +168,31 @@ void Engine::Start(unsigned int width, unsigned int height,
 }
 
 std::shared_ptr<Entity> Scene::makeEntity() {
-	Logger::addEvent(Logger::EventType::Entity, Logger::Action::EntityCreated, "");
+	//Logger::addEvent(Logger::EventType::Entity, Logger::Action::EntityCreated, "");
 	auto e = make_shared<Entity>(this);
 	ents.list.push_back(e);
 	return std::move(e);
 }
 
+// set the vertical sync
 void Engine::setVsync(bool b) { 
 	_window->setVerticalSyncEnabled(b); 
 	_vsync = b;
 }
 
+// return the last pressed key
 sf::Uint32 Engine::getPressedKey() { return keyPressed; }
 
+// return if vsync as active or not
 bool Engine::getVsync() { return _vsync; }
 
+// set the frame limit
 void Engine::setFramerate(int fps) { 
 	_window->setFramerateLimit(fps); 
 	_fps = fps;
 }
 
+// get the current frame limit
 int Engine::getFramerate() {
 	return _fps;
 }

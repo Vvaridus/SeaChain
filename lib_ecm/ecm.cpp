@@ -20,7 +20,7 @@ void Entity::update(double dt) {
 	}
 	for (size_t i = 0; i < _components.size(); i++) {
 		if (_components[i]->is_fordeletion()) {
-			Logger::addEvent(Logger::EventType::Entity, Logger::Action::EntityDeleted, "");
+			//Logger::addEvent(Logger::EventType::Entity, Logger::Action::EntityDeleted, "");
 			_components.erase(_components.begin() + i);
 			--i;
 		}
@@ -72,7 +72,7 @@ Entity::~Entity() {
 	// more
 	int deli = 0;
 	while (deli != _components.size()) {
-		Logger::addEvent(Logger::EventType::Entity, Logger::Action::RemovedComponent, "");
+		//Logger::addEvent(Logger::EventType::Entity, Logger::Action::RemovedComponent, "");
 		deli = _components.size();
 		_components.erase(
 			remove_if(_components.begin(), _components.end(),

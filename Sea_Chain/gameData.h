@@ -37,11 +37,11 @@ public:
 	static void setDebug(bool d);
 	static void setMusicFile(std::string path);
 	static void setMusicLoop(bool loop);
-	static void playMusic(bool play); // High lights as function definition not found
+	static void playMusic(bool play);
 	static void setMusicFileBattle(std::string path);
 	static void setMusicLoopBattle(bool loop);
 	static void playMusicBattle(bool play);
-	static void setSoundVolume(float volume); // High lights as function definition not found
+	static void setSoundVolume(float volume);
 	static float getSoundVolume();
 	static void setMusicVolume(float volume);
 	static float getMusicVolume();

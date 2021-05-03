@@ -390,6 +390,7 @@ void TutorialMain::Update(const double& dt) {
 	auto enemy_Path_Node_One = Vector2i(6, 4);
 	auto enemy_Path_Node_Two = Vector2i(7, 11);
 
+	// if enemy within range go into combat
 	if (length(player->getPosition() - enemy->getPosition()) < 50 && pause == false) {
 		ins->setPlayer(player);
 		changingScenes = true;
@@ -397,6 +398,7 @@ void TutorialMain::Update(const double& dt) {
 		Engine::ChangeScene(&combat);
 	}
 
+	// if player is dead go back to main menu
 	if (!ins->getPlayer()->isAlive()) {
 		Engine::ChangeScene(&menu);
 		changingScenes = true;
@@ -503,7 +505,7 @@ void TutorialMain::Update(const double& dt) {
 
 			auto enemy_current_pos = Vector2i(enemy->getPosition().x / 64, (enemy->getPosition().y - ls::getOffset().y) / 64);
 			static bool test = true;
-			//[6,4]// BOOL TRUE TEST BEFORE REMOVING BOOL Ensure enemy has pathfind component BEFORE move!
+			// BOOL TRUE TEST BEFORE REMOVING BOOL Ensure enemy has pathfind component BEFORE move!
 			if (enemy_current_pos == enemy_Path_Node_One)
 			{
 				auto path = pathFind(enemy_current_pos, enemy_Path_Node_Two);
@@ -511,7 +513,7 @@ void TutorialMain::Update(const double& dt) {
 				pathComp->setPath(path);
 				test = false;
 			}
-			//[7,11]
+			//
 			else if (enemy_current_pos == enemy_Path_Node_Two)
 			{
 				auto path = pathFind(enemy_current_pos, enemy_Path_Node_One);

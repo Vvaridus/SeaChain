@@ -49,6 +49,7 @@ public:
 	};
 
 	static void addEvent(const Logger::EventType type, const Logger::Action action, const std::string message);
+	static void clearLogs();
 private:
 	static void fileOutput(std::string log);
 	static std::string getTime();

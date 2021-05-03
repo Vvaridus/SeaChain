@@ -8,6 +8,7 @@
 #include "convert.h"
 #include <logger.h>
 
+// Save the current keybinds to controls.txt in %appdata%
 void fileHandler::saveKeybinds() {
 	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::LoadingFile, "");
 	// get all the require data
@@ -37,11 +38,12 @@ void fileHandler::saveKeybinds() {
 	controls.open(seachainpath.append("controls.txt"));
 	controls << output << std::endl;
 	controls.close();
-	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Loaded, "");
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Updated, "");
 }
 
+// Load the saved keybinds from controls.txt in %appdata%
 void fileHandler::loadKeybinds() {
-	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::SavingToFile, "");
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::LoadingFile, "");
 	// get the required data
 	auto ins = Data::getInstance();
 	auto path = ins->getFilePath();
@@ -67,14 +69,16 @@ void fileHandler::loadKeybinds() {
 	while (std::getline(controls, key)) {
 		if (key == "")
 			break;
-
+		// set the keybind to the key read in.
 		ins->setKeybind(keyControls[index], Converter::StringToSFKey(key));
 		index++;
 	}
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Loaded, "");
 }
 
+// Save the settings to settings.txt in %appdata%
 void fileHandler::saveSettings() {
-	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::LoadingFile, "");
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::SavingToFile, "");
 	// get all the require data
 	auto ins = Data::getInstance();
 	auto path = ins->getFilePath();
@@ -85,7 +89,7 @@ void fileHandler::saveSettings() {
 
 	std::string output;
 
-	// loop through the keybinds adding the keys to the string
+	// add all the settings to an output string
 	output += std::to_string(ins->getMusicVolume()) += "\n";
 	output += std::to_string(ins->getSoundVolume()) += "\n";
 	output += std::to_string(Engine::getVsync()) += "\n";
@@ -97,21 +101,22 @@ void fileHandler::saveSettings() {
 
 
 	std::ofstream controls;
-	// write to the keybinds file in the path with all the controls
+	// write to the settubgs file in the path with all the settings in the output string
 	controls.open(seachainpath.append("settings.txt"));
 	controls << output << std::endl;
 	controls.close();
-	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Loaded, "");
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Updated, "");
 }
 
+// Load the settings from settings.txt in %appdata%
 void fileHandler::loadSettings() {
-	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::SavingToFile, "");
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::LoadingFile, "");
 	// get the required data
 	auto ins = Data::getInstance();
 	auto path = ins->getFilePath();
 	auto folder = ins->getFileFolder();
 
-	// make a vector of all the keybinds
+	// make a vector for the settings
 	std::vector<std::string> settings;
 
 	// get the controls file in the sea chain path
@@ -120,7 +125,7 @@ void fileHandler::loadSettings() {
 
 	std::ifstream controls(seaChainPath.append("settings.txt"));
 
-	// read the file line by line
+	// read the file line by line adding the setting to the vector
 	while (std::getline(controls, setting)) {
 		if (setting == "")
 			break;
@@ -128,6 +133,8 @@ void fileHandler::loadSettings() {
 		settings.push_back(setting);
 	}
 
+	// if the size allows for the setting
+	// set the setting converting to the right type
 	if (settings.size() > 0)
 		ins->setMusicVolume(stof(settings[0]));
 	if (settings.size() > 1)
@@ -136,6 +143,8 @@ void fileHandler::loadSettings() {
 		Engine::setVsync(stringToBool(settings[2]));
 	if (settings.size() > 3)
 		Engine::setFramerate(stoi(settings[3]));
+
+	Logger::addEvent(Logger::EventType::FileHandler, Logger::Action::Updated, "");
 }
 
 bool fileHandler::stringToBool(std::string s) {

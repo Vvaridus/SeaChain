@@ -56,13 +56,14 @@ void CombatScene::Load() {
 	dead = false;
 	run = false;
 
+	// load the sound effects into there own buffer
 	sfxQuickAttack.loadFromFile("resources/sound/SeaChainQuickSlash.wav");
 	sfxNormalAttack.loadFromFile("resources/sound/SeaChainNormalAttack.wav");
 	sfxHeavyAttack.loadFromFile("resources/sound/SeaChainHeavyAttack.wav");
 	sfxParryAttack.loadFromFile("resources/sound/SeaChainParry.wav");
 
 	
-
+	// Run the battle music
 	auto ins = Data::getInstance();
 	ins->playMusic(false);
 	ins->setMusicLoop(false);
@@ -140,7 +141,7 @@ void CombatScene::Load() {
 	// Draw the enemy
 	{
 		// We declare enemy after everything else to make sure they are on top
-		// make the enemy entity with a healt and attack component
+		// make the enemy entity with a health and attack component
 		enemy = makeEntity();
 		enemy->addComponent<HealthComponent>();
 		enemy->addComponent<EnemyAttackComponent>();
@@ -233,6 +234,7 @@ void CombatScene::Load() {
 		text->setVisible(false);
 	}
 
+	// Create the buttons
 	createButtons();
 
 	//Simulate long loading times
@@ -246,6 +248,7 @@ void CombatScene::Load() {
 void CombatScene::UnLoad() {
 	Logger::addEvent(Logger::EventType::Scene, Logger::Action::Unloaded, "Combat");
 	auto ins = Data::getInstance();
+	// stop battle music and start the main theme
 	ins->playMusicBattle(false);
 	ins->setMusicLoopBattle(false);
 	ins->playMusic(true);
@@ -305,12 +308,15 @@ void CombatScene::Update(const double& dt) {
 		}
 	}
 
+	// if run is pressed attempt to escape
 	if (!changingScene && btnRun->isPressed())
 		escape(dt, changingScene);
 
+	// if bribe is pressed run bribe (Starts counter)
 	if (!changingScene && btnBribe->isPressed())
 		bribe(dt, changingScene);
 
+	// Once bribed check bribe function to see if counter is done
 	if (!changingScene && run)
 		bribe(dt, changingScene);
 
@@ -335,7 +341,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setBuffer(sfxNormalAttack);
 			sound.setVolume(volume);
 			sound.play();
-			// Get the attack stats with the quick move
+			// Get the attack stats with the Normal move
 			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Normal, "");
 			parry = false;
 			at = getAttackStats(attackType::Normal, "player");
@@ -347,7 +353,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setBuffer(sfxHeavyAttack);
 			sound.setVolume(volume);
 			sound.play();
-			// Get the attack stats with the quick move
+			// Get the attack stats with the Heavy move
 			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Heavy, "");
 			parry = false;
 			at = getAttackStats(attackType::Heavy, "player");
@@ -359,7 +365,7 @@ void CombatScene::Update(const double& dt) {
 			sound.setBuffer(sfxParryAttack);
 			sound.setVolume(volume);
 			sound.play();
-			// Get the attack stats with the quick move
+			// Get the attack stats with the Parry move
 			Logger::addEvent(Logger::EventType::Attack, Logger::Action::Parry, "");
 			parry = false;
 			at = getAttackStats(attackType::Parry, "player");
@@ -407,6 +413,7 @@ AttackData CombatScene::getAttackStats(attackType type, std::string attacker) {
 		damage = eac->getDamage();
 	}
 
+	// check crit chances and updated damage is crit succeeds.
 	switch (type) {
 	case attackType::Quick:
 		if (randomNumber(0, 100) <= 5) {
@@ -468,7 +475,7 @@ void CombatScene::attack(AttackData ad, std::string beingAttacked) {
 
 	if (ad.attack == attackType::Parry)
 	{
-		// if move if parry, 3% chance you will retailate with quick attack and make enemy miss a turn.
+		// if move is parry, 3% chance you will retailate with quick attack and make enemy miss a turn.
 		int chance = randomNumber(0, 100);
 		if (chance <= 3) {
 			attack(getAttackStats(attackType::Quick, "player"), "enemy");
@@ -487,9 +494,10 @@ void CombatScene::bribe(const double& dt, bool& changingScene) {
 	std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
 	static sf::Clock countdown;
 	if (ic->getBiscuits() >= 3 && !run) {
+		// remove 3 biscuits as payment
 		ic->setBiscuits(ic->getBiscuits() - 3);
 
-
+		// display the text
 		auto text = this->ents.find("errorText")[0];
 		text->setVisible(true);
 		auto txt = text->GetCompatibleComponent<TextComponent>()[0];
@@ -499,6 +507,7 @@ void CombatScene::bribe(const double& dt, bool& changingScene) {
 		run = true;
 	}
 
+	// onced bribed and and 5 seconds has passed change the scene
 	if (countdown.getElapsedTime().asSeconds() > 5 && run) {
 		Engine::ChangeScene(&tutorialMain);
 		changingScene = true;
@@ -510,6 +519,7 @@ void CombatScene::updateLog(string attacking, string defending, AttackData ad) {
 	auto text = textBox->GetCompatibleComponent<TextComponent>()[0];
 	string move;
 
+	// Get what attack was used in a string
 	switch (ad.attack) {
 	case attackType::Quick: move = "Quick Attack"; break;
 	case attackType::Normal: move = "Normal Attack"; break;
@@ -518,6 +528,7 @@ void CombatScene::updateLog(string attacking, string defending, AttackData ad) {
 	case attackType::None: move = "Uh oh!"; break;
 	};
 
+	// out put a message to the console log
 	string output = attacking + " Has chosen \n" + move + ".";
 	if (ad.attack != attackType::Parry)
 		output += "\nWhich dealt " + to_string(ad.damage) + "\nto " + defending;
@@ -534,6 +545,8 @@ void CombatScene::updateHealthBars(const double& dt) {
 	auto playerHealth = player->GetCompatibleComponent<HealthComponent>()[0];
 	float barWidth;
 
+	// get the health bar width based off of players current health and max health and then update it.
+	// if they have 0 or less then set them as dead
 	auto uiBar = this->ents.find("healthUIBar")[0];
 	auto spriteComponent = uiBar->GetCompatibleComponent<SpriteComponent>()[0];
 	barWidth = max((playerHealth->getHealth() / playerHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
@@ -541,6 +554,8 @@ void CombatScene::updateHealthBars(const double& dt) {
 	if (barWidth <= 0)
 		dead = true;
 
+	// get the health bar width based off of enemy current health and max health and then update it.
+	// if they have 0 or less then set them as dead
 	auto enemyHealthBar = this->ents.find("enemyHealthBar")[0];
 	spriteComponent = enemyHealthBar->GetCompatibleComponent<SpriteComponent>()[0];
 	barWidth = max((enemyHealth->getHealth() / enemyHealth->getMaxHealth()) * spriteComponent->getSprite().getTexture()->getSize().x, 0.f);
@@ -553,7 +568,10 @@ void CombatScene::escape(const double& dt, bool& changingScene) {
 	int chance = randomNumber(0, 100);
 	static sf::Clock timer;
 	static bool run;
-	if (chance <= 25) {
+
+	// Check the odds of them being able to escape
+	if (chance <= 30) {
+		// Display the biscuit text
 		auto text = this->ents.find("errorText")[0];
 		text->setVisible(true);
 		auto txt = text->GetCompatibleComponent<TextComponent>()[0];
@@ -563,6 +581,7 @@ void CombatScene::escape(const double& dt, bool& changingScene) {
 		timer.restart();
 	}
 
+	// after 5 seconds return to main island
 	if (run && timer.getElapsedTime().asSeconds() > 5) {
 		Engine::ChangeScene(&tutorialMain);
 		changingScene = true;

@@ -90,11 +90,11 @@ void Logger::fileOutput(std::string log) {
 	auto path = ins->getFilePath();
 	auto folder = ins->getFileFolder();
 	// add the file and folder path together
-	auto completepath = path.append(folder); 
+	auto completepath = path.append(folder).append("logs");
 
 	// check if the logs folder exists, if not create it.
-	if (!std::filesystem::exists(completepath.append("logs")))
-		std::filesystem::create_directories(completepath.append("logs"));
+	if (!std::filesystem::exists(completepath))
+		std::filesystem::create_directories(completepath);
 
 	// check if their is an exisitng log file for this session, if not create a new session. 
 	if (ins->getLogFile() == "") {
@@ -106,5 +106,19 @@ void Logger::fileOutput(std::string log) {
 	file.open(completepath.append(ins->getLogFile()), std::ios::app);
 	file << log << std::endl;
 	file.close();
+}
+
+void Logger::clearLogs() {
+	auto ins = Data::getInstance();
+	auto path = ins->getFilePath();
+	auto folder = ins->getFileFolder();
+	// add the file and folder path together
+	auto completepath = path.append(folder).append("logs");
+
+	// check if the logs folder exists, if not create it.
+	if (!std::filesystem::exists(completepath))
+		return;
+
+	std::filesystem::remove_all(completepath);
 }
 

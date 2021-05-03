@@ -11,18 +11,18 @@ void SpriteComponent::setTexure(std::shared_ptr<sf::Texture> tex)
   _sprite->setTexture(*_texture);
 }
 
-
-
+// set origin
 void SpriteComponent::setOrigin(sf::Vector2f orig) {
     _sprite->setOrigin(orig);    
 }
 
+// Set Scale
 void SpriteComponent::setScaling(sf::Vector2f scale) {
     _sprite->setScale(scale);
 }
 
+// get the global bounds
 std::unique_ptr<sf::FloatRect> SpriteComponent::getBounds() {
-    //return std::make_unique<sf::FloatRect>(_sprite->getLocalBounds());
     return std::make_unique<sf::FloatRect>(_sprite->getGlobalBounds());
 }
 
@@ -62,7 +62,6 @@ void ShapeComponent::render() {
 sf::Shape& ShapeComponent::getShape() const { return *_shape; }
 
 std::unique_ptr<sf::FloatRect> ShapeComponent::getBounds() {
-    //return std::make_unique<sf::FloatRect>(_sprite->getLocalBounds());
     return std::make_unique<sf::FloatRect>(_shape->getGlobalBounds());
 }
 

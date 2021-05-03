@@ -5,6 +5,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include "convert.h"
 
+// Convert sf::Keyboard::Key to a string
 std::string Converter::SFKeyToString(sf::Keyboard::Key key) {
 	std::string out;
 
@@ -134,6 +135,7 @@ std::string Converter::SFKeyToString(sf::Keyboard::Key key) {
 	return out;
 }
 
+// Convert sf::UIn32 unicode to a sf::Keyboard::Key
 sf::Keyboard::Key Converter::UInt32ToSFKey(sf::Uint32 key) {
 	sf::Keyboard::Key out = sf::Keyboard::A;
 
@@ -223,6 +225,7 @@ sf::Keyboard::Key Converter::UInt32ToSFKey(sf::Uint32 key) {
 	return out;
 }
 
+// Convert string to sf::Keyboard::Key
 sf::Keyboard::Key Converter::StringToSFKey(std::string key) {
 	sf::Keyboard::Key out = sf::Keyboard::A;
 

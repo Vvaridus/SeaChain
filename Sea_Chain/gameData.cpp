@@ -15,10 +15,15 @@ std::filesystem::path Data::filePath;
 std::string Data::fileFolder;
 // the current log file of the session
 std::string Data::currentLogFile = "";
+// to display hitboxes
 bool Data::debugMode;
+// volume of sounds
 int Data::soundVolume;
+// music theme
 sf::Music Data::musicTheme;
+// battle theme
 sf::Music Data::musicBattle;
+// keybinds and the associated keys
 std::unordered_map<std::string, sf::Keyboard::Key> Data::keybinds {
 	{"MOVE_UP", sf::Keyboard::W},
 	{"MOVE_LEFT", sf::Keyboard::A},
@@ -38,27 +43,34 @@ std::shared_ptr<Data> Data::getInstance() {
 	return instance;
 }
 
+// get the player
 std::shared_ptr<Entity> Data::getPlayer() {
 	return player;
 }
 
+// get the file path (%appdata%)
 std::filesystem::path Data::getFilePath() {
 	return filePath;
 }
+
+// get file folder (.seachain(
 std::string Data::getFileFolder() {
 	return fileFolder;
 }
 
+// get the current log file in use
 std::string Data::getLogFile()
 {
 	return currentLogFile;
 }
 
+// set the current log file to use
 void Data::setLogFile(std::string logFile)
 {
 	currentLogFile = logFile;
 }
 
+// set the current player to use
 void Data::setPlayer(std::shared_ptr<Entity> p) {
 	player = std::move(p);
 }
@@ -71,6 +83,7 @@ void Data::setDebug(bool d) {
 	debugMode = d;
 }
 
+// set the music file path to open
 void Data::setMusicFile(std::string path) {
 	Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loading, "Game Theme");
 	musicTheme.openFromFile(path);
@@ -102,6 +115,7 @@ float Data::getMusicVolume() {
 	return (musicTheme.getVolume() / 10);
 }
 
+// set the battle music file to open
 void Data::setMusicFileBattle(std::string path) {
 	Logger::addEvent(Logger::EventType::Audio, Logger::Action::Loading, "Battle Theme");
 	musicBattle.openFromFile(path);
@@ -142,11 +156,13 @@ float Data::getSoundVolume() {
 	return (soundVolume / 10);
 }
 
+// get the current keybinds
 std::shared_ptr<std::unordered_map<std::string, sf::Keyboard::Key>> Data::getKeybinds()
 {
 	return std::make_shared<std::unordered_map<std::string, sf::Keyboard::Key>>(keybinds);
 }
 
+// set a keybind
 void Data::setKeybind(std::string keybind, sf::Keyboard::Key key) {
 	Logger::addEvent(Logger::EventType::Keybind, Logger::Action::Updated, "");
 	keybinds.find(keybind)->second = key;
@@ -159,8 +175,6 @@ bool Data::getBiscuit() {
 	return biscuitMode;
 }
 
-
-
 Data::Data() {
 	// to hold the address of a pointer that SHGetKnownFolderPath returns for the known Folder.
 	PWSTR path_tmp; 
@@ -171,6 +185,7 @@ Data::Data() {
 	filePath = path_tmp;
 	CoTaskMemFree(path_tmp); // free up that memory
 	
+	// set default values
 	player = nullptr;
 	fileFolder = ".seachain";
 	debugMode = false;

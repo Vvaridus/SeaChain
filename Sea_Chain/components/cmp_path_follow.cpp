@@ -12,12 +12,13 @@ void PathfindingComponent::update(double dt) {
 	if (_elapsed >= 0.4) {
 		_elapsed = 0.0;
 		if (_index < _path.size()) {
-			auto pos = Vector2i(_parent->getPosition().x / 64, (_parent->getPosition().y - 120) / 64);
+			auto pos = Vector2i(_parent->getPosition().x / ls::getHeight(), (_parent->getPosition().y - ls::getOffset().y) / ls::getHeight());
 			// if he has reached the new tile, increment the index so he goes to the new tile
 			if (pos.x == _path[_index].x && pos.y == _path[_index].y)
 				++_index;
 			else {
-				// floating points are evil, this is based all off of entities position
+				// floating points are evil, this is based all off of entities screen/world/map position
+				// gets stuck in a loop
 				//float new_x = ls::getOffset().x + _path[_index].x * ls::getTileSize();
 				//float new_y = ls::getOffset().y + _path[_index].y * ls::getTileSize();
 
@@ -31,7 +32,8 @@ void PathfindingComponent::update(double dt) {
 				//else if (_parent->getPosition().y > new_y)
 				//	direction.y -= 1.f;
 
-				// integers are good, this is based all off of tile position. (Floating evil)
+				// integers are good, this is based all off of tile position.
+				// get what direction they need to head in
 				Vector2f direction(0, 0);
 				if (pos.x < _path[_index].x)
 					direction.x += 1.f;
@@ -42,6 +44,7 @@ void PathfindingComponent::update(double dt) {
 				else if (pos.y > _path[_index].y)
 					direction.y -= 1.f;
 
+				// set the direction to move
 				auto movement = _parent->GetCompatibleComponent<BasicAiMovementComponent>()[0];
 				movement->setDirection(direction);
 			}
@@ -52,12 +55,13 @@ void PathfindingComponent::update(double dt) {
 PathfindingComponent::PathfindingComponent(Entity* p)
 	: Component(p) {}
 
-
+// set the path to move through
 void PathfindingComponent::setPath(std::vector<sf::Vector2i>& path) {
 	_index = 0;
 	_path = path;
 }
 
+// set the direction to head in
 void BasicAiMovementComponent::setDirection(sf::Vector2f direction) {
 	_direction = direction;
 }
@@ -161,6 +165,7 @@ void BasicAiMovementComponent::update(double dt) {
 
 BasicAiMovementComponent::BasicAiMovementComponent(Entity* p) : _direction(Vector2f(0.f, 0.f)), _speed(100.f), Component(p) { }
 
+// Check if its a valid move
 bool BasicAiMovementComponent::validMove(const sf::Vector2f& pos) {
 	if (pos.x < 0.0f || pos.x > Engine::GetWindow().getSize().x || pos.y < 0.0f || pos.y > Engine::GetWindow().getSize().y)
 		return false;

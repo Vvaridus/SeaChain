@@ -19,30 +19,37 @@ int EnemyAttackComponent::getDamage()
 	return damage(engine); // return a random amount of damage
 }
 
+// Set previous player attack
 void EnemyAttackComponent::setHumanAttack(CombatScene::attackType attack)
 {
 	_humanPreviousAttack = attack;
 }
 
+// set previous enemy attack
 void EnemyAttackComponent::setEnemyAttack(CombatScene::attackType attack)
 {
 	_enemyPreviousAttack = attack;
 }
 
+// get previous enemy attack
 CombatScene::attackType EnemyAttackComponent::getEnemyAttack()
 {
 	return _enemyPreviousAttack;
 }
 
+// set player current health
 void EnemyAttackComponent::setHumanHealth(float hp)
 {
 	_humanHP = hp;
 }
+
+// set player max health
 void EnemyAttackComponent::setHumanMaxHealth(float hp)
 {
 	_humanMaxHP = hp;
 }
 
+// get the crit chance
 int EnemyAttackComponent::getCritChance() {
 	return _crit;
 }

@@ -10,6 +10,7 @@ void BasicMovementComponent::update(double dt) {
 	auto keybinds = ins->getKeybinds();
 	sf::Vector2f direction(0.0f, 0.0f);
 
+	// Check what key is pressed based off of the keybinds
 	if (sf::Keyboard::isKeyPressed(keybinds->find("MOVE_LEFT")->second)) {
 		direction.x -= 1.0f;
 	}

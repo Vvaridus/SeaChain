@@ -72,6 +72,7 @@ void ButtonComponent::setID(std::string id) {
 	_id = id;
 }
 
+// Set whether or not the button can be used
 void ButtonComponent::setInteraction(bool interaction) {
 	_allowInteraction = interaction;
 }
