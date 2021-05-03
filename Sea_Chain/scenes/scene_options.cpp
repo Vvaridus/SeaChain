@@ -524,6 +524,8 @@ void OptionScene::Update(const double& dt) {
 		// to the new fps.
 		int fps = std::stoi(txtbox->getText());
 		fps += 15;
+		if (fps < 60 && fps > 0)
+			fps = 60;
 		txtbox->SetText(std::to_string(fps));
 		Engine::setFramerate(fps);
 	}
@@ -536,6 +538,8 @@ void OptionScene::Update(const double& dt) {
 		// to the new fps.
 		int fps = std::stoi(txtbox->getText());
 		fps -= 15;
+		if (fps < 60)
+			fps = 0;
 		txtbox->SetText(std::to_string(fps));
 		Engine::setFramerate(fps);
 	}

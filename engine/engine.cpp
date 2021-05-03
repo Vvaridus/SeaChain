@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <logger.h>
+#include "../Sea_Chain/gameData.h"
 
 using namespace sf;
 using namespace std;
@@ -88,19 +89,27 @@ uint8_t ftc = 0;
 
 void Engine::Update() {
 	static sf::Clock clock;
-	float dt = clock.restart().asSeconds();
-	{
-		frametimes[++ftc] = dt;
-		static string avg = _gameName + " FPS:";
-		if (ftc % 60 == 0) {
-			double davg = 0;
-			for (const auto t : frametimes) {
-				davg += t;
+	auto ins = Data::getInstance();
+
+	
+		float dt = clock.restart().asSeconds();
+		{
+			if (ins->getDebug() == true)
+			{
+				frametimes[++ftc] = dt;
+				static string avg = _gameName + " FPS:";
+				if (ftc % 60 == 0) {
+					double davg = 0;
+					for (const auto t : frametimes) {
+						davg += t;
+					}
+					davg = 1.0 / (davg / 255.0);
+					_window->setTitle(avg + toStrDecPt(2, davg));
+				}
 			}
-			davg = 1.0 / (davg / 255.0);
-			_window->setTitle(avg + toStrDecPt(2, davg));
+			else
+				_window->setTitle(_gameName);
 		}
-	}
 
 	if (loading) {
 		Loading_update(dt, _activeScene);
