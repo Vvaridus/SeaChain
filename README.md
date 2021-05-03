@@ -57,7 +57,7 @@ All controls can be rebound from the Options menu. To do this you must first pre
    Any art you download for FREE from this site is under a Creative Commons Attribution License. This means that you may copy, distribute, display, 
    and perform the artwork and make derivative works based on it as long as you credit this site. 
     
-   Graphical assets are taken from, edited from [Graphics for Games](http://graphicsforgames.com) Indie Graphics Bundle purchased on Steam 
+   Graphical assets are taken, edited and adapted from [Graphics for Games](http://graphicsforgames.com) Indie Graphics Bundle purchased on Steam 
    [Steam Store Page](https://store.steampowered.com/app/281900/Indie_Graphics_Bundle__Royalty_Free_Sprites)
    and are used under EULA:
     
