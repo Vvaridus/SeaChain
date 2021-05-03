@@ -35,6 +35,8 @@ static Image monkeyImage;
 static Texture monkeyTexture;
 static IntRect monkeyRect = IntRect(0, 0, 64, 64);
 
+static sf::Clock itemInfoTimer;
+
 static bool pause = false;
 
 std::shared_ptr<ButtonComponent> btnMenu;
@@ -194,7 +196,7 @@ void TutorialMain::Load() {
 		bedSpriteComp->setTexure(bedSprite);
 	}
 
-	
+
 
 	// Create player
 	{
@@ -312,6 +314,21 @@ void TutorialMain::Load() {
 		healthSprite->setTexure(spriteHealth);
 	}
 
+	// text to display item added
+	{
+		auto text = makeEntity();
+		text->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		text->addTag("itemText");
+		auto textBox = text->addComponent<TextComponent>("Item added");
+		textBox->setCharSize(36);
+		textBox->setFillColor(Color(255, 0, 0));
+		textBox->setPosition(Vector2f(windowSize.x / 2, windowSize.y / 2));
+		textBox->setOutline(Color(0, 0, 0));
+		textBox->setOutlineThickness(2.f);
+		textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
+		text->setVisible(false);
+	}
+
 	// Draw/create the quit confirmation box with its two buttons
 	{
 		// load the sprite
@@ -366,6 +383,8 @@ void TutorialMain::Load() {
 			btnQuit->setInteraction(false);
 		}
 	}
+
+
 
 
 	//Simulate long loading times
@@ -537,6 +556,13 @@ void TutorialMain::Update(const double& dt) {
 			btnQuit->update(dt);
 		}
 
+		{
+			auto textbox = this->ents.find("itemText")[0];
+			if (itemInfoTimer.getElapsedTime().asSeconds() > 5 && textbox->isVisible() == true) {
+				textbox->setVisible(false);
+			}
+		}
+
 		checkEventPresses(dt, changingScenes);
 	}
 }
@@ -579,6 +605,18 @@ void TutorialMain::checkEventPresses(const double& dt, bool& changingScenes) {
 					auto wep = Weapon("sword", Item::Quality::Iron, 5, 50, 100);
 					ic->addWeapon(wep);
 					ic->setUsing(0);
+
+					// draw message to say item has been added
+
+					string message = "Hmm, that skeleton had a sword. \nPerhaps this will come in handy!";
+					auto text = this->ents.find("itemText")[0];
+					auto textBox = this->ents.find("itemText")[0]->GetCompatibleComponent<TextComponent>()[0];
+
+					textBox->SetText(message);
+					text->setVisible(true);
+					textBox->setOrigin(Vector2f(textBox->getBounds().width / 2, textBox->getBounds().height / 2));
+					itemInfoTimer.restart();
+
 					// delete the skeleton as it's been looted
 					s->setForDelete();
 				}
