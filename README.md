@@ -4,6 +4,10 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/1vqorpkfuthycws8?svg=true)](https://ci.appveyor.com/project/Vvaridus/seachain)
 
 
+## Installation
+Extract the .exe file from the .zip, any location works fine. We suggest the desktop\
+Run the install wizard, install the game, choose if you want a desktop shortcut and play!
+
 ## Controls: 
 All controls can be rebound from the Options menu. To do this you must first press the key you want to bind TO ie: 'Y' then click the action you want to bind it to ie: UP
    
