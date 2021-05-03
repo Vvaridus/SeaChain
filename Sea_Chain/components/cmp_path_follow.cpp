@@ -12,7 +12,7 @@ void PathfindingComponent::update(double dt) {
 	if (_elapsed >= 0.4) {
 		_elapsed = 0.0;
 		if (_index < _path.size()) {
-			auto pos = Vector2i(_parent->getPosition().x / ls::getHeight(), (_parent->getPosition().y - ls::getOffset().y) / ls::getHeight());
+			auto pos = Vector2i(_parent->getPosition().x / ls::getTileSize(), (_parent->getPosition().y - ls::getOffset().y) / ls::getTileSize());
 			// if he has reached the new tile, increment the index so he goes to the new tile
 			if (pos.x == _path[_index].x && pos.y == _path[_index].y)
 				++_index;
