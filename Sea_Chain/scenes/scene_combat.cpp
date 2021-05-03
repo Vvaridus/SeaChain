@@ -25,8 +25,7 @@ static shared_ptr<Entity> enemy;
 static bool playerTurn = false;
 static bool dead = false;
 static bool parry = false;
-static bool bribed = false;
-static bool flee = false;
+static bool run = false;
 static shared_ptr<ButtonComponent> btnBribe;
 static shared_ptr<ButtonComponent> btnRun;
 static shared_ptr<ButtonComponent> btnWepSwap;
@@ -55,8 +54,7 @@ void CombatScene::Load() {
 
 	playerTurn = true;
 	dead = false;
-	bribed = false;
-	flee = false;
+	run = false;
 
 	// load the sound effects into there own buffer
 	sfxQuickAttack.loadFromFile("resources/sound/SeaChainQuickSlash.wav");
@@ -314,15 +312,12 @@ void CombatScene::Update(const double& dt) {
 	if (!changingScene && btnRun->isPressed())
 		escape(dt, changingScene);
 
-	if (!changingScene && flee)
-		escape(dt, changingScene);
-
 	// if bribe is pressed run bribe (Starts counter)
 	if (!changingScene && btnBribe->isPressed())
 		bribe(dt, changingScene);
 
 	// Once bribed check bribe function to see if counter is done
-	if (!changingScene && bribed)
+	if (!changingScene && run)
 		bribe(dt, changingScene);
 
 
@@ -498,7 +493,7 @@ void CombatScene::bribe(const double& dt, bool& changingScene) {
 	auto player = ins->getPlayer();
 	std::shared_ptr<InventoryComponent> ic = player->GetCompatibleComponent<InventoryComponent>()[0];
 	static sf::Clock countdown;
-	if (ic->getBiscuits() >= 3 && !bribed) {
+	if (ic->getBiscuits() >= 3 && !run) {
 		// remove 3 biscuits as payment
 		ic->setBiscuits(ic->getBiscuits() - 3);
 
@@ -509,7 +504,7 @@ void CombatScene::bribe(const double& dt, bool& changingScene) {
 		txt->SetText("Always choose the lesser of two weevils!");
 		txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
 		countdown.restart();
-		bribed = true;
+		run = true;
 	}
 
 	// onced bribed and and 5 seconds has passed change the scene
@@ -572,21 +567,22 @@ void CombatScene::updateHealthBars(const double& dt) {
 void CombatScene::escape(const double& dt, bool& changingScene) {
 	int chance = randomNumber(0, 100);
 	static sf::Clock timer;
+	static bool run;
 
 	// Check the odds of them being able to escape
-	if (chance <= 30 && flee == false) {
+	if (chance <= 30) {
 		// Display the biscuit text
 		auto text = this->ents.find("errorText")[0];
 		text->setVisible(true);
 		auto txt = text->GetCompatibleComponent<TextComponent>()[0];
 		txt->SetText("Scatter! ya biscuit eater!");
 		txt->setOrigin(Vector2f(txt->getBounds().width / 2, txt->getBounds().height / 2));
-		flee = true;
+		run = true;
 		timer.restart();
 	}
 
 	// after 5 seconds return to main island
-	if (flee && timer.getElapsedTime().asSeconds() > 5) {
+	if (run && timer.getElapsedTime().asSeconds() > 5) {
 		Engine::ChangeScene(&tutorialMain);
 		changingScene = true;
 	}
